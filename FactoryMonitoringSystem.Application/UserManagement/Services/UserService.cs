@@ -2,7 +2,6 @@
 using FactoryMonitoringSystem.Domain.Common.Repositories;
 using FactoryMonitoringSystem.Domain.UsersManagement.Entities;
 using FactoryMonitoringSystem.Domain.UsersManagement.Specifications;
-
 namespace FactoryMonitoringSystem.Application.UserManagement.Services
 {
     public class UserService : IUserService
@@ -27,14 +26,14 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             }
 
             // Hash the password
-             var passwordHash = BCrypt.Net.HashPassword(password);
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
             // Create the new user
             var user = new User
             {
                 Username = username,
                 Email = email,
-               // PasswordHash = passwordHash,
+                PasswordHash = passwordHash,
                 Role = "User", // Default role
             };
 
