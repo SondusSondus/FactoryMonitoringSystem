@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\ValueObjects\" />
+    <Folder Include="Factories\Services\interface\FactoryReportService\" />
+    <Folder Include="Factories\ValueObjects\" />
+    <Folder Include="Machines\Repositories\" />
+    <Folder Include="Machines\ValueObjects\" />
+    <Folder Include="Sensors\Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.Specification" Version="8.0.0" />
+    <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FactoryMonitoringSystem.Domain.Shared\FactoryMonitoringSystem.Domain.Shared.csproj" />
+  </ItemGroup>
+
+
+
+</Project>

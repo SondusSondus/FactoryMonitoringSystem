@@ -1,0 +1,16 @@
+{
+  "CorsSettings": {
+    "AppAllowedCorsOrigins": [
+      "http://localhost:4200",
+      "http://localhost:4300"
+    ],
+    "ExternalAppAllowedCorsOrigins": [
+   
+    ],
+    "ClientIpWhiteList": {
+      "demo": [
+  
+      ]
+    }
+  }
+}
