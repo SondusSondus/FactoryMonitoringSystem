@@ -1,10 +1,5 @@
-﻿using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Requests;
-using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Responses;
+
 
 namespace FactoryMonitoringSystem.Application.Contracts.Factories.Models.Responses
 {

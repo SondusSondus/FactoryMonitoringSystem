@@ -1,11 +1,6 @@
 ﻿using FactoryMonitoringSystem.Shared;
-using FactoryMonitoringSystem.Shared.Utilities.Models;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace FactoryMonitoringSystem.Infrastructure.Email
 {
@@ -31,7 +26,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Email
             }
             if (string.IsNullOrEmpty(options.FromEmail))
             {
-                return ValidateOptionsResult.Fail("FromEmail is required.");
+                return ValidateOptionsResult.Fail("From Email is required.");
             }
             return ValidateOptionsResult.Success;
         }

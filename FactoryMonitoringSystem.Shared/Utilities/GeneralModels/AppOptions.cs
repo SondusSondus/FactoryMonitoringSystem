@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace FactoryMonitoringSystem.Shared.Utilities.GeneralModels
 {
-    public class AppOptions
+    public record AppOptions
     {
+        public const string Section = "AppOptions";
         public string WriteDatabaseConnectionString { get; set; }
 
         public string ReadDatabaseConnectionString { get; set; }
+        public int LockoutDurationMinutes { get; set; }
+        public int MaxFailedAttempts { get; set; }
 
     }
 

@@ -2,12 +2,6 @@
 using FactoryMonitoringSystem.Application.Contracts.Common.CommonEvent;
 using FactoryMonitoringSystem.Shared;
 using FactoryMonitoringSystem.Shared.Utilities.Enums;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FactoryMonitoringSystem.Application.Common.Services
 {

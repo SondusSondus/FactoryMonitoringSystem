@@ -15,11 +15,11 @@ namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
 
         public static IServiceCollection AddBackgroundJobs(this IServiceCollection services, IConfiguration config)
         {
-            services.AddHangfireServer(options => config.GetSection("HangfireSettings:Server").Bind(options));
+            services.AddHangfireServer(options => config.GetSection(HangfireStorageSettings.SectionServer).Bind(options));
 
             //services.AddHangfireConsoleExtensions();
 
-            var storageSettings = config.GetSection("HangfireSettings:Storage").Get<HangfireStorageSettings>();
+            var storageSettings = config.GetSection(HangfireStorageSettings.SectionStorage).Get<HangfireStorageSettings>();
 
             if (string.IsNullOrEmpty(storageSettings?.StorageProvider)) throw new Exception("Hangfire Storage Provider is not configured.");
             if (string.IsNullOrEmpty(storageSettings.ConnectionString)) throw new Exception("Hangfire Storage Provider ConnectionString is not configured.");

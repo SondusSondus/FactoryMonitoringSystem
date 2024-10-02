@@ -1,15 +1,19 @@
-﻿using FactoryMonitoringSystem.Domain.UsersManagement.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ErrorOr;
+using FactoryMonitoringSystem.Application.Contracts.UserManagement.Models.Requests;
+using FactoryMonitoringSystem.Application.Contracts.UserManagement.Models.Responses;
+
 
 namespace FactoryMonitoringSystem.Application.Contracts.UserManagement.Services
 {
     public interface IUserService
     {
-        Task<User> RegisterAsync(string username, string email, string password);
-        Task<User> GetUserByUsernameAsync(string username);
+        Task<ErrorOr<Success>> UpdateUserProfile(UpdateUserRequest updateUser, CancellationToken cancellationToken);
+        Task UpdateRefreshTokenById(string refreshToken, CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> RegisterUserAsync(SingUpRequest singUpRequest, CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> VerifyEmailAsync(VerifyEmailRequest verifyEmail, CancellationToken cancellationToken);
+        Task<ErrorOr<UserResponse>> GetUserAsync(CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> ChangePasswordAsync(ChangePasswordRequest changePassword, CancellationToken cancellationToken);
+
+
     }
 }

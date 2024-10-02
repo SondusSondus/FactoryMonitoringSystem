@@ -1,6 +1,4 @@
-﻿using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
-using FactoryMonitoringSystem.Shared.Utilities.Models;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 

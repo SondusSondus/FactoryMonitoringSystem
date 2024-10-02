@@ -1,6 +1,6 @@
 ﻿using FactoryMonitoringSystem.Application.Contracts.Common.Mappings;
-using FactoryMonitoringSystem.Application.Contracts.Sensors.Request;
-using FactoryMonitoringSystem.Application.Contracts.Sensors.Responses;
+using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Request;
+using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Responses;
 using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using Mapster;
 using System;

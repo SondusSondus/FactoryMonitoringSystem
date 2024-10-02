@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
 {
     public record HangfireStorageSettings
     {
+        public const string SectionServer = "HangfireSettings:Server";
+        public const string SectionStorage = "HangfireSettings:Storage";
         public string? StorageProvider { get; set; }
         public string? ConnectionString { get; set; }
     }

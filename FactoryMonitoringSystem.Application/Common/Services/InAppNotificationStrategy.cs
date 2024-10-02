@@ -1,8 +1,8 @@
 ﻿using FactoryMonitoringSystem.Application.Contracts.Common.CommonEvent;
 using FactoryMonitoringSystem.Application.Contracts.Common.Services;
-using FactoryMonitoringSystem.Domain.Common.Repositories;
-using FactoryMonitoringSystem.Domain.Notifications.Entities;
+using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
+using Mapster;
 
 namespace FactoryMonitoringSystem.Application.Common.Services
 {
@@ -15,10 +15,11 @@ namespace FactoryMonitoringSystem.Application.Common.Services
             _notificationService = notificationService;
         }
 
-        public async Task SendNotificationAsync<T>(T notification) where T : class
+        public async Task SendNotificationAsync<T>(T notification, NotificationSystemModelEnum notificationSystem) where T : class
         {
-            if (notification.GetType().GetProperty("InAppNotificationModel").GetValue(notification) is InAppNotificationModel inAppNotification)
+            if (notificationSystem is NotificationSystemModelEnum.InAppNotification)
             {
+                var inAppNotification =  notification.Adapt<InAppNotificationModel>();
                 await _notificationService.SendNotificationAsync(inAppNotification);
             }
 

@@ -39,12 +39,12 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
         public async Task ProcessNotification(InAppNotificationModel inAppNotification)
         {
             // Send real-time notification using SignalR
-            await _hubContext.Clients.User(inAppNotification.UserId).SendAsync("ReceiveNotification", inAppNotification.Message);
+            await _hubContext.Clients.User(inAppNotification.UserEmail).SendAsync("ReceiveNotification", inAppNotification.Message);
 
             // Save the notification to the database
             var notification = new Notification
             {
-                UserId = inAppNotification.UserId,
+                UserEmail = inAppNotification.UserEmail,
                 Message = inAppNotification.Message,
                 SentAt = DateTime.UtcNow
             };

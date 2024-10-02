@@ -1,4 +1,6 @@
 ﻿using ErrorOr;
+
+using FactoryMonitoringSystem.Shared;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +19,10 @@ namespace FactoryMonitoringSystem.Api.Controllers
         protected IMapper Mapper => GetService<IMapper>();
 
         protected IMediator Mediator => GetService<IMediator>();
+        protected CurrentUser CurrentUser => GetService<CurrentUser>();
         protected ISender Sender => GetService<ISender>();
         protected IPublisher Publisher => GetService<IPublisher>();
         protected ILogger Logger => GetService<ILogger>();
-        //protected string LoggedInUserId => HttpContext.User.Identity.GetUserId();
-       // protected ICurrentUser CurrentUser => GetService<ICurrentUser>();
         protected ActionResult Problem(List<Error> errors)
         {
             if (errors.Count is 0)

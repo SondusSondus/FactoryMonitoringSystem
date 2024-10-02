@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace FactoryMonitoringSystem.Shared.Utilities.GeneralModels
 {
-    public class InAppNotificationModel
+    public record InAppNotificationModel
     {
-        public string UserId { get; set; }
+        public string UserEmail { get; set; }
         public string Message { get; set; }
 
-        public InAppNotificationModel(string userId, string message)
+        public InAppNotificationModel(string userEmail, string message)
         {
             Message= message;
-            UserId= userId;
+            UserEmail = userEmail;
 
         }
     }

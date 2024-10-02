@@ -1,10 +1,8 @@
-﻿using FactoryMonitoringSystem.Infrastructure.Notifications;
-using FactoryMonitoringSystem.Shared.Middlewares;
+﻿using FactoryMonitoringSystem.Shared.Middlewares;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -16,7 +14,8 @@ namespace FactoryMonitoringSystem.Infrastructure.HealthCheck
     {
         public static IServiceCollection AddHealthCheck(this IServiceCollection services, IConfiguration configuration)
         {
-            var appOptions = configuration.GetSection(nameof(AppOptions)).Get<AppOptions>();
+
+            var appOptions = configuration.GetSection(AppOptions.Section).Get<AppOptions>();
             services.AddHealthChecks()
            .AddSqlServer(
             appOptions.WriteDatabaseConnectionString,

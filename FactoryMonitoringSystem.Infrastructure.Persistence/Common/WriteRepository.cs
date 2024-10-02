@@ -1,10 +1,5 @@
 ﻿using FactoryMonitoringSystem.Domain.Common.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 {
@@ -21,7 +16,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 
         public void Add(T entity)
         {
-            _dbSet.Add(entity);
+            _dbSet.AddAsync(entity);
         }
 
         public void Update(T entity)
@@ -34,9 +29,9 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             _dbSet.Remove(entity);
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

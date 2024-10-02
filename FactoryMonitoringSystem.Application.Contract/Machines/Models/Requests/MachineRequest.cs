@@ -1,9 +1,5 @@
-﻿using FactoryMonitoringSystem.Application.Contracts.Sensors.Request;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Request;
+
 
 namespace FactoryMonitoringSystem.Application.Contracts.Machines.Models.Requests
 {

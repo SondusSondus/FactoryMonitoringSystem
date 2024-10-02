@@ -1,5 +1,6 @@
 ﻿using FactoryMonitoringSystem.Application.Common.Events;
 using FactoryMonitoringSystem.Domain.Common.Entities;
+using FactoryMonitoringSystem.Shared;
 using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 using MediatR;
@@ -11,10 +12,12 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
     public class WriteDbContext : DbContextBase<WriteDbContext>
     {
         private readonly IMediator _mediator;
+        private readonly CurrentUser _currentUser;
 
-        public WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator mediator) : base(options)
+        public WriteDbContext(DbContextOptions<WriteDbContext> options, IMediator mediator, CurrentUser currentUser) : base(options)
         {
             _mediator = mediator;
+            _currentUser = currentUser;
 
         }
         public override int SaveChanges()
@@ -50,10 +53,10 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             foreach (var entry in ex.Entries)
             {
                 var entityName = entry.Entity.GetType().Name;
-                var userId = GetCurrentUserId();  // Implement this to get the current user's ID
+                var user = GetCurrentUser();  // Implement this to get the current user's ID
 
                 // Publish domain event for concurrency conflict
-                var conflictEvent = new ConcurrencyConflictEvent(new ConcurrencyConflict(entityName,userId));
+                var conflictEvent = new ConcurrencyConflictEvent(new ConcurrencyConflict(entityName,user.Email));
                 _mediator.Publish(conflictEvent).Wait();
             }
         }
@@ -62,19 +65,19 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             foreach (var entry in ex.Entries)
             {
                 var entityName = entry.Entity.GetType().Name;
-                var userId = GetCurrentUserId();  // Implement this to get the current user's ID
+                var user = GetCurrentUser();  // Implement this to get the current user's ID
 
                 // Publish domain event for concurrency conflict
-                var conflictEvent = new ConcurrencyConflictEvent(new ConcurrencyConflict(entityName, userId));
+                var conflictEvent = new ConcurrencyConflictEvent(new ConcurrencyConflict(entityName, user.Email));
                 await _mediator.Publish(conflictEvent);
             }
         }
 
         // Placeholder for retrieving current user's ID
-        private string GetCurrentUserId()
+        private CurrentUser GetCurrentUser()
         {
             // Implement this to retrieve the current user's ID (e.g., from claims or session)
-            return "user@example.com";
+            return _currentUser;
         }
         private void TrackEntityChanges()
         {
@@ -91,14 +94,17 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
                     case EntityState.Added:
                         entity.CreatedDate = DateTime.UtcNow;
                         entity.Status = RecordStatus.Active;
+                        entity.CreatedBy = GetCurrentUser().Id;
                         break;
                     case EntityState.Modified:
                         entity.UpdatedDate=DateTime.UtcNow;
-                        entity.Status = entity.Status == RecordStatus.Deleted ? RecordStatus.Deleted : RecordStatus.Active; 
+                        entity.Status = entity.Status == RecordStatus.Deleted ? RecordStatus.Deleted : RecordStatus.Active;
+                        entity.UpdatedBy = GetCurrentUser().Id;
                         break;
                         case EntityState.Deleted:
                         entity.DeletedDate = DateTime.UtcNow;
                         entity.Status = RecordStatus.Deleted;
+                        entity.DeletedBy = GetCurrentUser().Id;
 
                         // Convert the deletion to an update (soft delete)
                         entry.State = EntityState.Modified;
@@ -108,7 +114,6 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 
             }
         }
-        // Handle concurrency exceptions and use manual resolution
      
         
     }

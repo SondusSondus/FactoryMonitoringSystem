@@ -9,7 +9,7 @@ namespace FactoryMonitoringSystem.Domain.Notifications.Entities
 {
     public class Notification : BaseEntity<Guid>
     {
-        public string UserId { get; set; }
+        public string UserEmail { get; set; }
         public string Message { get; set; }
         public DateTime SentAt { get; set; }
     }

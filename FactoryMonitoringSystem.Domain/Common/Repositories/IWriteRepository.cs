@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace FactoryMonitoringSystem.Domain.Common.Repositories
 {
@@ -11,7 +7,7 @@ namespace FactoryMonitoringSystem.Domain.Common.Repositories
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
-        Task SaveChangesAsync();
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
 

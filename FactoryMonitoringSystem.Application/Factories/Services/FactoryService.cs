@@ -9,129 +9,120 @@ using FactoryMonitoringSystem.Domain.Factories.Services;
 using FactoryMonitoringSystem.Domain.Factories.Specifications;
 using FactoryMonitoringSystem.Domain.Shared;
 using FactoryMonitoringSystem.Shared;
-using FactoryMonitoringSystem.Shared.Utilities;
-using FactoryMonitoringSystem.Shared.Utilities.General;
+using MapsterMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using static FactoryMonitoringSystem.Shared.NewFolder.Constant.Errors.Errors;
+using static FactoryMonitoringSystem.Shared.Utilities.Constant.Errors;
 
 namespace FactoryMonitoringSystem.Application.Factories.Services
 {
-    public class FactoryService : IFactoryService, IScopedDependency 
+    public class FactoryService : ApplicationService<FactoryService, Factory>, IFactoryService, IScopedDependency
 
     {
-        private readonly IWriteRepository<Factory> _factoryWriteRepository;
-        private readonly IReadRepository<Factory> _factoryReadRepository;
         private readonly IFactoryReportService _factoryReportService;
-        private readonly IServiceBase<FactoryService> _serviceBase;
 
-        public FactoryService(
-            IWriteRepository<Factory> factoryWriteRepository,
-            IReadRepository<Factory> factoryReadRepository,
-            IFactoryReportService factoryReportService,
-            IServiceBase<FactoryService> serviceBase)
+        public FactoryService(IFactoryReportService factoryReportService, IHttpContextAccessor httpContextAccessor)
+            : base(httpContextAccessor)
         {
-            _factoryWriteRepository = factoryWriteRepository;
-            _factoryReadRepository = factoryReadRepository;
             _factoryReportService = factoryReportService;
-            _serviceBase = serviceBase;
         }
 
-        public async Task<ErrorOr<Guid>> CreateFactoryAsync(FactoryRequet factory)
+        public async Task<ErrorOr<Guid>> CreateFactoryAsync(FactoryRequet factory, CancellationToken cancellationToken)
         {
-            _serviceBase.LoggerInfo("Creating factory with {@Factory}", new { factory.Name, factory.Location });
+            Logger.LogInformation("Creating factory with {@Factory}", new { factory.Name, factory.Location });
 
             try
             {
-                var result = new Factory(_serviceBase.GuidGenerator(), factory.Name, factory.Location);
-                _factoryWriteRepository.Add(result);
-                await _factoryWriteRepository.SaveChangesAsync();
+                var result = new Factory(GuidGenerator, factory.Name, factory.Location);
+                WriteRepository.Add(result);
+                await WriteRepository.SaveChangesAsync(cancellationToken);
 
-                _serviceBase.LoggerInfo("Factory created successfully: {@Factory}", new { factory.Name, factory.Location });
+                Logger.LogInformation("Factory created successfully: {@Factory}", new { factory.Name, factory.Location });
 
                 return result.Id;
             }
             catch (Exception ex)
             {
-                _serviceBase.LoggerError(ex, "Error creating factory {@Factory}", new { factory.Name, factory.Location });
+                Logger.LogError(ex, "Error creating factory {@Factory}", new { factory.Name, factory.Location });
                 return General.Unexpected; // Return a general error in case of failure
 
             }
 
         }
 
-        public async Task<bool> UpdateFactoryAsync(Guid factoryId, string name, string location)
+        public async Task<bool> UpdateFactoryAsync(Guid factoryId, string name, string location, CancellationToken cancellationToken)
         {
-            var factory = await _factoryReadRepository.GetByIdAsync(factoryId);
+            var factory = await ReadRepository.GetByIdAsync(factoryId,cancellationToken);
             if (factory == null) return false;
 
             factory.UpdateName(name);
             factory.UpdateLocation(location);
-            _factoryWriteRepository.Update(factory);
-            await _factoryWriteRepository.SaveChangesAsync();
+            WriteRepository.Update(factory);
+            await WriteRepository.SaveChangesAsync(cancellationToken);
             return true;
         }
 
-        public async Task<bool> DeleteFactoryAsync(Guid factoryId)
+        public async Task<bool> DeleteFactoryAsync(Guid factoryId, CancellationToken cancellationToken)
         {
-            var factory = await _factoryReadRepository.GetByIdAsync(factoryId);
+            var factory = await ReadRepository.GetByIdAsync(factoryId,cancellationToken);
             if (factory == null) return false;
 
-            _factoryWriteRepository.Delete(factory);
-            await _factoryWriteRepository.SaveChangesAsync();
+            WriteRepository.Delete(factory);
+            await WriteRepository.SaveChangesAsync(cancellationToken);
             return true;
         }
 
-        public async Task<ErrorOr<FactoryResponse>> GetFactoryByIdAsync(Guid id)
+        public async Task<ErrorOr<FactoryResponse>> GetFactoryByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            _serviceBase.LoggerInfo("Fetch factory with  ID {FactoryiD}", id);
+            Logger.LogInformation("Fetch factory with  ID {FactoryiD}", id);
 
             try
             {
-                var factory = await _factoryReadRepository.GetByIdAsync(id);
+                var factory = await ReadRepository.GetByIdAsync(id, cancellationToken);
                 if (factory == null)
                 {
-                    _serviceBase.LoggerError("factory with  ID {FactoryiD} is not found ", id);
+                    Logger.LogError("factory with  ID {FactoryiD} is not found ", id);
 
                     return FactoryError.NotFound; // Return error if factory is not found
                 }
-                return _serviceBase.GetMapper().Map<FactoryResponse>(factory); // Success: return the factor}
+                return Mapper.Map<FactoryResponse>(factory); // Success: return the factor}
 
             }
             catch (Exception EX)
             {
-                _serviceBase.LoggerError("Exception when fetch factory with  ID {FactoryiD} with exception message {Message}", id, EX.Message);
+                Logger.LogError("Exception when fetch factory with  ID {FactoryiD} with exception message {Message}", id, EX.Message);
 
                 return General.Unexpected; // Return a general error in case of failure
 
             }
         }
-        public async Task<List<FactoryResponse>> GetAllFactoriesAsync()
+        public async Task<List<FactoryResponse>> GetAllFactoriesAsync(CancellationToken cancellationToken)
         {
-            var factories = await _factoryReadRepository.GetAllAsync();
+            var factories = await ReadRepository.GetAllAsync(cancellationToken);
 
-            return _serviceBase.GetMapper().Map<List<FactoryResponse>>(factories);
+            return Mapper.Map<List<FactoryResponse>>(factories);
 
         }
 
 
 
-        public async Task<List<FactoryResponse>> GetFactoriesByLocationAsync(string location)
+        public async Task<List<FactoryResponse>> GetFactoriesByLocationAsync(string location, CancellationToken cancellationToken)
         {
             var spec = new FactoryByLocationSpecification(location);
-            var factories = await _factoryReadRepository.FindAsync(spec);
-            return _serviceBase.GetMapper().Map<List<FactoryResponse>>(factories);
+            var factories = await ReadRepository.FindAsync(spec, cancellationToken);
+            return Mapper.Map<List<FactoryResponse>>(factories);
 
         }
 
-        public async Task<List<FactoryWithMachineCountResponse>> GetFactoriesWithMachineCountAsync()
+        public async Task<List<FactoryWithMachineCountResponse>> GetFactoriesWithMachineCountAsync(CancellationToken cancellationToken)
         {
             var spec = new FactoriesWithMachineCountSpecification();
-            var result = await _factoryReadRepository.FindAsync(spec);
+            var result = await ReadRepository.FindAsync(spec, cancellationToken);
             return result.ToList();
         }
-        public async Task<string> GenerateFactoryReport(Guid factoryId)
+        public async Task<string> GenerateFactoryReport(Guid factoryId, CancellationToken cancellationToken)
         {
-            var factory = await _factoryReadRepository.GetByIdAsync(factoryId);
+            var factory = await ReadRepository.GetByIdAsync(factoryId, cancellationToken);
             if (factory == null) throw new Exception("Factory not found");
 
             return _factoryReportService.GenerateFactoryReport(factory);

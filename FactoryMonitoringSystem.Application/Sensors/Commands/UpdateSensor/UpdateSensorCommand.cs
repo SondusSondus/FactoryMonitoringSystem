@@ -1,4 +1,4 @@
-﻿using FactoryMonitoringSystem.Application.Contracts.Sensors;
+﻿using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Request;
 using MediatR;
 using System;
 using System.Collections.Generic;

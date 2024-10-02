@@ -1,13 +1,7 @@
-﻿using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace FactoryMonitoringSystem.Infrastructure.Notifications
 {
@@ -18,7 +12,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
         {
 
             // Bind NotificationSettings section from appsettings.json to NotificationSettings class
-            services.Configure<NotificationSettings>(configuration.GetSection("NotificationSettings"));
+            services.Configure<NotificationSettings>(configuration.GetSection(NotificationSettings.Section));
             // Add SignalR to the services collection
             services.AddSignalR();
 

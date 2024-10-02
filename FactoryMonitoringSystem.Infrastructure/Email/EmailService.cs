@@ -1,7 +1,6 @@
 ﻿using FactoryMonitoringSystem.Application.Contracts.Common.Services;
 using FactoryMonitoringSystem.Shared;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
-using FactoryMonitoringSystem.Shared.Utilities.Models;
 using Hangfire;
 using Microsoft.Extensions.Options;
 using System.Net.Mail;
@@ -56,5 +55,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Email
             }
 
         }
+
+        
     }
 }

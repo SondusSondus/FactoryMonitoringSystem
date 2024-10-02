@@ -8,9 +8,11 @@ namespace FactoryMonitoringSystem.Infrastructure.Cors
 {
     public record CorsSettings
     {
+
+        public const string Section = "CorsSettings"; 
         /// <summary>
-      /// The internal app allowed cors origins
-      /// </summary>
+        /// The internal app allowed cors origins
+        /// </summary>
         public List<string> AppAllowedCorsOrigins { get; set; }
         /// <summary>
         /// the external app allowed cors origins

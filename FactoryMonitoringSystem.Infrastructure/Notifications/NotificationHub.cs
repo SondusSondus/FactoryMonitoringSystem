@@ -10,7 +10,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
         public async Task SendNotificationToUser(string userId, string message)
         {
             // Send a message to a specific client using their connection ID
-            await Clients.User(userId).SendAsync("ReceiveNotification", message);
+            await Clients.User(userId).SendAsync("ReceivedNotification", message);
         }
 
         // Optionally, handle connection events

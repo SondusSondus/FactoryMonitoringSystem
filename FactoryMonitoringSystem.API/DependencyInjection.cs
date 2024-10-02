@@ -2,6 +2,7 @@
 using Autofac;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 using FactoryMonitoringSystem.Api.Extensions;
+using FactoryMonitoringSystem.Infrastructure.Email;
 
 namespace FactoryMonitoringSystem.Api
 {
@@ -9,7 +10,7 @@ namespace FactoryMonitoringSystem.Api
     {
         public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration,IHostBuilder hostBuilder)
         {
-            var appOptions = configuration.GetSection(nameof(AppOptions)).Get<AppOptions>();
+            services.Configure<AppOptions>(configuration.GetSection(AppOptions.Section));
 
             //Register Services to Autofac ContainerBuilder
             // Register Autofac as the service provider factory

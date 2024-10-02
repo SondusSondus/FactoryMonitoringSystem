@@ -6,11 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Polly;
 using Polly.CircuitBreaker;
 using System.Linq.Expressions;
+using System.Threading;
 
 
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 {
-    public class ReadRepository<T> : IReadRepository<T> where T : class
+    public class ReadRepository<T> : IReadRepository<T> where T : class //IRepositoryBase
     {
         private readonly ReadDbContext _context;
         private readonly DbSet<T> _dbSet;
@@ -29,11 +30,11 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             );
         }
 
-        public async Task<T> GetByIdAsync(Guid id)
+        public async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             try
             {
-                return await _circuitBreakerPolicy.ExecuteAsync(async () => await _dbSet.FindAsync(id));
+                return await _circuitBreakerPolicy.ExecuteAsync(async () => await _dbSet.FindAsync(id, cancellationToken));
 
             }
             catch (Exception ex)
@@ -44,11 +45,11 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             }
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
             try
             {
-                return await _circuitBreakerPolicy.ExecuteAsync(async () => await _dbSet.ToListAsync());
+                return await _circuitBreakerPolicy.ExecuteAsync(async () => await _dbSet.ToListAsync(cancellationToken));
             }
             catch (Exception ex)
             {
@@ -58,23 +59,19 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             }
         }
 
-        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
-        {
-            return await _circuitBreakerPolicy.ExecuteAsync(async () => await _dbSet.Where(predicate).ToListAsync());
-        }
 
         // Use Custame Specification
-        public async Task<IEnumerable<T>> FindAsync(BaseSpecification<T> specification)
+        public async Task<IEnumerable<T>> FindAsync(BaseSpecification<T> specification, CancellationToken cancellationToken)
         {
 
             var specResult = _baseSpecification.Criteria(_dbSet.AsQueryable(), specification);
-            return await specResult.ToListAsync();
+            return await specResult.ToListAsync(cancellationToken);
         }
         // Use Ardalis.Specification for projected results (e.g., DTOs)
-        public async Task<IEnumerable<TResult>> FindAsync<TResult>(BaseSpecification<T, TResult> specification)
+        public async Task<IEnumerable<TResult>> FindAsync<TResult>(BaseSpecification<T, TResult> specification, CancellationToken cancellationToken)
         {
             var specResult = _baseSpecification.Criteria(_dbSet.AsQueryable(), specification);
-            return (IEnumerable<TResult>)await specResult.ToListAsync();
+            return (IEnumerable<TResult>)await specResult.ToListAsync(cancellationToken);
         }
         // Custom failover handling logic
         private void HandleFailover(Exception ex)
@@ -83,10 +80,34 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             // Add retry or fallback mechanisms
         }
 
-        public async Task<bool> AnyAsync(BaseSpecification<T> specification)
+        public async Task<bool> AnyAsync(BaseSpecification<T> specification, CancellationToken cancellationToken)
         {
             var specResult = _baseSpecification.Criteria(_dbSet.AsQueryable(), specification);
-            return await specResult.AnyAsync();
+            return await specResult.AnyAsync(cancellationToken);
+        }
+
+
+        public async Task<T> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+        {
+            return await _dbSet.Where(predicate).FirstAsync(cancellationToken);
+        }
+
+        public async Task<T> FindAsyncInclude(CancellationToken cancellationToken, Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+
+            // Apply each include expression
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.FirstOrDefaultAsync(predicate, cancellationToken);
+        }
+
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+        {
+            return await _dbSet.AnyAsync(predicate, cancellationToken);
         }
     }
 }

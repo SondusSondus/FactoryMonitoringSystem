@@ -1,11 +1,7 @@
 ﻿using FactoryMonitoringSystem.Application.Common.Events;
 using FactoryMonitoringSystem.Application.Common.Services;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace FactoryMonitoringSystem.Application.Common.EventHandler
 {
@@ -25,7 +21,7 @@ namespace FactoryMonitoringSystem.Application.Common.EventHandler
                 var strategy = _strategyResolver.Resolve(notificationEvent);
                 if (strategy != null)
                 {
-                    await strategy.SendNotificationAsync(notification.NotificationObject);
+                    await strategy.SendNotificationAsync(notification.NotificationObject, notificationEvent);
                 }
                 else
                 {

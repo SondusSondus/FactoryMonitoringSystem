@@ -1,6 +1,8 @@
 ﻿using FactoryMonitoringSystem.Application.Contracts.Common.CommonEvent;
 using FactoryMonitoringSystem.Application.Contracts.Common.Services;
+using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
+using Mapster;
 
 
 namespace FactoryMonitoringSystem.Application.Common.Services
@@ -14,12 +16,13 @@ namespace FactoryMonitoringSystem.Application.Common.Services
             _emailService = emailService;
         }
 
-        public async Task SendNotificationAsync<T>(T notification) where T : class
+        public async Task SendNotificationAsync<T>(T notification, NotificationSystemModelEnum notificationSystem) where T : class
         {
-
-            if (notification.GetType().GetProperty("EmailModel").GetValue(notification) is EmailModel emailNotification)
+            if (notificationSystem is NotificationSystemModelEnum.EmailNotification)
             {
+                var emailNotification = notification.Adapt<EmailModel>();
                 await _emailService.SendEmailAsync(emailNotification);
+
             }
         }
     }
