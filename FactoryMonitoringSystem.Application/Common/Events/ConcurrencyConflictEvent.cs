@@ -3,18 +3,14 @@ using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 
 namespace FactoryMonitoringSystem.Application.Common.Events
 {
-    public record ConcurrencyConflictEvent(ConcurrencyConflict ConcurrencyConflict) : NotificationEvent<ConcurrencyConflict>
+    public record ConcurrencyConflictEvent(ConcurrencyConflict ConcurrencyConflict) : NotificationEvent
     {
-
-        public List<NotificationSystemModelEnum> GetNotificationSystems() 
+        public override List<NotificationSystemModelEnum> NotificationSystems { get; set; } = new List<NotificationSystemModelEnum>
         {
-            return base.NotificationSystems = new List<NotificationSystemModelEnum>() 
-            { 
-                NotificationSystemModelEnum.EmailNotification,
-                NotificationSystemModelEnum.InAppNotification,
-            };
-        }
-
+              NotificationSystemModelEnum.EmailNotification,
+              NotificationSystemModelEnum.InAppNotification  
+        };
+        public override object NotificationObject { get; set; } = ConcurrencyConflict;
     }
 
 }

@@ -1,5 +1,7 @@
 ﻿
 
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 namespace FactoryMonitoringSystem.Domain.Common.Repositories
 {
     public interface IWriteRepository<T> where T : class

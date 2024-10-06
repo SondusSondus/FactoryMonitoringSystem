@@ -9,5 +9,5 @@ namespace FactoryMonitoringSystem.Shared
         string Email,
         string RefreshToken,
         DateTime RefreshTokenExpiryTime,
-        IReadOnlyList<string> Roles);
+        string Role);
 }

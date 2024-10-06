@@ -2,31 +2,36 @@
 using FactoryMonitoringSystem.Shared;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 using Hangfire;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net.Mail;
 
 
 namespace FactoryMonitoringSystem.Infrastructure.Email
 {
-    public class EmailService : IEmailService, ITransientDependency
+    public class EmailService : IEmailService, IScopedDependency
     {
         private readonly EmailSettings _emailSettings;
+        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IOptions<EmailSettings> emailSettings)
+        public EmailService(IOptions<EmailSettings> emailSettings, ILogger<EmailService> logger)
         {
             _emailSettings = emailSettings.Value;
+            _logger = logger;
         }
 
         // Enqueue email sending as a background job
-        public Task SendEmailAsync(EmailModel emailModel)
+        public Task SendEmailAsync(EmailModel emailModel,CancellationToken cancellationToken)
         {
-            BackgroundJob.Enqueue(() => SendEmail(emailModel));
+            BackgroundJob.Enqueue(() => SendEmail(emailModel, cancellationToken));
             return Task.CompletedTask;
         }
 
         // This is the actual method that will be run in the background by Hangfire
-        public async Task SendEmail(EmailModel emailModel)
+        public async Task SendEmail(EmailModel emailModel,CancellationToken cancellationToken)
         {
+            _logger.LogInformation($"Send email to user {emailModel.To}");
+
             using (var client = new SmtpClient(_emailSettings.Host, _emailSettings.Port))
             {
                 client.Credentials = new System.Net.NetworkCredential(_emailSettings.Username, _emailSettings.Password);
@@ -41,17 +46,18 @@ namespace FactoryMonitoringSystem.Infrastructure.Email
                 };
 
                 mailMessage.To.Add(emailModel.To);
-
                 try
                 {
-                    await client.SendMailAsync(mailMessage);
-                    Console.WriteLine($"Email sent to {emailModel.To}");
+                    await client.SendMailAsync(mailMessage,cancellationToken);
+                    _logger.LogError($"Email sent to {emailModel.To}");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Failed to send email to {emailModel.To}: {ex.Message}");
+                    _logger.LogError($"Failed to send email to {emailModel.To}: {ex.Message}");
                     throw;
                 }
+                _logger.LogInformation($"Send rmail to user successfully");
+
             }
 
         }

@@ -15,7 +15,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Commands.CreateFactory
 
         public async Task<ErrorOr<Guid>> Handle(CreateFactoryCommand request, CancellationToken cancellationToken)
         {
-            return await _factoryService.CreateFactoryAsync(request.FactoryRequet);
+            return await _factoryService.CreateFactoryAsync(request.FactoryRequet,cancellationToken);
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace FactoryMonitoringSystem.Api.Controllers
 {
-    
+
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ApiController
@@ -19,7 +19,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
         {
             _jwtSettings = jwtSettings.Value;
         }
-       
+
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginCommand query, CancellationToken cancellationToken)
@@ -28,8 +28,13 @@ namespace FactoryMonitoringSystem.Api.Controllers
             var authResult = await Mediator.Send(query, cancellationToken);
 
             //// Set the Access Token and Refresh Token in HTTP-Only cookies
-            SetTokenCookie("AccessToken", authResult.Value.AuthenticationResult.AccessToken, _jwtSettings.AccessTokenExpirationMinutes);
-            SetTokenCookie("RefreshToken", authResult.Value.AuthenticationResult.AccessToken, _jwtSettings.RefreshTokenExpirationDays);
+            if (!authResult.IsError)
+            {
+                SetTokenCookie("AccessToken", authResult.Value.AuthenticationResult.AccessToken, _jwtSettings.AccessTokenExpirationMinutes);
+                SetTokenCookie("RefreshToken", authResult.Value.AuthenticationResult.AccessToken, _jwtSettings.RefreshTokenExpirationDays);
+
+            }
+
             return authResult.Match(
                    authResult => Ok(authResult.LoginResponse),
                    Problem);
@@ -51,13 +56,16 @@ namespace FactoryMonitoringSystem.Api.Controllers
             }
 
             var token = await Mediator.Send(new GenerateTokenCommand(), cancellationToken);
+
             // Generate new access token and refresh token
             var newAccessToken = token.Value.AccessToken;
             var newRefreshToken = token.Value.AccessToken;
-
-            // Set new tokens in cookies
-            SetTokenCookie("AccessToken", newAccessToken, _jwtSettings.AccessTokenExpirationMinutes);
-            SetTokenCookie("RefreshToken", newRefreshToken, _jwtSettings.RefreshTokenExpirationDays);
+            if (!token.IsError)
+            {
+                // Set new tokens in cookies
+                SetTokenCookie("AccessToken", newAccessToken, _jwtSettings.AccessTokenExpirationMinutes);
+                SetTokenCookie("RefreshToken", newRefreshToken, _jwtSettings.RefreshTokenExpirationDays);
+            }
 
             return token.Match(
                          token => Ok(),

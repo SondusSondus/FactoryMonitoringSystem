@@ -29,7 +29,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.TokenGenerator
             }
 
         }
-        private string GenerateAccessToken(string id, string userName, string email, IReadOnlyList<string> roles)
+        private string GenerateAccessToken(string id, string userName, string email, string role)
         {
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
@@ -40,9 +40,9 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.TokenGenerator
                 new(JwtRegisteredClaimNames.Email, email ),
                 new("id",  id),
                 new("expiryTime", DateTime.UtcNow.ToString()),
+                new(ClaimTypes.Role, role)
             };
 
-            roles.ToList().ForEach(role => claims.Add(new(ClaimTypes.Role, role)));
             var token = new JwtSecurityToken(
                 _jwtSettings.Issuer,
                 _jwtSettings.Audience,
@@ -58,9 +58,9 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.TokenGenerator
             try
             {
                 return new AuthenticationResult(GenerateAccessToken(_currentUserProvider.GetCurrentUser().Id.ToString(), _currentUserProvider.GetCurrentUser().Username,
-                        _currentUserProvider.GetCurrentUser().Email, _currentUserProvider.GetCurrentUser().Roles), GenerateRefreshToken());
+                        _currentUserProvider.GetCurrentUser().Email, _currentUserProvider.GetCurrentUser().Role), GenerateRefreshToken());
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 return General.TokenGeneratorFailure;
             }
@@ -70,10 +70,9 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.TokenGenerator
         {
             try
             {
-                return new AuthenticationResult(GenerateAccessToken(user.Id.ToString(), user.Username, user.Email,
-                user.UserRoles.Select(userRole => userRole.Role.RoleName).ToList().AsReadOnly()), GenerateRefreshToken());
+                return new AuthenticationResult(GenerateAccessToken(user.Id.ToString(), user.Username, user.Email, user.Role.RoleName), GenerateRefreshToken());
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 return General.TokenGeneratorFailure;
             }

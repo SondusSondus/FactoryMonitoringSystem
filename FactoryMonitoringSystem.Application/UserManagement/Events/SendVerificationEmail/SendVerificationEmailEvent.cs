@@ -5,14 +5,14 @@ using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 
 namespace FactoryMonitoringSystem.Application.UserManagement.Events.SendVerificationEmail
 {
-    public record SendVerificationEmailEvent(EmailModel EmailModel) : NotificationEvent<EmailModel>
+    public record SendVerificationEmailEvent(EmailModel EmailModel) : NotificationEvent 
     {
-        public List<NotificationSystemModelEnum> GetNotificationSystems()
-        {
-            return base.NotificationSystems = new List<NotificationSystemModelEnum>()
-            {
-                NotificationSystemModelEnum.EmailNotification,
-            };
-        }
+        public override List<NotificationSystemModelEnum> NotificationSystems { get; set; } = new()
+    {
+        NotificationSystemModelEnum.EmailNotification
+    };
+
+        public override object NotificationObject { get; set; } = EmailModel;
     }
 }
+

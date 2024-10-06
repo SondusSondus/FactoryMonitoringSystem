@@ -15,12 +15,12 @@ namespace FactoryMonitoringSystem.Application.Common.Services
             _notificationService = notificationService;
         }
 
-        public async Task SendNotificationAsync<T>(T notification, NotificationSystemModelEnum notificationSystem) where T : class
+        public async Task SendNotificationAsync<T>(T notification, NotificationSystemModelEnum notificationSystem,CancellationToken cancellationToken) where T : class
         {
             if (notificationSystem is NotificationSystemModelEnum.InAppNotification)
             {
                 var inAppNotification =  notification.Adapt<InAppNotificationModel>();
-                await _notificationService.SendNotificationAsync(inAppNotification);
+                await _notificationService.SendNotificationAsync(inAppNotification,cancellationToken);
             }
 
         }

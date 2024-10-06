@@ -25,18 +25,18 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
         }
 
         // Enqueue notification sending as a background job
-        public Task SendNotificationAsync(InAppNotificationModel inAppNotification)
+        public Task SendNotificationAsync(InAppNotificationModel inAppNotification,CancellationToken cancellationToken)
         {
             if (_notificationSettings.EnableInAppNotifications)
             {
                 // Enqueue the notification job for Hangfire
-                BackgroundJob.Enqueue(() => ProcessNotification(inAppNotification));
+                BackgroundJob.Enqueue(() => ProcessNotification(inAppNotification,cancellationToken));
             }
             return Task.CompletedTask;
         }
 
         // Process the notification (this is the method Hangfire will call)
-        public async Task ProcessNotification(InAppNotificationModel inAppNotification)
+        public async Task ProcessNotification(InAppNotificationModel inAppNotification,CancellationToken cancellationToken)
         {
             // Send real-time notification using SignalR
             await _hubContext.Clients.User(inAppNotification.UserEmail).SendAsync("ReceiveNotification", inAppNotification.Message);
@@ -49,7 +49,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
                 SentAt = DateTime.UtcNow
             };
             _notificationRepository.Add(notification);
-            await _notificationRepository.SaveChangesAsync();
+            await _notificationRepository.SaveChangesAsync(cancellationToken);
         }
 
     }

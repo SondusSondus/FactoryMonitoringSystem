@@ -16,7 +16,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Queries.GetFactoryById
 
         public async Task<ErrorOr<FactoryResponse>> Handle(GetFactoryByIdQuery request, CancellationToken cancellationToken)
         {
-            return await _factoryService.GetFactoryByIdAsync(request.FactoryId);
+            return await _factoryService.GetFactoryByIdAsync(request.FactoryId, cancellationToken);
         }
 
         

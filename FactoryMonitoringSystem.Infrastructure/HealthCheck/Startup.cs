@@ -12,7 +12,8 @@ namespace FactoryMonitoringSystem.Infrastructure.HealthCheck
 {
     public static class Startup
     {
-        public static IServiceCollection AddHealthCheck(this IServiceCollection services, IConfiguration configuration)
+
+        public static IServiceCollection AddIHealthCheck(this IServiceCollection services, IConfiguration configuration)
         {
 
             var appOptions = configuration.GetSection(AppOptions.Section).Get<AppOptions>();

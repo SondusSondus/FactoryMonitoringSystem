@@ -13,7 +13,7 @@ namespace FactoryMonitoringSystem.Application.Auth.Events.GenerateToken
         private readonly IUserService _userService = userService;
         public async Task Handle(RefreshTokenEvent notification, CancellationToken cancellationToken)
         {
-            await _userService.UpdateRefreshTokenById(notification.refreshToken);
+            await _userService.UpdateRefreshToken(notification.refreshToken, cancellationToken);
         }
     }
 }

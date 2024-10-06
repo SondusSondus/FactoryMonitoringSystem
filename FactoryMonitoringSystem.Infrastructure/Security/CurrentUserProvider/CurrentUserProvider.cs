@@ -8,15 +8,21 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.CurrentUserProvider
     {
         public CurrentUser GetCurrentUser()
         {
-           // _httpContextAccessor.HttpContext.ThrowIfNull();
 
-            var id = Guid.Parse(GetSingleClaimValue("id"));
-            var expiryTime = DateTime.Parse(GetSingleClaimValue("expiryTime"));
-            var roles = GetClaimValues(ClaimTypes.Role);
-            var userName = GetSingleClaimValue(ClaimTypes.Name);
-            var email = GetSingleClaimValue(ClaimTypes.Email);
+            // _httpContextAccessor.HttpContext.ThrowIfNull();
+            if(_httpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated == true)
+            {
+                var id = Guid.Parse(GetSingleClaimValue("id"));
+                var expiryTime = DateTime.Parse(GetSingleClaimValue("expiryTime"));
+                var role = GetClaimValues(ClaimTypes.Role).First();
+                var userName = GetSingleClaimValue(ClaimTypes.Name);
+                var email = GetSingleClaimValue(ClaimTypes.Email);
+                return new CurrentUser(id, userName, email, string.Empty, expiryTime, role);
 
-            return new CurrentUser(id, userName, email, string.Empty ,expiryTime ,roles);
+            }
+            return new CurrentUser(new Guid("00000000-0000-0000-0000-000000000000"), "System", null, null, DateTime.MinValue, null);
+
+
         }
 
         private List<string> GetClaimValues(string claimType) =>

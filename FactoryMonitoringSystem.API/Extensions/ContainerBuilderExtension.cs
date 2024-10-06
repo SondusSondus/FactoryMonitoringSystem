@@ -4,6 +4,7 @@ using FactoryMonitoringSystem.Application;
 using FactoryMonitoringSystem.Application.Common.Services;
 using FactoryMonitoringSystem.Application.Contracts.Common.CommonEvent;
 using FactoryMonitoringSystem.Domain;
+using FactoryMonitoringSystem.Infrastructure;
 using FactoryMonitoringSystem.Infrastructure.Persistence;
 using FactoryMonitoringSystem.Shared;
 using System;
@@ -23,20 +24,21 @@ namespace FactoryMonitoringSystem.Api.Extensions
             var applicationAssembly = typeof(IApplicationAssemblyMarker).Assembly;
             var dominAssembly = typeof(IDomainAssemblyMarker).Assembly;
             var persistenceAssembly = typeof(IPersistenceAssemblyMarker).Assembly;
-            var SharedAssembly = typeof(ISharedAssemblyMarker).Assembly;
+            var sharedAssembly = typeof(ISharedAssemblyMarker).Assembly;
+            var infrastructureAssembly = typeof(IInfrastructureAssemblyMarker).Assembly;
            
 
-            containerBuilder.RegisterAssemblyTypes(applicationAssembly, dominAssembly, persistenceAssembly, SharedAssembly)
+            containerBuilder.RegisterAssemblyTypes(applicationAssembly, dominAssembly, persistenceAssembly, sharedAssembly, infrastructureAssembly)
                 .AssignableTo<IScopedDependency>()
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterAssemblyTypes(applicationAssembly, dominAssembly, persistenceAssembly, SharedAssembly)
+            containerBuilder.RegisterAssemblyTypes(applicationAssembly, dominAssembly, persistenceAssembly, sharedAssembly, infrastructureAssembly)
                 .AssignableTo<ITransientDependency>()
                 .AsImplementedInterfaces()
                 .InstancePerDependency();
 
-            containerBuilder.RegisterAssemblyTypes(applicationAssembly, dominAssembly, persistenceAssembly, SharedAssembly)
+            containerBuilder.RegisterAssemblyTypes(applicationAssembly, dominAssembly, persistenceAssembly, sharedAssembly, infrastructureAssembly)
                 .AssignableTo<ISingletonDependency>()
                 .AsImplementedInterfaces()
                 .SingleInstance();

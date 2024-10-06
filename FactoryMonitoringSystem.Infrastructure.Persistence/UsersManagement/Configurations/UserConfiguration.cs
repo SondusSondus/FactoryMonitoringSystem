@@ -12,11 +12,17 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.UsersManagement.Con
             // Table mapping
             builder.ToTable("Users");
             // Primary key
-            builder.HasKey(f => f.Id);
+            builder.HasKey(user => user.Id);
             // Property configurations
-            builder.Property(f => f.Email)
+            builder.Property(user => user.Email)
                 .IsRequired()
                 .HasMaxLength(100);
+            builder.HasOne(user => user.Role)
+                .WithOne()
+                .HasForeignKey<User>(user=>user.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
 
         }
     }

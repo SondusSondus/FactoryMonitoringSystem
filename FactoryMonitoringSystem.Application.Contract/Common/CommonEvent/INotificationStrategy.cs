@@ -5,6 +5,6 @@ namespace FactoryMonitoringSystem.Application.Contracts.Common.CommonEvent
 {
     public interface INotificationStrategy
     {
-        Task SendNotificationAsync<T>(T notification, NotificationSystemModelEnum notificationSystem) where T : class;
+        Task SendNotificationAsync<T>(T notification, NotificationSystemModelEnum notificationSystem, CancellationToken cancellationToken) where T : class;
     }
 }

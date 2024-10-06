@@ -16,12 +16,12 @@ namespace FactoryMonitoringSystem.Application.Common.Services
             _emailService = emailService;
         }
 
-        public async Task SendNotificationAsync<T>(T notification, NotificationSystemModelEnum notificationSystem) where T : class
+        public async Task SendNotificationAsync<T>(T notification, NotificationSystemModelEnum notificationSystem, CancellationToken cancellationToken) where T : class
         {
             if (notificationSystem is NotificationSystemModelEnum.EmailNotification)
             {
                 var emailNotification = notification.Adapt<EmailModel>();
-                await _emailService.SendEmailAsync(emailNotification);
+                await _emailService.SendEmailAsync(emailNotification, cancellationToken);
 
             }
         }

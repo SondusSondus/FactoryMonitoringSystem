@@ -5,6 +5,6 @@ namespace FactoryMonitoringSystem.Application.Contracts.Common.Services
 {
     public interface INotificationService
     {
-        Task SendNotificationAsync(InAppNotificationModel inAppNotification);
+        Task SendNotificationAsync(InAppNotificationModel inAppNotification, CancellationToken cancellationToken);
     }
 }

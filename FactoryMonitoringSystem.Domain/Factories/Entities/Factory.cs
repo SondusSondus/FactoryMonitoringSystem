@@ -11,7 +11,7 @@ using Serilog;
 namespace FactoryMonitoringSystem.Domain.Factories.Entities
 {
 
-    public class Factory : BaseEntity<Guid>
+    public class Factory : Entity<Guid>
     {
         public string Name { get; private set; }
         public string Location { get; private set; }

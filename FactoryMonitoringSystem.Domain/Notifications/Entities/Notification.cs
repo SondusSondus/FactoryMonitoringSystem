@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FactoryMonitoringSystem.Domain.Notifications.Entities
 {
-    public class Notification : BaseEntity<Guid>
+    public class Notification : Entity<Guid>
     {
         public string UserEmail { get; set; }
         public string Message { get; set; }

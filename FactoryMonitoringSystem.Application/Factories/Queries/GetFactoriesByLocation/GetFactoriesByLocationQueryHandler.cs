@@ -19,7 +19,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Queries.GetFactoriesByLo
         }
         public  async Task<List<FactoryResponse>> Handle(GetFactoriesByLocationQuery request, CancellationToken cancellationToken)
         {
-            return await _factoryService.GetFactoriesByLocationAsync(request.location);
+            return await _factoryService.GetFactoriesByLocationAsync(request.location, cancellationToken);
         }
     }
 }

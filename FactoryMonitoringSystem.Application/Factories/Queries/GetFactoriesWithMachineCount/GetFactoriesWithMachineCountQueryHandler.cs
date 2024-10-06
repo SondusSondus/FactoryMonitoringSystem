@@ -15,7 +15,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Queries.GetFactoriesWith
         }
         public async Task<List<FactoryWithMachineCountResponse>> Handle(GetFactoriesWithMachineCountQuery request, CancellationToken cancellationToken)
         {
-            return await _factoryService.GetFactoriesWithMachineCountAsync();
+            return await _factoryService.GetFactoriesWithMachineCountAsync(cancellationToken);
         }
     }
 }

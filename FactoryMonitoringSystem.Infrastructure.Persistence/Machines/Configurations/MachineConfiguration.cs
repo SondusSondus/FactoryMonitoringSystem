@@ -25,7 +25,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Machines.Configurat
 
             // Relationship configuration
             builder.HasMany(m => m.Sensors)
-                .WithOne()
+                .WithOne().HasForeignKey(s=>s.MachineId)
                 .OnDelete(DeleteBehavior.Cascade); // Define delete behavior
         }
     }

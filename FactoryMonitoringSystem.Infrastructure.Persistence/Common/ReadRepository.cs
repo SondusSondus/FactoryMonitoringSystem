@@ -6,8 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Polly;
 using Polly.CircuitBreaker;
 using System.Linq.Expressions;
-using System.Threading;
-
 
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 {
@@ -104,7 +102,29 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 
             return await query.FirstOrDefaultAsync(predicate, cancellationToken);
         }
+        public async Task<T> FindAsyncIncludeMultiple<TProperty1, TProperty2>(
+           CancellationToken cancellationToken,
+           Expression<Func<T, bool>> predicate,
+           params (Expression<Func<T, IEnumerable<TProperty1>>> include, Expression<Func<TProperty1, TProperty2>>? thenInclude)[] includes)
 
+        {
+            IQueryable<T> query = _dbSet;
+
+            // Apply Include and ThenInclude for each pair
+            foreach (var (include, thenInclude) in includes)
+            {
+                if (thenInclude != null)
+                {
+                    query = query.Include(include).ThenInclude(thenInclude);
+                }
+                else
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(predicate, cancellationToken);
+        }
         public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
         {
             return await _dbSet.AnyAsync(predicate, cancellationToken);

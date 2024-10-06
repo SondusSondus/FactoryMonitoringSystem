@@ -14,8 +14,8 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Commands.Registrati
 
             RuleFor(reg => reg.SingUpRequest.Email)
            .NotEmpty().WithMessage("Email is required.")
-           .EmailAddress().WithMessage("A valid email address is required.")
-           .Matches(SystemRegularExpression.Email).WithMessage("A valid email address is required.");
+           .EmailAddress().WithMessage("valid email address.")
+           .Matches(SystemRegularExpression.Email).WithMessage("valid email address.");
 
             RuleFor(reg => reg.SingUpRequest.Password)
                 .NotEmpty().WithMessage("Password is required.")

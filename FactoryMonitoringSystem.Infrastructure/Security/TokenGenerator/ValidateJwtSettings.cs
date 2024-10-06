@@ -16,7 +16,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.TokenGenerator
             {
                 return ValidateOptionsResult.Fail("Secret Key Host is required.");
             }
-            if (options.AccessTokenExpirationMinutes <= 0 || options.AccessTokenExpirationMinutes >= 30)
+            if (options.AccessTokenExpirationMinutes <= 0 || options.AccessTokenExpirationMinutes > 30)
             {
                 return ValidateOptionsResult.Fail("Access token expiration must be between 0 and 30 ");
             } 

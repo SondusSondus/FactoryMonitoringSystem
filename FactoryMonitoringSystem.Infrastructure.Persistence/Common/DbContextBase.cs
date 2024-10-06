@@ -7,12 +7,7 @@ using FactoryMonitoringSystem.Infrastructure.Persistence.Machines.Configurations
 using FactoryMonitoringSystem.Infrastructure.Persistence.Sensors.Configurations;
 using FactoryMonitoringSystem.Infrastructure.Persistence.UsersManagement.Configurations;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 {
@@ -31,6 +26,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             modelBuilder.ApplyConfiguration(new MachineConfiguration());
             modelBuilder.ApplyConfiguration(new SensorConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

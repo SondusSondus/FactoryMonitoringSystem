@@ -10,13 +10,12 @@ using FactoryMonitoringSystem.Shared.Utilities.Enums;
 
 namespace FactoryMonitoringSystem.Domain.Machines.Entities
 {
-    public class Machine : BaseEntity<Guid>
+    public class Machine : Entity<Guid>
     {
         public string Name { get; private set; }
         public string Type { get; private set; }
         public string SerialNumber { get; set; }
         public Guid FactoryId { get; set; }
-        virtual public Factory Factory { get; set; }
         public List<Sensor> Sensors { get; private set; } = new List<Sensor>();
 
 

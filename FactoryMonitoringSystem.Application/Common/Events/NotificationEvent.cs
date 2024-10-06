@@ -1,12 +1,13 @@
-﻿using FactoryMonitoringSystem.Shared.Utilities.Enums;
+﻿using FactoryMonitoringSystem.Shared;
+using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using MediatR;
 
 
 namespace FactoryMonitoringSystem.Application.Common.Events
 {
-    public record NotificationEvent<T> : INotification  where T : class
+    public abstract record NotificationEvent: INotification  
     {
-        public T NotificationObject { get; set; }
-        public List<NotificationSystemModelEnum> NotificationSystems { get; set; }
+        public abstract object NotificationObject { get; set; }
+        public abstract List<NotificationSystemModelEnum> NotificationSystems { get; set; }
     }
 }

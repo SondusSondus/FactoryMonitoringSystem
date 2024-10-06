@@ -34,7 +34,7 @@ namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
             services.AddHangfire((provider, hangfireConfig) => hangfireConfig
                 .UseSqlServerStorage(connectionString)
                 .UseFilter(new LogEverythingAttributeHangfire())
-                .UseFilter(new HangFireAuthorizationFilter())
+               // .UseFilter(new HangFireAuthorizationFilter())
                 .UseFilter(new AutomaticRetryAttribute
                 {
                     Attempts = 3,  // Reduce retries to 3
@@ -51,7 +51,7 @@ namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
         {
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
-                Authorization = new[] { new HangFireAuthorizationFilter() },  // Add custom authorization
+               // Authorization = new[] { new HangFireAuthorizationFilter() },  // Add custom authorization
                 AppPath = "/"  // Return to your main app after visiting the dashboard
             });
             return app;

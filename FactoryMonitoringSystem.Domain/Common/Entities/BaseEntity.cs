@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FactoryMonitoringSystem.Domain.Common.Entities
 {
-    public abstract class BaseEntity<T>
+    public class BaseEntity
     {
-        public T Id { get; set; } // Unique identifier for each entity
-
         // Tracking fields
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedDate { get; set; }
@@ -25,6 +23,5 @@ namespace FactoryMonitoringSystem.Domain.Common.Entities
         public byte[] RowVersion { get; set; }
         // Additional properties for auditing can be added as needed
         // public List<IDomainEvent> DomainEvents { get; } = new();
-
     }
 }

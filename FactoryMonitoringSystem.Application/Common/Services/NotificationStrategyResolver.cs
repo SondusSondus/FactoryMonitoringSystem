@@ -9,7 +9,7 @@ namespace FactoryMonitoringSystem.Application.Common.Services
     {
         INotificationStrategy Resolve(NotificationSystemModelEnum notification);
     }
-    public class NotificationStrategyResolver : INotificationStrategyResolver, IScopedDependency
+    public class NotificationStrategyResolver : INotificationStrategyResolver, ITransientDependency
     {
         private readonly IComponentContext _context;
 

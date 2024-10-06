@@ -1,12 +1,15 @@
 ﻿using FactoryMonitoringSystem.Domain.Common.Entities;
+using FactoryMonitoringSystem.Domain.Factories.Entities;
+using FactoryMonitoringSystem.Domain.Machines.Entities;
 
 namespace FactoryMonitoringSystem.Domain.Sensors.Entities
 {
-    public class Sensor : BaseEntity<Guid>
+    public class Sensor : Entity<Guid>
     {
         public string Type { get; private set; }
         public double Value { get; private set; }
         public string Unit { get; private set; }
+        public Guid MachineId { get; set; }
 
         // Constructor for EF Core
         protected Sensor() { }

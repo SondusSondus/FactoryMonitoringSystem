@@ -52,9 +52,11 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
         // Get user by username or email
         private async Task<ErrorOr<User>> GetUserAsync(string email, CancellationToken cancellationToken)
         {
-            var user = await ReadRepository.FindAsyncInclude(cancellationToken,
+            var user = await ReadRepository.FindAsyncInclude(
+                cancellationToken,
                 user => user.Username == email || user.Email == email,
-                user => user.UserRoles.Select(userRole => userRole.Role));
+                user => user.Role  // Include UserRoles and ThenInclude Role
+            );
 
             return user == null ? AuthError.InvalidCredentials : user;
         }
@@ -75,16 +77,20 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
             if (user.FailedLoginAttempts >= _appOptions.MaxFailedAttempts)
             {
                 user.LockoutEnd = DateTime.UtcNow.AddMinutes(_appOptions.LockoutDurationMinutes);
-                await WriteRepository.SaveChangesAsync(cancellationToken);
+                await UpdateUser(user, cancellationToken);
                 Logger.LogError(AuthError.AccountLockedOut(user.LockoutEnd.Value).Description);
                 return AuthError.AccountLockedOut(user.LockoutEnd.Value);
             }
-
-            await WriteRepository.SaveChangesAsync(cancellationToken);
+            await UpdateUser(user, cancellationToken);
             Logger.LogError(AuthError.InvalidCredentials.Description);
             return AuthError.InvalidCredentials;
         }
 
+        private async Task UpdateUser(User user, CancellationToken cancellationToken)
+        {
+            WriteRepository.Update(user);
+            await WriteRepository.SaveChangesAsync(cancellationToken);
+        }
         // Handle invalid credentials
         private ErrorOr<User> HandleInvalidCredentials(string email)
         {
@@ -122,7 +128,7 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
             user.LockoutEnd = null;
             user.RefreshToken = tokenResult.Value.RefreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow;
-            await WriteRepository.SaveChangesAsync(cancellationToken);
+            await UpdateUser(user, cancellationToken);
 
             var loginResponse = Mapper.Map<LoginResponse>(user);
             return new LoginResult(loginResponse, new AuthenticationResult(tokenResult.Value.AccessToken, tokenResult.Value.RefreshToken));

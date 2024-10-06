@@ -1,5 +1,6 @@
 ﻿using Hangfire.Common;
 using Hangfire.Server;
+using Polly;
 using Serilog;
 
 namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
@@ -11,7 +12,7 @@ namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
 
         public LogEverythingAttributeHangfire()
         {
-
+            Logger.Information($"Starting ...");
         }
 
         public void OnPerforming(PerformingContext context)
