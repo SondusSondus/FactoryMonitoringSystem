@@ -1,6 +1,4 @@
 ﻿using ErrorOr;
-using FactoryMonitoringSystem.Application.Common.EventHandler;
-using FactoryMonitoringSystem.Application.Contracts.Common.Services;
 using FactoryMonitoringSystem.Application.Contracts.UserManagement.Models.Requests;
 using FactoryMonitoringSystem.Application.Contracts.UserManagement.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.UserManagement.Services;
@@ -175,6 +173,17 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             await UpdateUser(user, cancellationToken);
             Logger.LogInformation("Change password successfully.");
 
+            return Result.Success;
+        }
+
+        public async Task<ErrorOr<Success>> UpdateRefreshTokenToInValid(CancellationToken cancellationToken)
+        {
+
+            Logger.LogInformation("Update user profile for user {Email} {UserId}", CurrentUser.Email, LoggedInUserId);
+            var user = await ReadRepository.FindAsync(user => user.Id == LoggedInUserId, cancellationToken);
+            user.RefreshToken = string.Empty;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(-1);
+            await UpdateUser(user, cancellationToken);
             return Result.Success;
         }
     }

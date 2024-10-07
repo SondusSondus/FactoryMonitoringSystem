@@ -1,7 +1,10 @@
-﻿using ErrorOr;
+﻿
+using ErrorOr;
 using FactoryMonitoringSystem.Application.Auth.Commands.GenerateToken;
+using FactoryMonitoringSystem.Application.Auth.Commands.InvalidateRefreshToken;
 using FactoryMonitoringSystem.Application.Auth.Commands.Login;
 using FactoryMonitoringSystem.Infrastructure.Security.TokenGenerator;
+using FactoryMonitoringSystem.Shared.Utilities.Constant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -39,8 +42,10 @@ namespace FactoryMonitoringSystem.Api.Controllers
                    authResult => Ok(authResult.LoginResponse),
                    Problem);
         }
+
         [HttpPost("logout")]
-        public IActionResult Logout()
+        [Authorize(policy: Policy.User)]
+        public async Task<IActionResult> Logout(CancellationToken cancellationToken)
         {
             // Remove the JWT token from cookies
             if (Request.Cookies["AccessToken"] != null)
@@ -53,72 +58,72 @@ namespace FactoryMonitoringSystem.Api.Controllers
                 RemoveTokenCookie("RefreshToken");
             }
 
+            var authResult = await Mediator.Send(new InvalidateRefreshTokenCommand(), cancellationToken);
             return authResult.Match(
                 authResult => Ok(),
                 Problem);
-            
-        }
-    }
 
-    [HttpPost("refresh-token")]
-    [AllowAnonymous]
-    public async Task<IActionResult> RefreshToken(CancellationToken cancellationToken)
-    {
-        var refreshToken = Request.Cookies["RefreshToken"];
-
-        if (string.IsNullOrEmpty(refreshToken))
-        {
-            return Problem(new List<Error> { Error.Unauthorized("Refresh token not found.") });
-        }
-        if (CurrentUser == null || CurrentUser.RefreshTokenExpiryTime <= DateTime.UtcNow)
-        {
-            return Problem(new List<Error> { Error.Unauthorized("Invalid or expired refresh token.") });
         }
 
-        var token = await Mediator.Send(new GenerateTokenCommand(), cancellationToken);
-
-        // Generate new access token and refresh token
-        var newAccessToken = token.Value.AccessToken;
-        var newRefreshToken = token.Value.AccessToken;
-        if (!token.IsError)
+        [HttpPost("refresh-token")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RefreshToken(CancellationToken cancellationToken)
         {
-            // Set new tokens in cookies
-            SetTokenCookie("AccessToken", newAccessToken, _jwtSettings.AccessTokenExpirationMinutes);
-            SetTokenCookie("RefreshToken", newRefreshToken, _jwtSettings.RefreshTokenExpirationDays);
+            var refreshToken = Request.Cookies["RefreshToken"];
+
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return Problem(new List<Error> { Error.Unauthorized("Refresh token not found.") });
+            }
+            if (CurrentUser == null || CurrentUser.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                return Problem(new List<Error> { Error.Unauthorized("Invalid or expired refresh token.") });
+            }
+
+            var token = await Mediator.Send(new GenerateTokenCommand(), cancellationToken);
+
+            // Generate new access token and refresh token
+            var newAccessToken = token.Value.AccessToken;
+            var newRefreshToken = token.Value.AccessToken;
+            if (!token.IsError)
+            {
+                // Set new tokens in cookies
+                SetTokenCookie("AccessToken", newAccessToken, _jwtSettings.AccessTokenExpirationMinutes);
+                SetTokenCookie("RefreshToken", newRefreshToken, _jwtSettings.RefreshTokenExpirationDays);
+            }
+
+            return token.Match(
+                         token => Ok(),
+                         Problem);
         }
 
-        return token.Match(
-                     token => Ok(),
-                     Problem);
-    }
-
-    private void SetTokenCookie(string cookieName, string token, double expirationMinutes)
-    {
-        var cookieOptions = new CookieOptions
+        private void SetTokenCookie(string cookieName, string token, double expirationMinutes)
         {
-            HttpOnly = true,
-            Secure = true, // Use Secure flag to send cookies over HTTPS only
-            SameSite = SameSiteMode.Strict, // Prevents CSRF attacks
-            Expires = DateTime.UtcNow.AddMinutes(expirationMinutes)
-        };
-        Response.Cookies.Append(cookieName, token, cookieOptions);
-    }
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Use Secure flag to send cookies over HTTPS only
+                SameSite = SameSiteMode.Strict, // Prevents CSRF attacks
+                Expires = DateTime.UtcNow.AddMinutes(expirationMinutes)
+            };
+            Response.Cookies.Append(cookieName, token, cookieOptions);
+        }
 
-    private void RemoveTokenCookie(string cookieName)
-    {
- 
-        var cookieOptions = new CookieOptions
+        private void RemoveTokenCookie(string cookieName)
         {
-            Expires = DateTime.UtcNow.AddDays(-1), // Expire the cookie immediately
-            HttpOnly = true,
-            Secure = true, // Should be true in production with HTTPS
-            SameSite = SameSiteMode.Strict
-        };
-        Response.Cookies.Append(cookieName, "", cookieOptions);
+
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTime.UtcNow.AddDays(-1), // Expire the cookie immediately
+                HttpOnly = true,
+                Secure = true, // Should be true in production with HTTPS
+                SameSite = SameSiteMode.Strict
+            };
+            Response.Cookies.Append(cookieName, "", cookieOptions);
+
+        }
+
+
 
     }
-
-
-
-}
 }

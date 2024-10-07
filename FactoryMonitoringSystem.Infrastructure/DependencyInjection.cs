@@ -18,13 +18,14 @@ namespace FactoryMonitoringSystem.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services , IConfiguration configuration, ConfigureHostBuilder hostBuilder)
         {
      
-            services
+            services.AddCorsPolicy(configuration)
                     .AddSecurity(configuration)
                     .AddBackgroundJobs(configuration)
                     .AddPersistence(configuration)
                     .AddEmail(configuration)
                     .AddNotifications(configuration)
-                    .AddILogger(hostBuilder) ;
+                    .AddILogger(hostBuilder)
+                    .AddIHealthCheck(configuration);
             return services;
         }
     }

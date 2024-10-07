@@ -10,13 +10,14 @@ namespace FactoryMonitoringSystem.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(policy: Roles.User)]
+
     public class UserProfileController : ApiController
     {
 
         [HttpGet]
-        public async Task<IActionResult> GetProfile(GetProfileUserQuery query, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetProfile(CancellationToken cancellationToken)
         {
-            var result = await Mediator.Send(query, cancellationToken);
+            var result = await Mediator.Send(new GetProfileUserQuery(), cancellationToken);
             return result.Match(
                 result => Ok(),
                 Problem

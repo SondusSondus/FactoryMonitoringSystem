@@ -1,14 +1,16 @@
 ﻿using ErrorOr;
+using FactoryMonitoringSystem.Application.Contracts.UserManagement.Services;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace FactoryMonitoringSystem.Application.Auth.Commands.InvalidateRefreshToken
 {
-    public class InvalidateRefreshTokenCommandHandler : IRequestHandler<InvalidateRefreshTokenCommand,ErrorOr<Success>>
+    public class InvalidateRefreshTokenCommandHandler(IUserService userService) : IRequestHandler<InvalidateRefreshTokenCommand,ErrorOr<Success>>
     {
+        private readonly IUserService _userService=  userService;
+        public async Task<ErrorOr<Success>> Handle(InvalidateRefreshTokenCommand request, CancellationToken cancellationToken)
+        {
+            return await _userService.UpdateRefreshTokenToInValid(cancellationToken);
+        }
     }
 }

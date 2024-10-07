@@ -13,6 +13,7 @@ namespace FactoryMonitoringSystem.Application.Contracts.UserManagement.Services
         Task<ErrorOr<Success>> VerifyEmailAsync(VerifyEmailRequest verifyEmail, CancellationToken cancellationToken);
         Task<ErrorOr<UserResponse>> GetUserAsync(CancellationToken cancellationToken);
         Task<ErrorOr<Success>> ChangePasswordAsync(ChangePasswordRequest changePassword, CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> UpdateRefreshTokenToInValid(CancellationToken cancellationToken);
 
 
     }
