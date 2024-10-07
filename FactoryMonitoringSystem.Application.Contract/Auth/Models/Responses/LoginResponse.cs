@@ -2,6 +2,6 @@
 
 namespace FactoryMonitoringSystem.Application.Contracts.Auth.Models.Responses
 {
-    public record LoginResponse(Guid Id, string UserName,string Email);
+    public record LoginResponse(Guid Id, string Username,string Email);
     
 }

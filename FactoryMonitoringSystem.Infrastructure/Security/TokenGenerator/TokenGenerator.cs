@@ -36,8 +36,8 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.TokenGenerator
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var claims = new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Name, userName),
-                new(JwtRegisteredClaimNames.Email, email ),
+                new(ClaimTypes.Name, userName),
+                new(ClaimTypes.Email, email ),
                 new("id",  id),
                 new("expiryTime", DateTime.UtcNow.ToString()),
                 new(ClaimTypes.Role, role)

@@ -46,7 +46,9 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
                 .Validate(user => !IsLockedOut(user), () => HandleAccountLockout(user))
                 .Validate(user => ValidatePassword(loginRequest.Password, user.PasswordHash), () => HandleFailedLoginAttemptAsync(user, cancellationToken))
                 .Map(user => HandleSuccessfulLoginAsync(user, cancellationToken));
-            return map.Errors;
+          
+            return map.Value;
+
         }
 
         // Get user by username or email

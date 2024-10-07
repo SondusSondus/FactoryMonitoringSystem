@@ -3,8 +3,6 @@ using Ardalis.Specification.EntityFrameworkCore;
 using FactoryMonitoringSystem.Domain.Common.Repositories;
 using FactoryMonitoringSystem.Domain.Common.Specifications;
 using Microsoft.EntityFrameworkCore;
-using Polly;
-using Polly.CircuitBreaker;
 using System.Linq.Expressions;
 
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
@@ -14,25 +12,19 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
         private readonly ReadDbContext _context;
         private readonly DbSet<T> _dbSet;
         private readonly IBaseSpecification<T> _baseSpecification;
-        private static AsyncCircuitBreakerPolicy _circuitBreakerPolicy;
         public ReadRepository(ReadDbContext context, IBaseSpecification<T> baseSpecification)
         {
             _context = context;
             _dbSet = _context.Set<T>();
             _baseSpecification = baseSpecification;
-            _circuitBreakerPolicy = Policy
-            .Handle<Exception>()
-            .CircuitBreakerAsync(
-                exceptionsAllowedBeforeBreaking: 3,
-                durationOfBreak: TimeSpan.FromMinutes(30)
-            );
+         
         }
 
         public async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             try
             {
-                return await _circuitBreakerPolicy.ExecuteAsync(async () => await _dbSet.FindAsync(id, cancellationToken));
+                return  await _dbSet.FindAsync(id, cancellationToken);
 
             }
             catch (Exception ex)
@@ -47,7 +39,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
         {
             try
             {
-                return await _circuitBreakerPolicy.ExecuteAsync(async () => await _dbSet.ToListAsync(cancellationToken));
+                return await _dbSet.ToListAsync(cancellationToken);
             }
             catch (Exception ex)
             {

@@ -42,9 +42,8 @@ namespace FactoryMonitoringSystem.Shared.Utilities.GeneralServices
             {
                 return result; // Return the existing error
             }
-            var errorFactoryresult = await errorFactory();
             // Apply the predicate check to the unwrapped value
-            return predicate(result.Value) ? result : errorFactoryresult;
+            return predicate(result.Value) ? result : await errorFactory();
         }
 
         // Map method for Task<ErrorOr<T>> with transformation

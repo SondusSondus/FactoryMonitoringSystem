@@ -1,7 +1,5 @@
 ﻿using Hangfire.Common;
 using Hangfire.Server;
-using Polly;
-using Serilog;
 
 namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
 {

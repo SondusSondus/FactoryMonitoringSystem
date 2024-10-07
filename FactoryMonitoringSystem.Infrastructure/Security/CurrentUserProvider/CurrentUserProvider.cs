@@ -18,7 +18,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.CurrentUserProvider
                 var userName = GetSingleClaimValue(ClaimTypes.Name);
                 var email = GetSingleClaimValue(ClaimTypes.Email);
                 return new CurrentUser(id, userName, email, string.Empty, expiryTime, role);
-
+              
             }
             return new CurrentUser(new Guid("00000000-0000-0000-0000-000000000000"), "System", null, null, DateTime.MinValue, null);
 
