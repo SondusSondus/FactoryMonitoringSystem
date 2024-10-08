@@ -14,6 +14,8 @@ namespace FactoryMonitoringSystem.Application.Contracts.UserManagement.Services
         Task<ErrorOr<UserResponse>> GetUserAsync(CancellationToken cancellationToken);
         Task<ErrorOr<Success>> ChangePasswordAsync(ChangePasswordRequest changePassword, CancellationToken cancellationToken);
         Task<ErrorOr<Success>> UpdateRefreshTokenToInValid(CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> ForgotPasswordByEmail(string email, CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> ConfirmPassword(ConfirmPasswordRequest confirmPassword, CancellationToken cancellationToken);
 
 
     }

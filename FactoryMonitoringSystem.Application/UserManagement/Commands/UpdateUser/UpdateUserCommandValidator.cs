@@ -1,10 +1,5 @@
-﻿using FactoryMonitoringSystem.Application.Factories.Commands.CreateFactory;
-using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
+
 
 namespace FactoryMonitoringSystem.Application.UserManagement.Commands.UpdateUser
 {
@@ -12,7 +7,7 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Commands.UpdateUser
     {
         public UpdateUserCommandValidator()
         {
-            RuleFor(command => command.UpdateUser.UserName)
+            RuleFor(command => command.UpdateUser.Username)
              .NotEmpty().WithMessage(" Name is required.")
              .MaximumLength(100).WithMessage(" name must not exceed 100 characters.");
 

@@ -23,7 +23,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
             _jwtSettings = jwtSettings.Value;
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginCommand query, CancellationToken cancellationToken)
         {
@@ -43,7 +43,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
                    Problem);
         }
 
-        [HttpPost("logout")]
+        [HttpPost("Logout")]
         [Authorize(policy: Policy.User)]
         public async Task<IActionResult> Logout(CancellationToken cancellationToken)
         {
@@ -65,7 +65,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
 
         }
 
-        [HttpPost("refresh-token")]
+        [HttpPost("RefreshToken")]
         [AllowAnonymous]
         public async Task<IActionResult> RefreshToken(CancellationToken cancellationToken)
         {

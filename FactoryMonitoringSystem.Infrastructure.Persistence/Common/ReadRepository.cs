@@ -17,36 +17,22 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             _context = context;
             _dbSet = _context.Set<T>();
             _baseSpecification = baseSpecification;
-         
+
         }
 
         public async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            try
-            {
-                return  await _dbSet.FindAsync(id, cancellationToken);
 
-            }
-            catch (Exception ex)
-            {
-                // Log error and implement fallback logic or notify a circuit breaker
-                HandleFailover(ex);
-                throw;
-            }
+            return await _dbSet.FindAsync(id, cancellationToken);
+
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                return await _dbSet.ToListAsync(cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                // Log error and implement fallback logic or notify a circuit breaker
-                HandleFailover(ex);
-                return Enumerable.Empty<T>();  // Gracefully degrade to empty result or cached data
-            }
+
+            return await _dbSet.ToListAsync(cancellationToken);
+
+
         }
 
 
@@ -63,12 +49,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             var specResult = _baseSpecification.Criteria(_dbSet.AsQueryable(), specification);
             return (IEnumerable<TResult>)await specResult.ToListAsync(cancellationToken);
         }
-        // Custom failover handling logic
-        private void HandleFailover(Exception ex)
-        {
-            // Log the error, notify failover monitoring, or invoke a circuit breaker
-            // Add retry or fallback mechanisms
-        }
+
 
         public async Task<bool> AnyAsync(BaseSpecification<T> specification, CancellationToken cancellationToken)
         {

@@ -9,7 +9,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(policy: Roles.User)]
+    [Authorize(Roles= Roles.User)]
 
     public class UserProfileController : ApiController
     {
@@ -19,7 +19,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
         {
             var result = await Mediator.Send(new GetProfileUserQuery(), cancellationToken);
             return result.Match(
-                result => Ok(),
+                result => Ok(result),
                 Problem
                 );
         }
@@ -35,8 +35,8 @@ namespace FactoryMonitoringSystem.Api.Controllers
                 );
 
         }
-        // POST: api/userprofile/change-password
-        [HttpPost("change-password")]
+        // POST: api/userprofile/changepassword
+        [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command, CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(command, cancellationToken);

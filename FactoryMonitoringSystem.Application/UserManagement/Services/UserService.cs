@@ -9,7 +9,6 @@ using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Threading;
 using static FactoryMonitoringSystem.Shared.Utilities.Constant.Errors;
 namespace FactoryMonitoringSystem.Application.UserManagement.Services
 {
@@ -22,7 +21,7 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
 
         public async Task<ErrorOr<Success>> RegisterUserAsync(SingUpRequest singUpRequest, CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Register user with information {email},{Nmae}", singUpRequest.Email,singUpRequest.Username);
+            Logger.LogInformation("Register user with information {email},{Nmae}", singUpRequest.Email, singUpRequest.Username);
             //  Check if the username or email is already taken
             if (await ReadRepository.AnyAsync(u => u.Username == singUpRequest.Username, cancellationToken))
             {
@@ -49,7 +48,7 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
                 PasswordHash = hashedPassword,
                 EmailVerificationCode = verificationCode,
                 EmailVerificationCodeExpiration = DateTime.UtcNow.AddHours(1), // Expiration time for the code
-                RoleId= (int)RolesEnum.User,
+                RoleId = (int)RolesEnum.User,
                 IsEmailVerified = false
             };
             WriteRepository.Add(user);
@@ -60,25 +59,8 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
 
             return Result.Success;
         }
-        
-        private async Task SendVerificationEmail(string toEmail, string verificationCode, CancellationToken cancellationToken)
-        {
-            Logger.LogInformation("Send verification code {VerificationCode} to user {Email} ", verificationCode, toEmail);
-            var subject = "Your Verification Code";
-            var body = $@"
-                        <html>
-                            <body>
-                                <p>Hello,</p>
-                                <p>Your verification code is: <strong>{verificationCode}</strong></p>
-                                <p>Please use this code to complete your registration.</p>
-                            </body>
-                        </html>";
 
-            Logger.LogInformation($"Send email to user {toEmail} with subject {subject} and body {body}");
-            //await _emailService.SendEmailAsync(new EmailModel(toEmail, subject, body), cancellationToken);
-            var conflictEvent = new SendVerificationEmailEvent(new EmailModel(toEmail, subject, body));
-            await Mediator.Publish(conflictEvent);
-        }
+
 
         public async Task UpdateRefreshToken(string refreshToken, CancellationToken cancellationToken)
         {
@@ -86,28 +68,38 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             var user = await ReadRepository.FindAsync(user => user.Id == LoggedInUserId, cancellationToken);
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.UtcNow;
-            await UpdateUser(user,cancellationToken);
+            await UpdateUser(user, cancellationToken);
             Logger.LogInformation("Update refresh token successfully.");
 
         }
 
 
-
         public async Task<ErrorOr<Success>> UpdateUserProfile(UpdateUserRequest updateUser, CancellationToken cancellationToken)
         {
+
             Logger.LogInformation("Update user profile for user {Email} {UserId}", CurrentUser.Email, LoggedInUserId);
             var user = await ReadRepository.FindAsync(user => user.Id == LoggedInUserId, cancellationToken);
-            user.Username = updateUser.UserName;
+            if (user == null)
+            {
+                Logger.LogError(UserError.UserNotFound.Description);
+                return UserError.UserNotFound;
+            }
+            user.Username = updateUser.Username;
             user.Email = updateUser.Email;
             await UpdateUser(user, cancellationToken);
             Logger.LogInformation("Update user profile successfully.");
             return Result.Success;
+
+
+
         }
 
         private async Task UpdateUser(User user, CancellationToken cancellationToken)
         {
             WriteRepository.Update(user);
             await WriteRepository.SaveChangesAsync(cancellationToken);
+            Logger.LogInformation("Update user successfully.");
+
         }
         public async Task<ErrorOr<Success>> VerifyEmailAsync(VerifyEmailRequest verifyEmail, CancellationToken cancellationToken)
         {
@@ -138,19 +130,28 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             return Result.Success;
         }
 
-        private string GenerateVerificationCode()
-        {
-            return new Random().Next(100000, 999999).ToString(); // Generates a 6-digit code
-        }
+
 
         public async Task<ErrorOr<UserResponse>> GetUserAsync(CancellationToken cancellationToken)
         {
             Logger.LogInformation($"Retrieve user {CurrentUser.Email}");
-            var resp = await ReadRepository.GetByIdAsync(LoggedInUserId, cancellationToken);
-            return Mapper.Map<UserResponse>(resp);
+            try
+            {
+                var result = await ReadRepository.FindAsyncInclude(cancellationToken,
+                                                   user => user.Id == LoggedInUserId,
+                                                   user => user.Role);
+                var resp = Mapper.Map<UserResponse>(result);
+                Logger.LogInformation("Return User {User} successfully.", resp);
+                return resp;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogInformation(UserError.UserNotFound.Description);
+                return UserError.UserNotFound;
+            }
+
         }
 
-        // Change Password
         public async Task<ErrorOr<Success>> ChangePasswordAsync(ChangePasswordRequest changePassword, CancellationToken cancellationToken)
         {
             Logger.LogInformation($"Change password for user {CurrentUser.Email}");
@@ -160,9 +161,8 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
                 Logger.LogInformation(UserError.UserNotFound.Description);
                 return UserError.UserNotFound;
             }
-
             // Verify current password
-            if (BCrypt.Net.BCrypt.Verify(changePassword.CurrentPassword, user.PasswordHash))
+            if (!BCrypt.Net.BCrypt.Verify(changePassword.CurrentPassword, user.PasswordHash))
             {
                 Logger.LogInformation(UserError.PasswordNotMatch.Description);
                 return UserError.PasswordNotMatch;
@@ -181,9 +181,85 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
 
             Logger.LogInformation("Update user profile for user {Email} {UserId}", CurrentUser.Email, LoggedInUserId);
             var user = await ReadRepository.FindAsync(user => user.Id == LoggedInUserId, cancellationToken);
+            if (user == null)
+            {
+                Logger.LogInformation(UserError.UserNotFound.Description);
+                return UserError.UserNotFound;
+            }
             user.RefreshToken = string.Empty;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(-1);
             await UpdateUser(user, cancellationToken);
+
+            return Result.Success;
+        }
+
+        public async Task<ErrorOr<Success>> ForgotPasswordByEmail(string email, CancellationToken cancellationToken)
+        {
+            Logger.LogInformation("Forgot password for user {Email}", email);
+            var user = await ReadRepository.FindAsync(user => user.Email == email, cancellationToken);
+            if (user == null)
+            {
+                Logger.LogInformation(UserError.UserNotFound.Description);
+                return UserError.UserNotFound;
+            }
+            var verificationCode = GenerateVerificationCode();
+            user.IsEmailVerified = false;
+            user.EmailVerificationCode = verificationCode;
+            user.EmailVerificationCodeExpiration = DateTime.UtcNow.AddHours(1);
+            await UpdateUser(user, cancellationToken);
+            await SendVerificationEmail(email, verificationCode, cancellationToken);
+            Logger.LogInformation("Forgot password successfully.");
+            return Result.Success;
+        }
+
+        private string GenerateVerificationCode()
+        {
+            return new Random().Next(100000, 999999).ToString(); // Generates a 6-digit code
+        }
+        private async Task SendVerificationEmail(string toEmail, string verificationCode, CancellationToken cancellationToken)
+        {
+            Logger.LogInformation("Send verification code {VerificationCode} to user {Email} ", verificationCode, toEmail);
+            var subject = "Your Verification Code";
+            var body = $@"
+                        <html>
+                            <body>
+                                <p>Hello,</p>
+                                <p>Your verification code is: <strong>{verificationCode}</strong></p>
+                                <p>Please use this code to complete your process.</p>
+                            </body>
+                        </html>";
+
+            Logger.LogInformation($"Send email to user {toEmail} with subject {subject} and body {body}");
+            //await _emailService.SendEmailAsync(new EmailModel(toEmail, subject, body), cancellationToken);
+            var conflictEvent = new SendVerificationEmailEvent(new EmailModel(toEmail, subject, body));
+            await Mediator.Publish(conflictEvent);
+        }
+
+        public async Task<ErrorOr<Success>> ConfirmPassword(ConfirmPasswordRequest confirmPassword, CancellationToken cancellationToken)
+        {
+            Logger.LogInformation("Forgot password for user {Email}", confirmPassword.Email);
+            var user = await ReadRepository.FindAsync(user => user.Email == confirmPassword.Email, cancellationToken);
+            if (user == null)
+            {
+                Logger.LogInformation(UserError.UserNotFound.Description);
+                return UserError.UserNotFound;
+            }
+            // Check if the code is correct and not verifyEmail
+            if (user.EmailVerificationCode != confirmPassword.VerificationCode || user.EmailVerificationCodeExpiration < DateTime.UtcNow)
+            {
+                Logger.LogError(UserError.InvalidOrExpiredVerificationCode.Description, confirmPassword.VerificationCode, user.EmailVerificationCodeExpiration);
+                return UserError.InvalidOrExpiredVerificationCode;
+            }
+
+            // Mark the email as verified
+            user.IsEmailVerified = true;
+            user.EmailVerificationCode = null; // Remove the code once verified
+            user.EmailVerificationCodeExpiration = null;
+            // Hash and update the new password
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(confirmPassword.NewPassword);
+            await UpdateUser(user, cancellationToken);
+            Logger.LogInformation("Verify password:  for user {Email} Success", confirmPassword.Email);
+            Logger.LogInformation("Confirm password successfully.");
             return Result.Success;
         }
     }

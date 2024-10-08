@@ -17,7 +17,7 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
     {
         private readonly ITokenGenerator _tokenGenerator;
         private readonly AppOptions _appOptions;
-       
+
         public AuthService(ITokenGenerator tokenGenerator, IOptions<AppOptions> appOptions, IHttpContextAccessor httpContextAccessor)
             : base(httpContextAccessor)
         {
@@ -30,7 +30,7 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
         {
             Logger.LogInformation("The user {Email} try to login", loginRequest.Email);
             // Step 1: Get the user and handle errors if the user is not found
-            var userResult = await GetUserAsync(loginRequest.Email,cancellationToken);
+            var userResult = await GetUserAsync(loginRequest.Email, cancellationToken);
             if (userResult.IsError)
             {
                 Logger.LogError(AuthError.InvalidCredentials.Description);
@@ -46,7 +46,8 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
                 .Validate(user => !IsLockedOut(user), () => HandleAccountLockout(user))
                 .Validate(user => ValidatePassword(loginRequest.Password, user.PasswordHash), () => HandleFailedLoginAttemptAsync(user, cancellationToken))
                 .Map(user => HandleSuccessfulLoginAsync(user, cancellationToken));
-          
+            if (map.IsError)
+                return map.Errors;
             return map.Value;
 
         }
@@ -129,7 +130,7 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
             user.FailedLoginAttempts = 0;
             user.LockoutEnd = null;
             user.RefreshToken = tokenResult.Value.RefreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await UpdateUser(user, cancellationToken);
 
             var loginResponse = Mapper.Map<LoginResponse>(user);

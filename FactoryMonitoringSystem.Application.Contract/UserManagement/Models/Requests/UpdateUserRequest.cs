@@ -2,6 +2,6 @@
 
 namespace FactoryMonitoringSystem.Application.Contracts.UserManagement.Models.Requests
 {
-    public record UpdateUserRequest(string UserName,string Email);
+    public record UpdateUserRequest(string Username,string Email);
    
 }
