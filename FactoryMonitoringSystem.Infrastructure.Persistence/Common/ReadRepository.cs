@@ -32,6 +32,18 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 
             return await _dbSet.ToListAsync(cancellationToken);
 
+        }    
+        public async Task<IEnumerable<T>> GetAllIncludeAsync(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes)
+        {
+
+            IQueryable<T> query = _dbSet;
+
+            // Apply each include expression
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return await query.ToListAsync(cancellationToken);
 
         }
 
@@ -63,7 +75,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             return await _dbSet.Where(predicate).FirstAsync(cancellationToken);
         }
 
-        public async Task<T> FindAsyncInclude(CancellationToken cancellationToken, Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        public async Task<T> FindIncludeAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _dbSet;
 

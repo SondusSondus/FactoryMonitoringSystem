@@ -1,21 +1,14 @@
 ﻿using ErrorOr;
 using FactoryMonitoringSystem.Application.Contracts.Factories.Services;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace FactoryMonitoringSystem.Application.Factories.Commands.CreateFactory
 {
-    public class CreateFactoryCommandHandler : IRequestHandler<CreateFactoryCommand, ErrorOr<Guid>>
+    internal class CreateFactoryCommandHandler(IFactoryService factoryService) : IRequestHandler<CreateFactoryCommand, ErrorOr<Success>>
     {
-        private readonly IFactoryService _factoryService;
+        private readonly IFactoryService _factoryService= factoryService;
+        public async Task<ErrorOr<Success>> Handle(CreateFactoryCommand request, CancellationToken cancellationToken)
+        => await _factoryService.CreateFactoryAsync(request.FactoryRequet, cancellationToken);
 
-        public CreateFactoryCommandHandler(IFactoryService factoryService) =>
-            _factoryService = factoryService;
-
-
-        public async Task<ErrorOr<Guid>> Handle(CreateFactoryCommand request, CancellationToken cancellationToken)
-        {
-            return await _factoryService.CreateFactoryAsync(request.FactoryRequet,cancellationToken);
-        }
     }
 }

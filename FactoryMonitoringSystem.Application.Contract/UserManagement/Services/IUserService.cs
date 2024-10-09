@@ -16,7 +16,10 @@ namespace FactoryMonitoringSystem.Application.Contracts.UserManagement.Services
         Task<ErrorOr<Success>> UpdateRefreshTokenToInValid(CancellationToken cancellationToken);
         Task<ErrorOr<Success>> ForgotPasswordByEmail(string email, CancellationToken cancellationToken);
         Task<ErrorOr<Success>> ConfirmPassword(ConfirmPasswordRequest confirmPassword, CancellationToken cancellationToken);
-
+        Task<ErrorOr<List<UserResponse>>> GetUsers(CancellationToken cancellationToken);
+        Task<ErrorOr<UserResponse>> GetUserById(Guid Id, CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> UnlockedUser(Guid Id, CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> ResetPasswordUser(Guid Id, CancellationToken cancellationToken);
 
     }
 }

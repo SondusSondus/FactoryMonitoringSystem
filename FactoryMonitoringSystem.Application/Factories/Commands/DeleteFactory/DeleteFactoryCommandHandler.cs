@@ -1,17 +1,13 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ErrorOr;
+using FactoryMonitoringSystem.Application.Contracts.Factories.Services;
+using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Factories.Commands.DeleteFactory
 {
-    public class DeleteFactoryCommandHandler : IRequestHandler<DeleteFactoryCommand, bool>
+    internal class DeleteFactoryCommandHandler(IFactoryService factoryService) : IRequestHandler<DeleteFactoryCommand, ErrorOr<Success>>
     {
-        public Task<bool> Handle(DeleteFactoryCommand request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly IFactoryService _factoryService = factoryService;
+        async Task<ErrorOr<Success>> IRequestHandler<DeleteFactoryCommand, ErrorOr<Success>>.Handle(DeleteFactoryCommand request, CancellationToken cancellationToken)
+          => await _factoryService.DeleteFactoryAsync(request.factoryId, cancellationToken);
     }
 }

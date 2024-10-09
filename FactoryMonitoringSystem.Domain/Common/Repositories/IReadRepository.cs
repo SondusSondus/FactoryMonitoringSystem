@@ -7,8 +7,9 @@ namespace FactoryMonitoringSystem.Domain.Common.Repositories
     {
         Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<T>> GetAllIncludeAsync(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includes);
         Task<T> FindAsync(Expression<Func<T, bool>> predicate,CancellationToken cancellationToken);
-        Task<T> FindAsyncInclude(CancellationToken cancellationToken,Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
+        Task<T> FindIncludeAsync(CancellationToken cancellationToken,Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
         Task<IEnumerable<T>> FindAsync(BaseSpecification<T> specification, CancellationToken cancellationToken);
         Task<bool> AnyAsync(BaseSpecification<T> specificatio, CancellationToken cancellationTokenn);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken);

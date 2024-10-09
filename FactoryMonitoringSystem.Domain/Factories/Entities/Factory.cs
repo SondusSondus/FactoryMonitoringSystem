@@ -49,14 +49,6 @@ namespace FactoryMonitoringSystem.Domain.Factories.Entities
         //    if (machine == null) throw new ArgumentNullException(nameof(machine));
         //    Machines.Add(machine);
         //}
-        public void UpdateName(string name)
-        {
-            Name = name;
-        }
-
-        public void UpdateLocation(string location)
-        {
-            Location = location;
-        }
+       
     }
 }

@@ -5,5 +5,5 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Factories.Commands.CreateFactory
 {
-    public record CreateFactoryCommand(FactoryRequet FactoryRequet) : IRequest<ErrorOr<Guid>>;
+    public record CreateFactoryCommand(FactoryRequet FactoryRequet) : IRequest<ErrorOr<Success>>;
 }

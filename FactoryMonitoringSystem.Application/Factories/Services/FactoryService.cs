@@ -3,7 +3,6 @@ using ErrorOr;
 using FactoryMonitoringSystem.Application.Contracts.Factories.Models.Requests;
 using FactoryMonitoringSystem.Application.Contracts.Factories.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.Factories.Services;
-using FactoryMonitoringSystem.Domain.Common.Repositories;
 using FactoryMonitoringSystem.Domain.Factories.Entities;
 using FactoryMonitoringSystem.Domain.Factories.Services;
 using FactoryMonitoringSystem.Domain.Factories.Specifications;
@@ -27,9 +26,9 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
             _factoryReportService = factoryReportService;
         }
 
-        public async Task<ErrorOr<Guid>> CreateFactoryAsync(FactoryRequet factory, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Success>> CreateFactoryAsync(FactoryRequet factory, CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Creating factory with {@Factory}", new { factory.Name, factory.Location });
+            Logger.LogInformation("Creating factory");
 
             try
             {
@@ -39,7 +38,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
 
                 Logger.LogInformation("Factory created successfully: {@Factory}", new { factory.Name, factory.Location });
 
-                return result.Id;
+                return Result.Success;
             }
             catch (Exception ex)
             {
@@ -50,60 +49,68 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
 
         }
 
-        public async Task<bool> UpdateFactoryAsync(Guid factoryId, string name, string location, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Success>> UpdateFactoryAsync(FactoryRequet factoryRequet, CancellationToken cancellationToken)
         {
-            var factory = await ReadRepository.GetByIdAsync(factoryId,cancellationToken);
-            if (factory == null) return false;
 
-            factory.UpdateName(name);
-            factory.UpdateLocation(location);
+            var factory = await ReadRepository.GetByIdAsync(factoryRequet.Id, cancellationToken);
+            if (factory == null)
+            {
+                Logger.LogError(FactoryError.NotFound.Description);
+                return FactoryError.NotFound;
+            }
+            Logger.LogInformation("Update factory {Factory} ", factory.Name);
+            factory = Mapper.Map<Factory>(factoryRequet);
             WriteRepository.Update(factory);
             await WriteRepository.SaveChangesAsync(cancellationToken);
-            return true;
+            Logger.LogInformation("Factory updated successfully");
+            return Result.Success;
         }
 
-        public async Task<bool> DeleteFactoryAsync(Guid factoryId, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Success>> DeleteFactoryAsync(Guid factoryId, CancellationToken cancellationToken)
         {
-            var factory = await ReadRepository.GetByIdAsync(factoryId,cancellationToken);
-            if (factory == null) return false;
 
+            var factory = await ReadRepository.GetByIdAsync(factoryId, cancellationToken);
+            if (factory == null)
+            {
+                Logger.LogError(FactoryError.NotFound.Description);
+                return FactoryError.NotFound;
+            }
+            Logger.LogInformation("Delete factory {Factory} ", factory.Name);
             WriteRepository.Delete(factory);
             await WriteRepository.SaveChangesAsync(cancellationToken);
-            return true;
+            Logger.LogInformation("Factory deleted successfully");
+            return Result.Success;
         }
 
         public async Task<ErrorOr<FactoryResponse>> GetFactoryByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Fetch factory with  ID {FactoryiD}", id);
 
-            try
+            var factory = await ReadRepository.GetByIdAsync(id, cancellationToken);
+            if (factory == null)
             {
-                var factory = await ReadRepository.GetByIdAsync(id, cancellationToken);
-                if (factory == null)
-                {
-                    Logger.LogError("factory with  ID {FactoryiD} is not found ", id);
+                Logger.LogError(FactoryError.NotFound.Description);
 
-                    return FactoryError.NotFound; // Return error if factory is not found
-                }
-                return Mapper.Map<FactoryResponse>(factory); // Success: return the factor}
-
+                return FactoryError.NotFound; // Return error if factory is not found
             }
-            catch (Exception EX)
-            {
-                Logger.LogError("Exception when fetch factory with  ID {FactoryiD} with exception message {Message}", id, EX.Message);
+            Logger.LogInformation("Fetch factory {FactoryiD}", factory.Name);
+            Logger.LogInformation("Fetch factory successfully");
+            return Mapper.Map<FactoryResponse>(factory); // Success: return the factor
 
-                return General.Unexpected; // Return a general error in case of failure
-
-            }
         }
-        public async Task<List<FactoryResponse>> GetAllFactoriesAsync(CancellationToken cancellationToken)
+        public async Task<ErrorOr<List<FactoryResponse>>> GetAllFactoriesAsync(CancellationToken cancellationToken)
         {
-            var factories = await ReadRepository.GetAllAsync(cancellationToken);
 
+            Logger.LogInformation("Retrieve Factories");
+            var factories = await ReadRepository.GetAllAsync(cancellationToken);
+            if (!factories.Any())
+            {
+                Logger.LogInformation(FactoryError.NotFound.Description);
+                return FactoryError.NotFound;
+            }
+            Logger.LogInformation("Retrieve Factories successfully");
             return Mapper.Map<List<FactoryResponse>>(factories);
 
         }
-
 
 
         public async Task<List<FactoryResponse>> GetFactoriesByLocationAsync(string location, CancellationToken cancellationToken)

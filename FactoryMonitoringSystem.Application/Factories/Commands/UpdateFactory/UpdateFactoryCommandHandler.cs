@@ -1,20 +1,16 @@
 ﻿using ErrorOr;
 using FactoryMonitoringSystem.Application.Contracts.Factories.Models.Responses;
+using FactoryMonitoringSystem.Application.Contracts.Factories.Services;
 using FactoryMonitoringSystem.Application.Factories.Commands.UpdateFactor;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FactoryMonitoringSystem.Application.Factories.Commands.UpdateFactory
 {
-    public class UpdateFactoryCommandHandler : IRequestHandler<UpdateFactoryCommand, ErrorOr<FactoryResponse>>
+    internal class UpdateFactoryCommandHandler(IFactoryService factoryService) : IRequestHandler<UpdateFactoryCommand, ErrorOr<Success>>
     {
-        public Task<ErrorOr<FactoryResponse>> Handle(UpdateFactoryCommand request, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly IFactoryService _factoryService = factoryService;
+        public async Task<ErrorOr<Success>> Handle(UpdateFactoryCommand request, CancellationToken cancellationToken)
+            => await _factoryService.UpdateFactoryAsync(request.FactoryRequet,cancellationToken);
+      
     }
 }

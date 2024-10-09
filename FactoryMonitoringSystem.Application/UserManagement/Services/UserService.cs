@@ -139,7 +139,7 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             Logger.LogInformation($"Retrieve user {CurrentUser.Email}");
             try
             {
-                var result = await ReadRepository.FindAsyncInclude(cancellationToken,
+                var result = await ReadRepository.FindIncludeAsync(cancellationToken,
                                                    user => user.Id == LoggedInUserId,
                                                    user => user.Role);
                 var resp = Mapper.Map<UserResponse>(result);
@@ -239,7 +239,7 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
 
         public async Task<ErrorOr<Success>> ConfirmPassword(ConfirmPasswordRequest confirmPassword, CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Forgot password for user {Email}", confirmPassword.Email);
+            Logger.LogInformation("Confirm password for user {Email}", confirmPassword.Email);
             var user = await ReadRepository.FindAsync(user => user.Email == confirmPassword.Email, cancellationToken);
             if (user == null)
             {
@@ -265,6 +265,68 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             return Result.Success;
         }
 
-      
+        public async Task<ErrorOr<List<UserResponse>>> GetUsers(CancellationToken cancellationToken)
+        {
+            Logger.LogInformation("Retrieve All Users");
+            var users = await ReadRepository.GetAllIncludeAsync(cancellationToken,user=>user.Role);
+            if (!users.Any())
+            {
+                Logger.LogInformation(UserError.UserNotFound.Description);
+                return UserError.UserNotFound;
+            }
+            Logger.LogInformation("Retrieve Users successfully.");
+            return Mapper.Map<List<UserResponse>>(users);
+        }
+
+        public async Task<ErrorOr<UserResponse>> GetUserById(Guid Id, CancellationToken cancellationToken)
+        {
+            var user = await ReadRepository.FindIncludeAsync(cancellationToken, user => user.Id == Id, user => user.Role);
+            Logger.LogInformation("Retrieve user  {email}", user.Email);
+
+            if (user is null)
+            {
+                Logger.LogInformation(UserError.UserNotFound.Description);
+                return UserError.UserNotFound;
+            }
+            Logger.LogInformation("Retrieve  User successfully");
+            return Mapper.Map<UserResponse>(user);
+        }
+
+        public async Task<ErrorOr<Success>> UnlockedUser(Guid Id, CancellationToken cancellationToken)
+        {
+            var user = await ReadRepository.GetByIdAsync(Id,cancellationToken);
+            Logger.LogInformation("Unlocked user {email}", user.Email);
+
+            if (user is null)
+            {
+                Logger.LogInformation(UserError.UserNotFound.Description);
+                return UserError.UserNotFound;
+            }
+            user.LockoutEnd =null;
+            user.FailedLoginAttempts = 0;
+            await UpdateUser(user,cancellationToken);
+            Logger.LogInformation("Unlocke user successfully");
+            return Result.Success;
+        }
+
+        public async Task<ErrorOr<Success>> ResetPasswordUser(Guid Id, CancellationToken cancellationToken)
+        {
+            var user = await ReadRepository.GetByIdAsync(Id, cancellationToken);
+            Logger.LogInformation("Reset password user {email}", user.Email);
+
+            if (user is null)
+            {
+                Logger.LogInformation(UserError.UserNotFound.Description);
+                return UserError.UserNotFound;
+            }
+            var verificationCode = GenerateVerificationCode();
+            user.IsEmailVerified = false;
+            user.EmailVerificationCode = verificationCode;
+            user.EmailVerificationCodeExpiration = DateTime.UtcNow.AddHours(1);
+            await UpdateUser(user, cancellationToken);
+            await SendVerificationEmail(user.Email, verificationCode, cancellationToken);
+            Logger.LogInformation("Reset password user successfully");
+            return Result.Success;
+        }
     }
 }

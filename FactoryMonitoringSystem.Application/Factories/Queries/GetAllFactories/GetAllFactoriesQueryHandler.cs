@@ -1,18 +1,15 @@
-﻿using FactoryMonitoringSystem.Application.Contracts.Factories.Models.Responses;
+﻿using ErrorOr;
+using FactoryMonitoringSystem.Application.Contracts.Factories.Models.Responses;
+using FactoryMonitoringSystem.Application.Contracts.Factories.Services;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FactoryMonitoringSystem.Application.Factories.Queries.GetAllFactories
 {
-    public class GetAllFactoriesQueryHandler : IRequestHandler<GetAllFactoriesQuery, List<FactoryResponse>>
+    public class GetAllFactoriesQueryHandler(IFactoryService factoryService) : IRequestHandler<GetAllFactoriesQuery, ErrorOr<List<FactoryResponse>>>
     {
-        public Task<List<FactoryResponse>> Handle(GetAllFactoriesQuery request, CancellationToken cancellationToken)
-        {   
-            throw new NotImplementedException();
-        }
+        private readonly IFactoryService _factoryService = factoryService;
+
+        public async Task<ErrorOr<List<FactoryResponse>>> Handle(GetAllFactoriesQuery request, CancellationToken cancellationToken)
+                => await _factoryService.GetAllFactoriesAsync(cancellationToken);
     }
 }
