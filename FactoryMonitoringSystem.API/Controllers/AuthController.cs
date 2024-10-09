@@ -1,5 +1,4 @@
-﻿
-using ErrorOr;
+﻿using ErrorOr;
 using FactoryMonitoringSystem.Application.Auth.Commands.GenerateToken;
 using FactoryMonitoringSystem.Application.Auth.Commands.InvalidateRefreshToken;
 using FactoryMonitoringSystem.Application.Auth.Commands.Login;
@@ -34,7 +33,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
             if (!authResult.IsError)
             {
                 SetTokenCookie("AccessToken", authResult.Value.AuthenticationResult.AccessToken, _jwtSettings.AccessTokenExpirationMinutes);
-                SetTokenCookie("RefreshToken", authResult.Value.AuthenticationResult.AccessToken, _jwtSettings.RefreshTokenExpirationDays);
+                SetTokenCookie("RefreshToken", authResult.Value.AuthenticationResult.AccessToken, _jwtSettings.RefreshTokenExpirationDays * 24 * 60);
 
             }
 
@@ -66,7 +65,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
         }
 
         [HttpPost("RefreshToken")]
-        [AllowAnonymous]
+        [Authorize(policy: Policy.User)]
         public async Task<IActionResult> RefreshToken(CancellationToken cancellationToken)
         {
             var refreshToken = Request.Cookies["RefreshToken"];
@@ -89,7 +88,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
             {
                 // Set new tokens in cookies
                 SetTokenCookie("AccessToken", newAccessToken, _jwtSettings.AccessTokenExpirationMinutes);
-                SetTokenCookie("RefreshToken", newRefreshToken, _jwtSettings.RefreshTokenExpirationDays);
+                SetTokenCookie("RefreshToken", newRefreshToken,  _jwtSettings.RefreshTokenExpirationDays * 24 * 60);
             }
 
             return token.Match(

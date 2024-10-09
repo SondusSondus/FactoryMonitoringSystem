@@ -46,7 +46,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.TokenValidation
                     if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                     {
                         // Add a custom header to indicate the token has expired
-                        context.Response.Headers.Add("Token-Expired", "true");
+                        context.Response.Headers["Token-Expired"] = "true";
                         context.Response.StatusCode = 401;  // Unauthorized
                     }
                     return Task.CompletedTask;

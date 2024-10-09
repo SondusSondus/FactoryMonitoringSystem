@@ -9,6 +9,7 @@ namespace FactoryMonitoringSystem.Shared.Utilities.GeneralModels
 
         public string ReadDatabaseConnectionString { get; set; }
         public int LockoutDurationMinutes { get; set; }
+        public int RefreshTokenExpirationDays { get; set; }
         public int MaxFailedAttempts { get; set; }
 
     }

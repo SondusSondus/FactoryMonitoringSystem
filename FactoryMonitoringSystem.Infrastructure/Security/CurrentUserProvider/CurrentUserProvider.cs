@@ -9,11 +9,10 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.CurrentUserProvider
         public CurrentUser GetCurrentUser()
         {
 
-            // _httpContextAccessor.HttpContext.ThrowIfNull();
             if(_httpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated == true)
             {
                 var id = Guid.Parse(GetSingleClaimValue("id"));
-                var expiryTime = DateTime.Parse(GetSingleClaimValue("expiryTime"));
+                var expiryTime = DateTime.Parse(GetSingleClaimValue("expiryRefreshTokenTime"));
                 var role = GetClaimValues(ClaimTypes.Role).First();
                 var userName = GetSingleClaimValue(ClaimTypes.Name);
                 var email = GetSingleClaimValue(ClaimTypes.Email);

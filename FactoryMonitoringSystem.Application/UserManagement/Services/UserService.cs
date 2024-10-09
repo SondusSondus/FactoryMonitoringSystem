@@ -9,14 +9,16 @@ using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using static FactoryMonitoringSystem.Shared.Utilities.Constant.Errors;
 namespace FactoryMonitoringSystem.Application.UserManagement.Services
 {
     public class UserService : ApplicationService<UserService, User>, IUserService, IScopedDependency
     {
-
-        public UserService(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        private readonly AppOptions _appOptions;
+        public UserService(IHttpContextAccessor httpContextAccessor, IOptions<AppOptions> options) : base(httpContextAccessor)
         {
+            _appOptions = options.Value;
         }
 
         public async Task<ErrorOr<Success>> RegisterUserAsync(SingUpRequest singUpRequest, CancellationToken cancellationToken)
@@ -67,7 +69,7 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             Logger.LogInformation($"Updated refresh token: {refreshToken} for user {CurrentUser.Email}");
             var user = await ReadRepository.FindAsync(user => user.Id == LoggedInUserId, cancellationToken);
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_appOptions.RefreshTokenExpirationDays);
             await UpdateUser(user, cancellationToken);
             Logger.LogInformation("Update refresh token successfully.");
 
@@ -262,5 +264,7 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             Logger.LogInformation("Confirm password successfully.");
             return Result.Success;
         }
+
+      
     }
 }

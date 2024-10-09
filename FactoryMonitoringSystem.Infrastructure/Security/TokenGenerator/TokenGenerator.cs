@@ -39,7 +39,8 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.TokenGenerator
                 new(ClaimTypes.Name, userName),
                 new(ClaimTypes.Email, email ),
                 new("id",  id),
-                new("expiryTime", DateTime.UtcNow.ToString()),
+                new("expiryTime", DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes).ToString()),
+                new("expiryRefreshTokenTime", DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays).ToString()),
                 new(ClaimTypes.Role, role)
             };
 

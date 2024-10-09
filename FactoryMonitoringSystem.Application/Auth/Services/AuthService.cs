@@ -130,7 +130,7 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
             user.FailedLoginAttempts = 0;
             user.LockoutEnd = null;
             user.RefreshToken = tokenResult.Value.RefreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_appOptions.RefreshTokenExpirationDays);
             await UpdateUser(user, cancellationToken);
 
             var loginResponse = Mapper.Map<LoginResponse>(user);
