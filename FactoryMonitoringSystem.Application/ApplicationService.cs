@@ -1,6 +1,5 @@
 ﻿using FactoryMonitoringSystem.Domain.Common.Repositories;
 using FactoryMonitoringSystem.Shared;
-using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +24,6 @@ namespace FactoryMonitoringSystem.Application
         }
 
         protected IMediator Mediator => GetService<IMediator>();
-        protected IMapper Mapper => GetService<IMapper>();
         protected ILogger<T> Logger => GetService<ILogger<T>>();
         protected IWriteRepository<TEntity> WriteRepository => GetService<IWriteRepository<TEntity>>();
         protected IReadRepository<TEntity> ReadRepository => GetService<IReadRepository<TEntity>>();

@@ -65,16 +65,18 @@ namespace FactoryMonitoringSystem.Api.Controllers
         }
 
         [HttpPost("RefreshToken")]
-        [Authorize(policy: Policy.User)]
+        [AllowAnonymous]
+
         public async Task<IActionResult> RefreshToken(CancellationToken cancellationToken)
         {
             var refreshToken = Request.Cookies["RefreshToken"];
+            var refreshTokenExpiryTime = Request.Cookies["RefreshTokenExpiryTime"];
 
             if (string.IsNullOrEmpty(refreshToken))
             {
                 return Problem(new List<Error> { Error.Unauthorized("Refresh token not found.") });
             }
-            if (CurrentUser == null || CurrentUser.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            if (CurrentUser == null || string.IsNullOrWhiteSpace(refreshTokenExpiryTime ) || DateTime.Parse(refreshTokenExpiryTime) <= DateTime.UtcNow)
             {
                 return Problem(new List<Error> { Error.Unauthorized("Invalid or expired refresh token.") });
             }

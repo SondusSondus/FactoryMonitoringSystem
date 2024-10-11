@@ -5,6 +5,6 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Factories.Commands.UpdateFactor
 {
-    public record UpdateFactoryCommand(FactoryRequet FactoryRequet) : IRequest<ErrorOr<Success>>;
+    public record UpdateFactoryCommand(UpdateFactoryRequest FactoryRequet) : IRequest<ErrorOr<Success>>;
 
 }

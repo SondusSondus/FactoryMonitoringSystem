@@ -1,5 +1,4 @@
-﻿using FactoryMonitoringSystem.Application.Common.EventHandler;
-using FactoryMonitoringSystem.Shared.Behaviors;
+﻿using FactoryMonitoringSystem.Shared.Behaviors;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +18,7 @@ namespace FactoryMonitoringSystem.Application
                 options.AddOpenBehavior(typeof(ValidationBehavior<,>));
 
 
-            }); 
+            });
 
             return services;
         }

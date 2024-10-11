@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FactoriesMonitoringSystem.API.Controllers
 {
-    [Authorize(Roles = Roles.Admin)]
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = Roles.Admin)]
     public class FactoryController : ApiController
     {
         [HttpPost]
@@ -65,13 +65,13 @@ namespace FactoriesMonitoringSystem.API.Controllers
             Problem); // Error handling
         }
 
-        [HttpGet("machine-count")]
-        public async Task<ActionResult<List<FactoryWithMachineCountResponse>>> GetFactoriesWithMachineCount()
-        {
-            var query = new GetFactoriesWithMachineCountQuery();
-            var result = await Mediator.Send(query);
-            return Ok(result);
-        }
+        //[HttpGet("machine-count")]
+        //public async Task<ActionResult<List<FactoryWithMachineCountResponse>>> GetFactoriesWithMachineCount()
+        //{
+        //    var query = new GetFactoriesWithMachineCountQuery();
+        //    var result = await Mediator.Send(query);
+        //    return Ok(result);
+        //}
     }
 }
 

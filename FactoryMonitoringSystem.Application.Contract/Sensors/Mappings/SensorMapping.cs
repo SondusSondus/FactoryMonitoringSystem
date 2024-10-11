@@ -3,11 +3,6 @@ using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Request;
 using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Responses;
 using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FactoryMonitoringSystem.Application.Contracts.Sensors.Mappings
 {
@@ -17,6 +12,7 @@ namespace FactoryMonitoringSystem.Application.Contracts.Sensors.Mappings
         {
             config.NewConfig<Sensor, SensorResponse>();
             config.NewConfig<SensorRequest, Sensor>();
+            config.NewConfig<UpdateSensorRequest, Sensor>();
         }
     }
 }

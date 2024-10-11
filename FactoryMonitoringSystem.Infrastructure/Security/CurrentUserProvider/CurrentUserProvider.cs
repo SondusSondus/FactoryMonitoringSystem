@@ -12,14 +12,13 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.CurrentUserProvider
             if(_httpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated == true)
             {
                 var id = Guid.Parse(GetSingleClaimValue("id"));
-                var expiryTime = DateTime.Parse(GetSingleClaimValue("expiryRefreshTokenTime"));
                 var role = GetClaimValues(ClaimTypes.Role).First();
                 var userName = GetSingleClaimValue(ClaimTypes.Name);
                 var email = GetSingleClaimValue(ClaimTypes.Email);
-                return new CurrentUser(id, userName, email, string.Empty, expiryTime, role);
+                return new CurrentUser(id, userName, email, role);
               
             }
-            return new CurrentUser(new Guid("00000000-0000-0000-0000-000000000000"), "System", null, null, DateTime.MinValue, null);
+            return new CurrentUser(new Guid("299a20c5-9d80-4b39-9b6c-98cbcfffe9e1"), "Admain", string.Empty, string.Empty);
 
 
         }

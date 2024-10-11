@@ -1,4 +1,6 @@
 ﻿using FactoryMonitoringSystem.Domain.UsersManagement.Entities;
+using FactoryMonitoringSystem.Shared.Utilities.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -21,7 +23,17 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.UsersManagement.Con
                 .WithOne()
                 .HasForeignKey<User>(user=>user.RoleId)
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.HasData(
+                           new User
+                           {
+                               Id= Guid.NewGuid(),
+                               Username = "Admin",
+                               Email="s.ondus.samara94@gmail.com",
+                               RoleId= (int)RolesEnum.Admin,
+                               IsEmailVerified= true,
+                               PasswordHash= "$2a$11$7Phvr48TV1QchCJiuCjnmuDLqRVDQ6TmJmJaMmnexJfc/xIp6u.yO"
 
+                           });
 
 
         }

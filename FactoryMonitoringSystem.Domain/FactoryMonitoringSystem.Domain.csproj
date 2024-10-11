@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Common\ValueObjects\" />
-    <Folder Include="Factories\ValueObjects\" />
-    <Folder Include="Machines\ValueObjects\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Ardalis.Specification" Version="8.0.0" />
     <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />

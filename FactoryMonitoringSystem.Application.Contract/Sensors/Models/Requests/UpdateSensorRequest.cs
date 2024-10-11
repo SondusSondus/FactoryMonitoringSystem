@@ -2,9 +2,9 @@
 
 namespace FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Request
 {
-    public record UpdateSensorRequest
+    public record UpdateSensorRequest : SensorRequest
     {
-        public Guid SensorId { get; set; }
-        public double NewValue { get; set; }
+        public Guid Id { get; set; }
+   
     }
 }

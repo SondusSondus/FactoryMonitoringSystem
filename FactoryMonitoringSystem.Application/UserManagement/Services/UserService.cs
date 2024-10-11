@@ -7,6 +7,7 @@ using FactoryMonitoringSystem.Domain.UsersManagement.Entities;
 using FactoryMonitoringSystem.Shared;
 using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -142,9 +143,8 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
                 var result = await ReadRepository.FindIncludeAsync(cancellationToken,
                                                    user => user.Id == LoggedInUserId,
                                                    user => user.Role);
-                var resp = Mapper.Map<UserResponse>(result);
-                Logger.LogInformation("Return User {User} successfully.", resp);
-                return resp;
+                Logger.LogInformation("Return User User successfully.");
+                return result.Adapt<UserResponse>();
             }
             catch (Exception ex)
             {
@@ -275,21 +275,20 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
                 return UserError.UserNotFound;
             }
             Logger.LogInformation("Retrieve Users successfully.");
-            return Mapper.Map<List<UserResponse>>(users);
+            return users.Adapt<List<UserResponse>>();
         }
 
         public async Task<ErrorOr<UserResponse>> GetUserById(Guid Id, CancellationToken cancellationToken)
         {
             var user = await ReadRepository.FindIncludeAsync(cancellationToken, user => user.Id == Id, user => user.Role);
-            Logger.LogInformation("Retrieve user  {email}", user.Email);
-
             if (user is null)
             {
                 Logger.LogInformation(UserError.UserNotFound.Description);
                 return UserError.UserNotFound;
             }
+            Logger.LogInformation("Retrieve user  {email}", user.Email);
             Logger.LogInformation("Retrieve  User successfully");
-            return Mapper.Map<UserResponse>(user);
+            return user.Adapt<UserResponse>();
         }
 
         public async Task<ErrorOr<Success>> UnlockedUser(Guid Id, CancellationToken cancellationToken)
@@ -326,6 +325,22 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             await UpdateUser(user, cancellationToken);
             await SendVerificationEmail(user.Email, verificationCode, cancellationToken);
             Logger.LogInformation("Reset password user successfully");
+            return Result.Success;
+        }
+
+        public async Task<ErrorOr<Success>> DeleteUser(Guid Id, CancellationToken cancellationToken)
+        {
+            var user = await ReadRepository.GetByIdAsync(Id, cancellationToken);
+            Logger.LogInformation("Reset password user {email}", user.Email);
+
+            if (user is null)
+            {
+                Logger.LogInformation(UserError.UserNotFound.Description);
+                return UserError.UserNotFound;
+            }
+
+            WriteRepository.Delete(user);
+            await WriteRepository.SaveChangesAsync(cancellationToken);
             return Result.Success;
         }
     }

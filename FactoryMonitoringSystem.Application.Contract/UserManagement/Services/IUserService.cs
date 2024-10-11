@@ -20,6 +20,7 @@ namespace FactoryMonitoringSystem.Application.Contracts.UserManagement.Services
         Task<ErrorOr<UserResponse>> GetUserById(Guid Id, CancellationToken cancellationToken);
         Task<ErrorOr<Success>> UnlockedUser(Guid Id, CancellationToken cancellationToken);
         Task<ErrorOr<Success>> ResetPasswordUser(Guid Id, CancellationToken cancellationToken);
+        Task<ErrorOr<Success>> DeleteUser(Guid Id, CancellationToken cancellationToken);
 
     }
 }

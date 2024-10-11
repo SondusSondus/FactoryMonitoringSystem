@@ -5,6 +5,7 @@ using FactoryMonitoringSystem.Application.Contracts.Auth.Services;
 using FactoryMonitoringSystem.Domain.UsersManagement.Entities;
 using FactoryMonitoringSystem.Shared;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -133,7 +134,7 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_appOptions.RefreshTokenExpirationDays);
             await UpdateUser(user, cancellationToken);
 
-            var loginResponse = Mapper.Map<LoginResponse>(user);
+            var loginResponse = user.Adapt<LoginResponse>();
             return new LoginResult(loginResponse, new AuthenticationResult(tokenResult.Value.AccessToken, tokenResult.Value.RefreshToken));
         }
     }

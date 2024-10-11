@@ -13,8 +13,8 @@ namespace FactoryMonitoringSystem.Application.Contracts.Machines.Mappings
     {
         public void Register(TypeAdapterConfig config)
         {
-            config.NewConfig<MachineRequest, Machine > ()
-            .Map(dest => dest.Sensors, src => src.Sensors.Adapt<List<Sensor>>());
+            config.NewConfig<MachineRequest, Machine>();
+            config.NewConfig<UpdateMachineRequest, Machine>();
             config.NewConfig<Machine, MachineResponse>()
             .Map(dest => dest.Sensors, src => src.Sensors.Adapt<List<SensorResponse>>());
 

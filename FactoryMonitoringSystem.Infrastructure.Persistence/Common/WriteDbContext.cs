@@ -1,6 +1,5 @@
 ﻿using FactoryMonitoringSystem.Application.Common.Events;
 using FactoryMonitoringSystem.Domain.Common.Entities;
-using FactoryMonitoringSystem.Domain.UsersManagement.Entities;
 using FactoryMonitoringSystem.Shared;
 using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
@@ -20,12 +19,14 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
         {
             _mediator = mediator;
             _currentUser = currentUser;
-        }
-
-        // Constructor without dependencies for design-time tools
+        } 
+        
         public WriteDbContext(DbContextOptions<WriteDbContext> options) : base(options)
         {
+           
         }
+
+
         public override int SaveChanges()
         {
             TrackEntityChanges();
@@ -104,16 +105,13 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
                         break;
                     case EntityState.Modified:
                         entity.UpdatedDate = DateTime.UtcNow;
-                        entity.Status = entity.Status == RecordStatus.Deleted ? RecordStatus.Deleted : RecordStatus.Active;
+                        entity.Status = RecordStatus.Active;
                         entity.UpdatedBy = GetCurrentUser().Id;
                         break;
                     case EntityState.Deleted:
                         entity.DeletedDate = DateTime.UtcNow;
                         entity.Status = RecordStatus.Deleted;
                         entity.DeletedBy = GetCurrentUser().Id;
-
-                        // Convert the deletion to an update (soft delete)
-                        entry.State = EntityState.Modified;
                         break;
 
                 }

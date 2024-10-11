@@ -7,7 +7,5 @@ namespace FactoryMonitoringSystem.Shared
         Guid Id,
         string Username,
         string Email,
-        string RefreshToken,
-        DateTime RefreshTokenExpiryTime,
         string Role);
 }

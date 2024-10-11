@@ -8,7 +8,7 @@ using FactoryMonitoringSystem.Domain.Factories.Services;
 using FactoryMonitoringSystem.Domain.Factories.Specifications;
 using FactoryMonitoringSystem.Domain.Shared;
 using FactoryMonitoringSystem.Shared;
-using MapsterMapper;
+using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using static FactoryMonitoringSystem.Shared.Utilities.Constant.Errors;
@@ -26,7 +26,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
             _factoryReportService = factoryReportService;
         }
 
-        public async Task<ErrorOr<Success>> CreateFactoryAsync(FactoryRequet factory, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Success>> CreateFactoryAsync(FactoryRequest factory, CancellationToken cancellationToken)
         {
             Logger.LogInformation("Creating factory");
 
@@ -49,17 +49,18 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
 
         }
 
-        public async Task<ErrorOr<Success>> UpdateFactoryAsync(FactoryRequet factoryRequet, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Success>> UpdateFactoryAsync(UpdateFactoryRequest factoryRequest, CancellationToken cancellationToken)
         {
 
-            var factory = await ReadRepository.GetByIdAsync(factoryRequet.Id, cancellationToken);
+            var factory = await ReadRepository.GetByIdAsync(factoryRequest.Id, cancellationToken);
             if (factory == null)
             {
                 Logger.LogError(FactoryError.NotFound.Description);
                 return FactoryError.NotFound;
             }
             Logger.LogInformation("Update factory {Factory} ", factory.Name);
-            factory = Mapper.Map<Factory>(factoryRequet);
+            factory.Name = factoryRequest.Name;
+            factory.Location = factoryRequest.Location;
             WriteRepository.Update(factory);
             await WriteRepository.SaveChangesAsync(cancellationToken);
             Logger.LogInformation("Factory updated successfully");
@@ -94,7 +95,8 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
             }
             Logger.LogInformation("Fetch factory {FactoryiD}", factory.Name);
             Logger.LogInformation("Fetch factory successfully");
-            return Mapper.Map<FactoryResponse>(factory); // Success: return the factor
+            return factory.Adapt<FactoryResponse>();
+            //return Mapper.Map<FactoryResponse>(factory); // Success: return the factor
 
         }
         public async Task<ErrorOr<List<FactoryResponse>>> GetAllFactoriesAsync(CancellationToken cancellationToken)
@@ -108,7 +110,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
                 return FactoryError.NotFound;
             }
             Logger.LogInformation("Retrieve Factories successfully");
-            return Mapper.Map<List<FactoryResponse>>(factories);
+            return factories.Adapt<List<FactoryResponse>>();
 
         }
 
@@ -117,7 +119,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
         {
             var spec = new FactoryByLocationSpecification(location);
             var factories = await ReadRepository.FindAsync(spec, cancellationToken);
-            return Mapper.Map<List<FactoryResponse>>(factories);
+            return factories.Adapt<List<FactoryResponse>>();
 
         }
 
