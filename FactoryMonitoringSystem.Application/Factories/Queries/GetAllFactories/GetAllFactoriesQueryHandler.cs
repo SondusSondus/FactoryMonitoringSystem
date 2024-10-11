@@ -5,7 +5,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Factories.Queries.GetAllFactories
 {
-    public class GetAllFactoriesQueryHandler(IFactoryService factoryService) : IRequestHandler<GetAllFactoriesQuery, ErrorOr<List<FactoryResponse>>>
+    internal class GetAllFactoriesQueryHandler(IFactoryService factoryService) : IRequestHandler<GetAllFactoriesQuery, ErrorOr<List<FactoryResponse>>>
     {
         private readonly IFactoryService _factoryService = factoryService;
 

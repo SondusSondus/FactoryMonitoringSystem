@@ -1,4 +1,4 @@
-﻿using FactoryMonitoringSystem.Domain.Shared;
+﻿using FactoryMonitoringSystem.Domain.Shared.Factory.Models;
 using MediatR;
 
 

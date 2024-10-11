@@ -112,10 +112,9 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
+                    b.Property<int>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
@@ -151,6 +150,10 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("MachineId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .IsRequired()
@@ -160,10 +163,9 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
+                    b.Property<int>("Type")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<string>("Unit")
                         .IsRequired()
@@ -291,9 +293,9 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("299a20c5-9d80-4b39-9b6c-98cbcfffe9e1"),
+                            Id = new Guid("59e94d2f-886f-40af-a6ce-75d575a01543"),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(2024, 10, 10, 14, 20, 27, 318, DateTimeKind.Utc).AddTicks(9701),
+                            CreatedDate = new DateTime(2024, 10, 11, 21, 23, 53, 558, DateTimeKind.Utc).AddTicks(1210),
                             Email = "s.ondus.samara94@gmail.com",
                             FailedLoginAttempts = 0,
                             IsEmailVerified = true,

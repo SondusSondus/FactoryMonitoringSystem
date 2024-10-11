@@ -1,7 +1,7 @@
 ﻿using FactoryMonitoringSystem.Domain.Common.Specifications;
 using FactoryMonitoringSystem.Domain.Factories.Entities;
 using Ardalis.Specification;
-using FactoryMonitoringSystem.Domain.Shared;
+using FactoryMonitoringSystem.Domain.Shared.Factory.Models;
 
 
 namespace FactoryMonitoringSystem.Domain.Factories.Specifications

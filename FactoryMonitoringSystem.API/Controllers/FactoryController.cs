@@ -3,9 +3,7 @@ using FactoryMonitoringSystem.Application.Factories.Commands.CreateFactory;
 using FactoryMonitoringSystem.Application.Factories.Commands.DeleteFactory;
 using FactoryMonitoringSystem.Application.Factories.Commands.UpdateFactor;
 using FactoryMonitoringSystem.Application.Factories.Queries.GetAllFactories;
-using FactoryMonitoringSystem.Application.Factories.Queries.GetFactoriesWithMachineCount;
 using FactoryMonitoringSystem.Application.Factories.Queries.GetFactoryById;
-using FactoryMonitoringSystem.Domain.Shared;
 using FactoryMonitoringSystem.Shared.Utilities.Constant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +19,7 @@ namespace FactoriesMonitoringSystem.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateFactory([FromBody] CreateFactoryCommand command, CancellationToken cancellationToken)
         {
-            var result = await Mediator.Send(command,cancellationToken);
+            var result = await Mediator.Send(command, cancellationToken);
             return result.Match(
             factoryId => Ok(), // Success
             Problem); // Error handling

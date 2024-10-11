@@ -21,6 +21,12 @@ namespace FactoryMonitoringSystem.Shared.Utilities.Constant
             public static Error NotFound => Error.NotFound(
                 code: "Machine.NotFound",
                 description: "The requested machine was not found.");
+        } 
+        public static class SensorError
+        {
+            public static Error NotFound => Error.NotFound(
+                code: "Sensor.NotFound",
+                description: "The requested sensor was not found.");
         }
         public static class AuthError
         {

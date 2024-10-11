@@ -13,7 +13,7 @@ namespace FactoryMonitoringSystem.Domain.Machines.Specifications
     {
         public MachineByStatusWithSensorsSpecification(string type)
         {
-            Query.Where(machine => machine.Type == type)
+            Query.Where(machine => machine.Type.Equals(type))
                 .Include(machine => machine.Sensors);
             
         }

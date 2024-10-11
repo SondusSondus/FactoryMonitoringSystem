@@ -1,11 +1,7 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ErrorOr;
+using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Sensors.Commands.DeleteSensor
 {
-    public record DeleteSensorCommand(Guid SensorId) : IRequest<bool>;
+    public record DeleteSensorCommand(Guid SensorId) : IRequest<ErrorOr<Success>>;
 }

@@ -6,7 +6,7 @@ using FactoryMonitoringSystem.Application.Contracts.Factories.Services;
 using FactoryMonitoringSystem.Domain.Factories.Entities;
 using FactoryMonitoringSystem.Domain.Factories.Services;
 using FactoryMonitoringSystem.Domain.Factories.Specifications;
-using FactoryMonitoringSystem.Domain.Shared;
+using FactoryMonitoringSystem.Domain.Shared.Factory.Models;
 using FactoryMonitoringSystem.Shared;
 using Mapster;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +15,7 @@ using static FactoryMonitoringSystem.Shared.Utilities.Constant.Errors;
 
 namespace FactoryMonitoringSystem.Application.Factories.Services
 {
-    public class FactoryService : ApplicationService<FactoryService, Factory>, IFactoryService, IScopedDependency
+    internal class FactoryService : ApplicationService<FactoryService, Factory>, IFactoryService, IScopedDependency
 
     {
         private readonly IFactoryReportService _factoryReportService;
@@ -86,7 +86,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
         public async Task<ErrorOr<FactoryResponse>> GetFactoryByIdAsync(Guid id, CancellationToken cancellationToken)
         {
 
-            var factory = await ReadRepository.GetByIdAsync(id, cancellationToken);
+            var factory = await ReadRepository.FindIncludeAsync(cancellationToken, factory => factory.Id == id, factory => factory.Machines);
             if (factory == null)
             {
                 Logger.LogError(FactoryError.NotFound.Description);
@@ -96,21 +96,24 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
             Logger.LogInformation("Fetch factory {FactoryiD}", factory.Name);
             Logger.LogInformation("Fetch factory successfully");
             return factory.Adapt<FactoryResponse>();
-            //return Mapper.Map<FactoryResponse>(factory); // Success: return the factor
 
         }
         public async Task<ErrorOr<List<FactoryResponse>>> GetAllFactoriesAsync(CancellationToken cancellationToken)
         {
-
-            Logger.LogInformation("Retrieve Factories");
-            var factories = await ReadRepository.GetAllAsync(cancellationToken);
-            if (!factories.Any())
+            try
             {
-                Logger.LogInformation(FactoryError.NotFound.Description);
-                return FactoryError.NotFound;
+                Logger.LogInformation("Retrieve Factories");
+                var factories = await ReadRepository.GetAllIncludeAsync(cancellationToken, factory => factory.Machines);
+                Logger.LogInformation("Retrieve Factories successfully");
+                return factories.Adapt<List<FactoryResponse>>();
             }
-            Logger.LogInformation("Retrieve Factories successfully");
-            return factories.Adapt<List<FactoryResponse>>();
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Error when fetch Factories");
+                Logger.LogInformation(General.Unexpected.Description);
+                return General.Unexpected;
+            }
+
 
         }
 

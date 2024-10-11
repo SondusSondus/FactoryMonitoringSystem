@@ -1,5 +1,5 @@
 ﻿using FactoryMonitoringSystem.Application.Contracts.Factories.Services;
-using FactoryMonitoringSystem.Domain.Shared;
+using FactoryMonitoringSystem.Domain.Shared.Factory.Models;
 using MediatR;
 
 

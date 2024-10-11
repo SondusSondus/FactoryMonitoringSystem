@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FactoryMonitoringSystem.Domain.Shared
+namespace FactoryMonitoringSystem.Domain.Shared.Factory.Models
 {
     public record FactoryWithMachineCountResponse
     {

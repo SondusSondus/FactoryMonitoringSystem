@@ -1,4 +1,5 @@
 ﻿using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Responses;
+using FactoryMonitoringSystem.Domain.Shared.Machine.Enum;
 
 
 namespace FactoryMonitoringSystem.Application.Contracts.Machines.Models.Responses
@@ -7,8 +8,9 @@ namespace FactoryMonitoringSystem.Application.Contracts.Machines.Models.Response
     {
         public Guid Id { get; set; }
         public Guid FactoryId { get; set; }
-        public string MachineName { get; set; }
-        public string MachineType { get; set; }
+        public string Name { get; set; }
+        public MachineTypeEnum Type { get; set; }
+        public string SerialNumber { get; set; }
         public List<SensorResponse> Sensors { get; set; }
     }
 }

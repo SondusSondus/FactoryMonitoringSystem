@@ -114,5 +114,25 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
         {
             return await _dbSet.AnyAsync(predicate, cancellationToken);
         }
+
+        public async Task<IEnumerable<T>> GetAsyncIncludeMultiple<TProperty1, TProperty2>(CancellationToken cancellationToken, Expression<Func<T, bool>> predicate, params (Expression<Func<T, IEnumerable<TProperty1>>> include, Expression<Func<TProperty1, IEnumerable<TProperty2>>>? thenInclude)[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+
+            // Apply Include and ThenInclude for each pair
+            foreach (var (include, thenInclude) in includes)
+            {
+                if (thenInclude != null)
+                {
+                    query = query.Include(include).ThenInclude(thenInclude);
+                }
+                else
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return predicate == null?await query.ToListAsync(cancellationToken) : await query.Where(predicate).ToListAsync(cancellationToken);
+        }
     }
 }

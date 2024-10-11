@@ -10,7 +10,7 @@ namespace FactoryMonitoringSystem.Application.Contracts.Sensors.Mappings
     {
         public void Register(TypeAdapterConfig config)
         {
-            config.NewConfig<Sensor, SensorResponse>();
+            config.NewConfig<Sensor, SensorResponse>(); 
             config.NewConfig<SensorRequest, Sensor>();
             config.NewConfig<UpdateSensorRequest, Sensor>();
         }

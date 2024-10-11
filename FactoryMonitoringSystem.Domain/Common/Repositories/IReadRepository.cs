@@ -15,6 +15,8 @@ namespace FactoryMonitoringSystem.Domain.Common.Repositories
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken);
         Task<IEnumerable<TResult>> FindAsync<TResult>(BaseSpecification<T, TResult> specification, CancellationToken cancellationToken);
         Task<T> FindAsyncIncludeMultiple<TProperty1, TProperty2>( CancellationToken cancellationToken, Expression<Func<T, bool>> predicate,
-                params (Expression<Func<T, IEnumerable<TProperty1>>> include, Expression<Func<TProperty1, TProperty2>>? thenInclude)[] includes);
+                params (Expression<Func<T, IEnumerable<TProperty1>>> include, Expression<Func<TProperty1, TProperty2>>? thenInclude)[] includes); 
+        Task<IEnumerable<T>> GetAsyncIncludeMultiple<TProperty1, TProperty2>( CancellationToken cancellationToken, Expression<Func<T, bool>> predicate = null,
+                params (Expression<Func<T, IEnumerable<TProperty1>>> include, Expression<Func<TProperty1, IEnumerable<TProperty2>>>? thenInclude)[] includes);
     }
 }

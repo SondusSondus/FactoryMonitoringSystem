@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Models\" />
-    <Folder Include="Machines\Services\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 namespace FactoryMonitoringSystem.Application.Factories.Commands.DeleteFactory
 {
-    internal class DeleteFactoryCommandVaildator : AbstractValidator<DeleteFactoryCommand>
+    public class DeleteFactoryCommandVaildator : AbstractValidator<DeleteFactoryCommand>
     {
         public DeleteFactoryCommandVaildator()
         {

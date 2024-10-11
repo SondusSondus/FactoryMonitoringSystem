@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using FactoryMonitoringSystem.Application.Contracts.Factories.Models.Requests;
 using FactoryMonitoringSystem.Application.Contracts.Factories.Models.Responses;
-using FactoryMonitoringSystem.Domain.Shared;
+using FactoryMonitoringSystem.Domain.Shared.Factory.Models;
 
 
 namespace FactoryMonitoringSystem.Application.Contracts.Factories.Services

@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace FactoryMonitoringSystem.Application.Factories.Commands.UpdateFactory
 {
-    internal class UpdateFactoryCommandValidator: AbstractValidator<UpdateFactoryCommand>
+    public class UpdateFactoryCommandValidator: AbstractValidator<UpdateFactoryCommand>
     {
         public UpdateFactoryCommandValidator()
         {
