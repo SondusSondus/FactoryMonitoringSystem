@@ -1,9 +1,13 @@
-﻿using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using FactoryMonitoringSystem.Infrastructure.Notifications;
+using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 using Hangfire;
 using Hangfire.Console;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -13,11 +17,12 @@ namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
     {
         private static readonly ILogger Logger = Log.ForContext(typeof(Startup));
 
-        public static IServiceCollection AddBackgroundJobs(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddBackgroundJobs(this IServiceCollection services, ConfigureHostBuilder hostBuilder, IConfiguration config)
         {
             services.AddHangfireServer(options => config.GetSection(HangfireStorageSettings.SectionServer).Bind(options));
 
-            //services.AddHangfireConsoleExtensions();
+
+
 
             var storageSettings = config.GetSection(HangfireStorageSettings.SectionStorage).Get<HangfireStorageSettings>();
 
@@ -32,7 +37,7 @@ namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
                 : appOptions.WriteDatabaseConnectionString;
 
             services.AddHangfire((provider, hangfireConfig) => hangfireConfig
-                .UseSqlServerStorage(connectionString)
+                 .UseSqlServerStorage(connectionString)
                 .UseFilter(new LogEverythingAttributeHangfire())
                // .UseFilter(new HangFireAuthorizationFilter())
                 .UseFilter(new AutomaticRetryAttribute
@@ -44,16 +49,25 @@ namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
                 .UseSerializerSettings(new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore })
                 .UseConsole()
             );
-
+           
             return services;
         }
         public static  IApplicationBuilder UseBackgroundJobs(this IApplicationBuilder app)
         {
+            // Call the scheduler to set up recurring jobs
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var scheduler = scope.ServiceProvider.GetRequiredService<IMonitoringTaskScheduler>();
+                scheduler.ScheduleMonitoringTasks();
+            }
+            GlobalConfiguration.Configuration.UseActivator(new AutofacJobActivator(app.ApplicationServices));
+
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
                // Authorization = new[] { new HangFireAuthorizationFilter() },  // Add custom authorization
                 AppPath = "/"  // Return to your main app after visiting the dashboard
             });
+
             return app;
         }
     }

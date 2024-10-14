@@ -2,10 +2,14 @@
 using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Requests;
 using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.Machines.Services;
+using FactoryMonitoringSystem.Domain.Factories.Entities;
+using FactoryMonitoringSystem.Domain.SensorMachine.Entities;
+using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using FactoryMonitoringSystem.Shared;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 using static FactoryMonitoringSystem.Shared.Utilities.Constant.Errors;
 using Machine = FactoryMonitoringSystem.Domain.Machines.Entities.Machine;
 
@@ -57,7 +61,17 @@ namespace FactoryMonitoringSystem.Application.Machines.Services
             try
             {
                 Logger.LogInformation("Retrieve machines");
-                var machines = await ReadRepository.GetAllIncludeAsync(cancellationToken, machine => machine.Sensors);
+                var includes = new (Expression<Func<Machine, IEnumerable<SensorMachine>>>, Expression<Func<SensorMachine, Sensor>>?)[]
+                 {
+                         (o => o.SensorMachine, oi => oi.Sensor) // Include OrderItems and then include their Products
+                 };
+                // Call the modified method
+                var machines = await ReadRepository.GetAsyncIncludeMultiple<SensorMachine, Sensor>(
+                    cancellationToken,
+                    null,
+                    includes
+                );
+
                 Logger.LogInformation("Retrieve machines successfully");
                 return machines.Adapt<List<MachineResponse>>();
             }
@@ -72,7 +86,17 @@ namespace FactoryMonitoringSystem.Application.Machines.Services
 
         public async Task<ErrorOr<MachineResponse>> GetMachineByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            var machine = await ReadRepository.FindIncludeAsync(cancellationToken, machine => machine.Id == id, machine => machine.Sensors);
+            var includes = new (Expression<Func<Machine, IEnumerable<SensorMachine>>>, Expression<Func<SensorMachine, Sensor>>?)[]
+                {
+                     (o => o.SensorMachine, oi => oi.Sensor) // Include OrderItems and then include their Products
+                };
+            // Call the modified method
+            var machine = await ReadRepository.FindAsyncIncludeMultiple<SensorMachine,Sensor >(
+                cancellationToken,
+                machine=>machine.Id == id,
+                includes
+            );
+
             if (machine == null)
             {
                 Logger.LogError(MachineError.NotFound.Description);

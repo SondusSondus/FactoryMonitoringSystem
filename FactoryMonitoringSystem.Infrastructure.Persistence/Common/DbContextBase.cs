@@ -27,6 +27,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             modelBuilder.ApplyConfiguration(new SensorConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
+            modelBuilder.ApplyConfiguration(new SensorThresholdConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

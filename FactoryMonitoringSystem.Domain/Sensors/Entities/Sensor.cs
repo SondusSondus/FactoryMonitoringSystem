@@ -1,4 +1,5 @@
 ﻿using FactoryMonitoringSystem.Domain.Common.Entities;
+using FactoryMonitoringSystem.Domain.SensorMachines.Entities;
 using FactoryMonitoringSystem.Domain.Shared.Sensor.Enum;
 
 namespace FactoryMonitoringSystem.Domain.Sensors.Entities
@@ -7,27 +8,25 @@ namespace FactoryMonitoringSystem.Domain.Sensors.Entities
     {
         public string Name { get; set; }
         public SensorEnumType Type { get; set; }
-        public double Value { get; set; }
+        public double MinValue { get; set; }
+        public double MaxValue { get; set; }
         public string Unit { get; set; }
-        public Guid MachineId { get; set; }
+        virtual public List<SensorMachine> SensorMachines { get; set; }
 
         // Constructor for EF Core
         protected Sensor() { }
 
         // Business constructor
-        public Sensor(Guid id, string name, SensorEnumType type, string unit, Guid machineId)
+        public Sensor(Guid id, string name, SensorEnumType type, double minValue,double maxValue, string unit)
         {
             Id = id;
             Type = type;
             Unit = unit;
-            MachineId = machineId;
             Name = name;
+            MinValue = minValue; 
+            MaxValue = maxValue;
         }
 
-        public void UpdateValue(double newValue)
-        {
-            // Business rules for updating the sensor value
-            Value = newValue;
-        }
+       
     }
 }

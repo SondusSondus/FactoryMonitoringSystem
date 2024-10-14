@@ -15,8 +15,6 @@ namespace FactoryMonitoringSystem.Domain.Common.Entities
         public Guid? UpdatedBy { get; set; }
         public Guid? DeletedBy { get; set; }
 
-        // Entity status
-        public RecordStatus Status { get; set; } = RecordStatus.Active;
 
         // Optimistic concurrency
         [Timestamp]

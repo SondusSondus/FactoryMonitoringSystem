@@ -1,4 +1,6 @@
 ﻿using FactoryMonitoringSystem.Application.Contracts.Common.Mappings;
+using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Responses;
+using FactoryMonitoringSystem.Application.Contracts.SensorMachines.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Request;
 using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Responses;
 using FactoryMonitoringSystem.Domain.Sensors.Entities;
@@ -10,7 +12,8 @@ namespace FactoryMonitoringSystem.Application.Contracts.Sensors.Mappings
     {
         public void Register(TypeAdapterConfig config)
         {
-            config.NewConfig<Sensor, SensorResponse>(); 
+            config.NewConfig<Sensor, SensorResponse>()
+            .Map(dest => dest.SensorMachines, src => src.SensorMachines.Adapt<List<SensorMachineWithMachineResponse>>()); 
             config.NewConfig<SensorRequest, Sensor>();
             config.NewConfig<UpdateSensorRequest, Sensor>();
         }

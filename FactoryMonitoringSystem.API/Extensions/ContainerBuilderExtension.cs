@@ -5,10 +5,9 @@ using FactoryMonitoringSystem.Application.Common.Services;
 using FactoryMonitoringSystem.Application.Contracts.Common.CommonEvent;
 using FactoryMonitoringSystem.Domain;
 using FactoryMonitoringSystem.Infrastructure;
+using FactoryMonitoringSystem.Infrastructure.Notifications;
 using FactoryMonitoringSystem.Infrastructure.Persistence;
 using FactoryMonitoringSystem.Shared;
-using System;
-using System.Reflection;
 
 namespace FactoryMonitoringSystem.Api.Extensions
 {
@@ -17,16 +16,21 @@ namespace FactoryMonitoringSystem.Api.Extensions
         // Method to retrieve assemblies based on an array of marker types
         public static void RegisterServices(this ContainerBuilder containerBuilder)
         {
-            //containerBuilder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>)).InstancePerLifetimeScope();
 
-            //containerBuilder.RegisterGeneric(typeof(EfReadOnlyRepository<>)).As(typeof(IReadOnlyRepository<>)).InstancePerLifetimeScope();
+            // Register dependencies for MonitoringTaskScheduler
+            containerBuilder.RegisterType<MachineMonitoringService>()
+                            .AsSelf()
+                            .InstancePerDependency();
+            containerBuilder.RegisterType<MonitoringTaskScheduler>()
+                            .As<IMonitoringTaskScheduler>()
+                            .SingleInstance();
 
             var applicationAssembly = typeof(IApplicationAssemblyMarker).Assembly;
             var dominAssembly = typeof(IDomainAssemblyMarker).Assembly;
             var persistenceAssembly = typeof(IPersistenceAssemblyMarker).Assembly;
             var sharedAssembly = typeof(ISharedAssemblyMarker).Assembly;
             var infrastructureAssembly = typeof(IInfrastructureAssemblyMarker).Assembly;
-           
+
 
             containerBuilder.RegisterAssemblyTypes(applicationAssembly, dominAssembly, persistenceAssembly, sharedAssembly, infrastructureAssembly)
                 .AssignableTo<IScopedDependency>()

@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using FactoryMonitoringSystem.Application.Auth.Commands.CheckUserByRefrshToken;
 using FactoryMonitoringSystem.Application.Auth.Commands.GenerateToken;
 using FactoryMonitoringSystem.Application.Auth.Commands.InvalidateRefreshToken;
 using FactoryMonitoringSystem.Application.Auth.Commands.Login;
@@ -33,7 +34,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
             if (!authResult.IsError)
             {
                 SetTokenCookie("AccessToken", authResult.Value.AuthenticationResult.AccessToken, _jwtSettings.AccessTokenExpirationMinutes);
-                SetTokenCookie("RefreshToken", authResult.Value.AuthenticationResult.AccessToken, _jwtSettings.RefreshTokenExpirationDays * 24 * 60);
+                SetTokenCookie("RefreshToken", authResult.Value.AuthenticationResult.RefreshToken, _jwtSettings.RefreshTokenExpirationDays * 24 * 60);
 
             }
 
@@ -57,6 +58,11 @@ namespace FactoryMonitoringSystem.Api.Controllers
                 RemoveTokenCookie("RefreshToken");
             }
 
+            if (Request.Cookies["RefreshTokenExpiryTime"] != null)
+            {
+                RemoveTokenCookie("RefreshTokenExpiryTime");
+            }
+
             var authResult = await Mediator.Send(new InvalidateRefreshTokenCommand(), cancellationToken);
             return authResult.Match(
                 authResult => Ok(),
@@ -70,27 +76,24 @@ namespace FactoryMonitoringSystem.Api.Controllers
         public async Task<IActionResult> RefreshToken(CancellationToken cancellationToken)
         {
             var refreshToken = Request.Cookies["RefreshToken"];
-            var refreshTokenExpiryTime = Request.Cookies["RefreshTokenExpiryTime"];
-
             if (string.IsNullOrEmpty(refreshToken))
             {
                 return Problem(new List<Error> { Error.Unauthorized("Refresh token not found.") });
             }
-            if (CurrentUser == null || string.IsNullOrWhiteSpace(refreshTokenExpiryTime ) || DateTime.Parse(refreshTokenExpiryTime) <= DateTime.UtcNow)
+            var refreshTokenExpiryTime = await Mediator.Send(new CheckUserByRefrshTokenCommand(refreshToken), cancellationToken);
+            if (refreshTokenExpiryTime.IsError || refreshTokenExpiryTime.Value == DateTime.MinValue || refreshTokenExpiryTime.Value <= DateTime.UtcNow)
             {
                 return Problem(new List<Error> { Error.Unauthorized("Invalid or expired refresh token.") });
             }
 
             var token = await Mediator.Send(new GenerateTokenCommand(), cancellationToken);
 
-            // Generate new access token and refresh token
-            var newAccessToken = token.Value.AccessToken;
-            var newRefreshToken = token.Value.AccessToken;
             if (!token.IsError)
             {
                 // Set new tokens in cookies
-                SetTokenCookie("AccessToken", newAccessToken, _jwtSettings.AccessTokenExpirationMinutes);
-                SetTokenCookie("RefreshToken", newRefreshToken,  _jwtSettings.RefreshTokenExpirationDays * 24 * 60);
+                SetTokenCookie("AccessToken", token.Value.AccessToken, _jwtSettings.AccessTokenExpirationMinutes);
+                SetTokenCookie("RefreshToken", token.Value.AccessToken, _jwtSettings.RefreshTokenExpirationDays * 24 * 60);
+
             }
 
             return token.Match(

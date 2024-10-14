@@ -4,9 +4,7 @@
     {
 
         CNC = 1,
-        ConveyorBelt = 2,
-        HVAC = 3,
-        ThridDPrinters = 4
+        HVAC = 2
         
     }
 }

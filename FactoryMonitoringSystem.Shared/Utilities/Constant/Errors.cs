@@ -58,6 +58,10 @@ namespace FactoryMonitoringSystem.Shared.Utilities.Constant
             public static Error TokenGeneratorFailure => Error.Failure(
                 code: "General.TokenGeneratorFailure",
                 description: "A token  Generator error occurred.");
+            
+            public static Error TokenRefresh => Error.Failure(
+                code: "General.TokenRefresh",
+                description: "A Token refresh not found.");
 
         }
         public static class UserError

@@ -18,6 +18,10 @@
     <ProjectReference Include="..\FactoryMonitoringSystem.Shared\FactoryMonitoringSystem.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Sensors\Specifications\" />
+  </ItemGroup>
+
 
 
 </Project>

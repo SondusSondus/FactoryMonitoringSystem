@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using FactoryMonitoringSystem.Domain.Machines.Entities;
 using Microsoft.EntityFrameworkCore;
-using FactoryMonitoringSystem.Domain.Machines.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.Machines.Configurations
 {
@@ -23,10 +23,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Machines.Configurat
                 .IsRequired()
                 .HasMaxLength(50);
 
-            // Relationship configuration
-            builder.HasMany(m => m.Sensors)
-                .WithOne().HasForeignKey(s=>s.MachineId)
-                .OnDelete(DeleteBehavior.Cascade); // Define delete behavior
+          
         }
     }
 }

@@ -1,11 +1,6 @@
 ﻿using FactoryMonitoringSystem.Domain.Sensors.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.Sensors.Configurations
 {
@@ -24,7 +19,10 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Sensors.Configurati
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.Property(s => s.Value)
+            builder.Property(s => s.MinValue)
+                .IsRequired();
+            
+            builder.Property(s => s.MaxValue)
                 .IsRequired();
 
             builder.Property(s => s.Unit)

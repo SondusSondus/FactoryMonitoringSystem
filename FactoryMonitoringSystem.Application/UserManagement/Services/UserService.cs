@@ -80,13 +80,13 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
         public async Task<ErrorOr<Success>> UpdateUserProfile(UpdateUserRequest updateUser, CancellationToken cancellationToken)
         {
 
-            Logger.LogInformation("Update user profile for user {Email} {UserId}", CurrentUser.Email, LoggedInUserId);
             var user = await ReadRepository.FindAsync(user => user.Id == LoggedInUserId, cancellationToken);
             if (user == null)
             {
                 Logger.LogError(UserError.UserNotFound.Description);
                 return UserError.UserNotFound;
             }
+            Logger.LogInformation("Update user profile for user {Email} {UserId}", CurrentUser.Email, LoggedInUserId);
             user.Username = updateUser.Username;
             user.Email = updateUser.Email;
             await UpdateUser(user, cancellationToken);
@@ -148,21 +148,21 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             }
             catch (Exception ex)
             {
-                Logger.LogInformation(UserError.UserNotFound.Description);
-                return UserError.UserNotFound;
+                Logger.LogInformation(General.Unexpected.Description);
+                return General.Unexpected;
             }
 
         }
 
         public async Task<ErrorOr<Success>> ChangePasswordAsync(ChangePasswordRequest changePassword, CancellationToken cancellationToken)
         {
-            Logger.LogInformation($"Change password for user {CurrentUser.Email}");
             var user = await ReadRepository.GetByIdAsync(LoggedInUserId, cancellationToken);
             if (user == null)
             {
                 Logger.LogInformation(UserError.UserNotFound.Description);
                 return UserError.UserNotFound;
             }
+            Logger.LogInformation($"Change password for user {CurrentUser.Email}");
             // Verify current password
             if (!BCrypt.Net.BCrypt.Verify(changePassword.CurrentPassword, user.PasswordHash))
             {
@@ -181,13 +181,13 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
         public async Task<ErrorOr<Success>> UpdateRefreshTokenToInValid(CancellationToken cancellationToken)
         {
 
-            Logger.LogInformation("Update user profile for user {Email} {UserId}", CurrentUser.Email, LoggedInUserId);
             var user = await ReadRepository.FindAsync(user => user.Id == LoggedInUserId, cancellationToken);
             if (user == null)
             {
                 Logger.LogInformation(UserError.UserNotFound.Description);
                 return UserError.UserNotFound;
             }
+            Logger.LogInformation("Update user profile for user {Email} {UserId}", CurrentUser.Email, LoggedInUserId);
             user.RefreshToken = string.Empty;
             user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(-1);
             await UpdateUser(user, cancellationToken);
@@ -197,13 +197,13 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
 
         public async Task<ErrorOr<Success>> ForgotPasswordByEmail(string email, CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Forgot password for user {Email}", email);
             var user = await ReadRepository.FindAsync(user => user.Email == email, cancellationToken);
             if (user == null)
             {
                 Logger.LogInformation(UserError.UserNotFound.Description);
                 return UserError.UserNotFound;
             }
+            Logger.LogInformation("Forgot password for user {Email}", email);
             var verificationCode = GenerateVerificationCode();
             user.IsEmailVerified = false;
             user.EmailVerificationCode = verificationCode;
@@ -267,15 +267,18 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
 
         public async Task<ErrorOr<List<UserResponse>>> GetUsers(CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Retrieve All Users");
-            var users = await ReadRepository.GetAllIncludeAsync(cancellationToken,user=>user.Role);
-            if (!users.Any())
+            try
             {
-                Logger.LogInformation(UserError.UserNotFound.Description);
-                return UserError.UserNotFound;
+                Logger.LogInformation("Retrieve All Users");
+                var users = await ReadRepository.GetAllIncludeAsync(cancellationToken, user => user.Role);
+                Logger.LogInformation("Retrieve Users successfully.");
+                return users.Adapt<List<UserResponse>>();
             }
-            Logger.LogInformation("Retrieve Users successfully.");
-            return users.Adapt<List<UserResponse>>();
+            catch (Exception ex) {
+                Logger.LogInformation(General.Unexpected.Description);
+                return General.Unexpected;
+            }
+           
         }
 
         public async Task<ErrorOr<UserResponse>> GetUserById(Guid Id, CancellationToken cancellationToken)
@@ -294,13 +297,12 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
         public async Task<ErrorOr<Success>> UnlockedUser(Guid Id, CancellationToken cancellationToken)
         {
             var user = await ReadRepository.GetByIdAsync(Id,cancellationToken);
-            Logger.LogInformation("Unlocked user {email}", user.Email);
-
             if (user is null)
             {
                 Logger.LogInformation(UserError.UserNotFound.Description);
                 return UserError.UserNotFound;
             }
+            Logger.LogInformation("Unlocked user {email}", user.Email);
             user.LockoutEnd =null;
             user.FailedLoginAttempts = 0;
             await UpdateUser(user,cancellationToken);
@@ -311,13 +313,12 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
         public async Task<ErrorOr<Success>> ResetPasswordUser(Guid Id, CancellationToken cancellationToken)
         {
             var user = await ReadRepository.GetByIdAsync(Id, cancellationToken);
-            Logger.LogInformation("Reset password user {email}", user.Email);
-
             if (user is null)
             {
                 Logger.LogInformation(UserError.UserNotFound.Description);
                 return UserError.UserNotFound;
             }
+            Logger.LogInformation("Reset password user {email}", user.Email);
             var verificationCode = GenerateVerificationCode();
             user.IsEmailVerified = false;
             user.EmailVerificationCode = verificationCode;
@@ -331,17 +332,26 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
         public async Task<ErrorOr<Success>> DeleteUser(Guid Id, CancellationToken cancellationToken)
         {
             var user = await ReadRepository.GetByIdAsync(Id, cancellationToken);
-            Logger.LogInformation("Reset password user {email}", user.Email);
-
             if (user is null)
             {
                 Logger.LogInformation(UserError.UserNotFound.Description);
                 return UserError.UserNotFound;
             }
-
+            Logger.LogInformation("Reset password user {email}", user.Email);
             WriteRepository.Delete(user);
             await WriteRepository.SaveChangesAsync(cancellationToken);
             return Result.Success;
+        }
+
+        public async Task<ErrorOr<DateTime>> CheckUserByRefreshToken(string refreshToken, CancellationToken cancellationToken)
+        {
+            var user = await ReadRepository.FindAsync( user => user.RefreshToken == refreshToken, cancellationToken);
+            if (user is null)
+            {
+                Logger.LogInformation(General.TokenRefresh.Description);
+                return General.TokenRefresh;
+            }
+            return user.RefreshTokenExpiryTime.Value;
         }
     }
 }

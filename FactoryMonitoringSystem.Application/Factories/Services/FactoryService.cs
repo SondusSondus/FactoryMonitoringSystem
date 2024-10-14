@@ -6,11 +6,15 @@ using FactoryMonitoringSystem.Application.Contracts.Factories.Services;
 using FactoryMonitoringSystem.Domain.Factories.Entities;
 using FactoryMonitoringSystem.Domain.Factories.Services;
 using FactoryMonitoringSystem.Domain.Factories.Specifications;
+using FactoryMonitoringSystem.Domain.Machines.Entities;
+using FactoryMonitoringSystem.Domain.SensorMachine.Entities;
 using FactoryMonitoringSystem.Domain.Shared.Factory.Models;
 using FactoryMonitoringSystem.Shared;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Asn1.X509;
+using System.Linq.Expressions;
 using static FactoryMonitoringSystem.Shared.Utilities.Constant.Errors;
 
 namespace FactoryMonitoringSystem.Application.Factories.Services
@@ -103,7 +107,18 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
             try
             {
                 Logger.LogInformation("Retrieve Factories");
-                var factories = await ReadRepository.GetAllIncludeAsync(cancellationToken, factory => factory.Machines);
+                //var factories = await ReadRepository.GetAllIncludeAsync(cancellationToken, factory => factory.Machines);
+                // Define the navigation properties to include and then include
+                var includes = new (Expression<Func<Factory, IEnumerable<Machine>>>, Expression<Func<Machine, IEnumerable<SensorMachine>>>?)[]
+                {
+                     (o => o.Machines, oi => oi.SensorMachine) // Include OrderItems and then include their Products
+                };
+                // Call the modified method
+                var factories = await ReadRepository.GetAsyncIncludeMultiple<Machine, SensorMachine>(
+                    cancellationToken,
+                    null,
+                    includes
+                );
                 Logger.LogInformation("Retrieve Factories successfully");
                 return factories.Adapt<List<FactoryResponse>>();
             }

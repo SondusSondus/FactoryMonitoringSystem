@@ -1,5 +1,5 @@
 ﻿using FactoryMonitoringSystem.Domain.Common.Entities;
-using FactoryMonitoringSystem.Domain.Sensors.Entities;
+using FactoryMonitoringSystem.Domain.SensorMachines.Entities;
 using FactoryMonitoringSystem.Domain.Shared.Machine.Enum;
 
 namespace FactoryMonitoringSystem.Domain.Machines.Entities
@@ -10,7 +10,7 @@ namespace FactoryMonitoringSystem.Domain.Machines.Entities
         public MachineTypeEnum Type { get; set; }
         public string SerialNumber { get; set; }
         public Guid FactoryId { get; set; }
-        public List<Sensor> Sensors { get; private set; } = new List<Sensor>();
+        virtual public List<SensorMachine> SensorMachines { get; set; }
 
 
         // Constructor for EF Core

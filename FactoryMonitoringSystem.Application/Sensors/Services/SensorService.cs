@@ -25,7 +25,7 @@ namespace FactoryMonitoringSystem.Application.Sensors.Services
 
             try
             {
-                var result = new Sensor(GuidGenerator, sensorRequest.Name, sensorRequest.Type, sensorRequest.Unit, sensorRequest.MachineId);
+                var result = new Sensor(GuidGenerator, sensorRequest.Name, sensorRequest.Type,sensorRequest.MinValue,sensorRequest.MaxValue, sensorRequest.Unit);
                 WriteRepository.Add(result);
                 await WriteRepository.SaveChangesAsync(cancellationToken);
                 Logger.LogInformation("Sensor created successfully: {Name}", result.Name);

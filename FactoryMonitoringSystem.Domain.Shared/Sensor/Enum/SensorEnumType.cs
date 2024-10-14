@@ -4,9 +4,7 @@
     {
         Temperature = 1,
         Vibration = 2,
-        Position = 3,
-        Pressure = 4,
-        Force = 5,
-        CurrentAndVoltage = 6,
+        Position = 3
+       
     }
 }

@@ -18,8 +18,11 @@ namespace FactoryMonitoringSystem.Application.Sensors.Commands.UpdateSensor
             .NotEmpty().WithMessage("Sensor name is required.")
             .MaximumLength(100).WithMessage("Sensor name must not exceed 100 characters.");
 
-            RuleFor(sensor => sensor.UpdateSensor.MachineId)
-                 .NotEmpty().WithMessage("Machine Id is required.");
+            RuleFor(sensor => sensor.UpdateSensor.MaxValue)
+                 .NotEmpty().WithMessage("MaxValue is required.");
+
+            RuleFor(sensor => sensor.UpdateSensor.MinValue)
+                 .NotEmpty().WithMessage("MinValue is required.");
 
             RuleFor(sensor => sensor.UpdateSensor.Unit)
                  .NotEmpty().WithMessage("Unit is required.");

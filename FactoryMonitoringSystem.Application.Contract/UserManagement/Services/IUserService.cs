@@ -21,6 +21,7 @@ namespace FactoryMonitoringSystem.Application.Contracts.UserManagement.Services
         Task<ErrorOr<Success>> UnlockedUser(Guid Id, CancellationToken cancellationToken);
         Task<ErrorOr<Success>> ResetPasswordUser(Guid Id, CancellationToken cancellationToken);
         Task<ErrorOr<Success>> DeleteUser(Guid Id, CancellationToken cancellationToken);
+        Task<ErrorOr<DateTime>> CheckUserByRefreshToken(string refreshToken, CancellationToken cancellationToken);
 
     }
 }

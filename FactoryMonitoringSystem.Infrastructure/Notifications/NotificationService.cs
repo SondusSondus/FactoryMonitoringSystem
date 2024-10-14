@@ -13,11 +13,11 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
     public class NotificationService : INotificationService, ITransientDependency
     {
         private readonly IWriteRepository<Notification> _notificationRepository;
-        private readonly IHubContext<NotificationHub> _hubContext;
-        private readonly NotificationSettings _notificationSettings;
+        private readonly IHubContext<MonitoringHub> _hubContext;
+        private readonly MonitoringSettings _notificationSettings;
 
         public NotificationService(IWriteRepository<Notification> notificationRepository,
-            IHubContext<NotificationHub> hubContext, IOptions<NotificationSettings> notificationSettings)
+            IHubContext<MonitoringHub> hubContext, IOptions<MonitoringSettings> notificationSettings)
         {
             _notificationRepository = notificationRepository;
             _hubContext = hubContext;

@@ -18,6 +18,7 @@ namespace FactoryMonitoringSystem.Api
             // Configure Autofac container
             hostBuilder.ConfigureContainer<ContainerBuilder>(containerBuilder =>
             {
+
                 containerBuilder.RegisterServices(); // Your extension method for registration
             });
 

@@ -1,7 +1,6 @@
 ﻿using FactoryMonitoringSystem.Application.Common.Events;
 using FactoryMonitoringSystem.Domain.Common.Entities;
 using FactoryMonitoringSystem.Shared;
-using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +18,11 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
         {
             _mediator = mediator;
             _currentUser = currentUser;
-        } 
-        
+        }
+
         public WriteDbContext(DbContextOptions<WriteDbContext> options) : base(options)
         {
-           
+
         }
 
 
@@ -100,17 +99,14 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
                 {
                     case EntityState.Added:
                         entity.CreatedDate = DateTime.UtcNow;
-                        entity.Status = RecordStatus.Active;
                         entity.CreatedBy = GetCurrentUser().Id;
                         break;
                     case EntityState.Modified:
                         entity.UpdatedDate = DateTime.UtcNow;
-                        entity.Status = RecordStatus.Active;
                         entity.UpdatedBy = GetCurrentUser().Id;
                         break;
                     case EntityState.Deleted:
                         entity.DeletedDate = DateTime.UtcNow;
-                        entity.Status = RecordStatus.Deleted;
                         entity.DeletedBy = GetCurrentUser().Id;
                         break;
 
