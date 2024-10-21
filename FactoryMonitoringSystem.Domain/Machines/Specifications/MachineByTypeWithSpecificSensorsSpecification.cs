@@ -8,9 +8,7 @@ namespace FactoryMonitoringSystem.Domain.Machines.Specifications
     {
         public MachineByTypeWithSpecificSensorsSpecification(string machineType, string sensorType)
         {
-            Query.Where(machine => machine.Type.Equals(machineType))
-                 .Include(machine => machine.SensorMachine
-                     .Where(sensor => sensor.Sensor.Type.Equals(sensorType)));  // Include only specific sensor types
+            Query.Where(machine => machine.Type.Equals(machineType));
 
         }
     }

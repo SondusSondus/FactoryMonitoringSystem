@@ -46,8 +46,8 @@ namespace FactoryMonitoringSystem.Api.Controllers
         {
 
             var query = new GetAllSensorsQuery();
-            var sensor = await Mediator.Send(query, cancellationToken);
-            return sensor.Match(
+            var sensors = await Mediator.Send(query, cancellationToken);
+            return sensors.Match(
             sensor => Ok(sensor), // Success
             Problem); // Error handling
         }

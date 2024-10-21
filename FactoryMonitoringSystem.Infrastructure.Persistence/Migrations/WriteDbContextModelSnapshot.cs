@@ -59,9 +59,6 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -109,9 +106,6 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.Property<int>("Type")
                         .HasMaxLength(50)
                         .HasColumnType("int");
@@ -129,7 +123,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                     b.ToTable("Machines", (string)null);
                 });
 
-            modelBuilder.Entity("FactoryMonitoringSystem.Domain.Sensors.Entities.Sensor", b =>
+            modelBuilder.Entity("FactoryMonitoringSystem.Domain.SensorMachines.Entities.SensorMachine", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,6 +144,76 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("MachineId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<Guid>("SensorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MachineId");
+
+                    b.HasIndex("SensorId");
+
+                    b.ToTable("SensorMachines", (string)null);
+                });
+
+            modelBuilder.Entity("FactoryMonitoringSystem.Domain.SensorMachines.Entities.TarckingSensorMachineValue", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateOfReadingValue")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("SensorMachineId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("Value")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id");
+
+                    b.ToTable("TarckingSensorMachineValues", (string)null);
+                });
+
+            modelBuilder.Entity("FactoryMonitoringSystem.Domain.Sensors.Entities.Sensor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("MaxValue")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinValue")
+                        .HasColumnType("float");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -159,9 +223,6 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.Property<int>("Type")
                         .HasMaxLength(50)
@@ -178,12 +239,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("MachineId");
 
                     b.ToTable("Sensors", (string)null);
                 });
@@ -204,12 +260,12 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 0,
+                            Id = 1,
                             RoleName = "Admin"
                         },
                         new
                         {
-                            Id = 1,
+                            Id = 2,
                             RoleName = "User"
                         });
                 });
@@ -270,9 +326,6 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
 
@@ -285,23 +338,21 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId")
-                        .IsUnique();
+                    b.HasIndex("RoleId");
 
                     b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("59e94d2f-886f-40af-a6ce-75d575a01543"),
+                            Id = new Guid("bfe2a07e-9701-44ed-a64e-7719d7db3cf0"),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(2024, 10, 11, 21, 23, 53, 558, DateTimeKind.Utc).AddTicks(1210),
+                            CreatedDate = new DateTime(2024, 10, 20, 19, 25, 26, 807, DateTimeKind.Utc).AddTicks(3346),
                             Email = "s.ondus.samara94@gmail.com",
                             FailedLoginAttempts = 0,
                             IsEmailVerified = true,
                             PasswordHash = "$2a$11$7Phvr48TV1QchCJiuCjnmuDLqRVDQ6TmJmJaMmnexJfc/xIp6u.yO",
-                            RoleId = 0,
-                            Status = 1,
+                            RoleId = 1,
                             Username = "Admin"
                         });
                 });
@@ -315,20 +366,30 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FactoryMonitoringSystem.Domain.Sensors.Entities.Sensor", b =>
+            modelBuilder.Entity("FactoryMonitoringSystem.Domain.SensorMachines.Entities.SensorMachine", b =>
                 {
-                    b.HasOne("FactoryMonitoringSystem.Domain.Machines.Entities.Machine", null)
-                        .WithMany("Sensors")
+                    b.HasOne("FactoryMonitoringSystem.Domain.Machines.Entities.Machine", "Machine")
+                        .WithMany("SensorMachines")
                         .HasForeignKey("MachineId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("FactoryMonitoringSystem.Domain.Sensors.Entities.Sensor", "Sensor")
+                        .WithMany("SensorMachines")
+                        .HasForeignKey("SensorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Machine");
+
+                    b.Navigation("Sensor");
                 });
 
             modelBuilder.Entity("FactoryMonitoringSystem.Domain.UsersManagement.Entities.User", b =>
                 {
                     b.HasOne("FactoryMonitoringSystem.Domain.UsersManagement.Entities.Role", "Role")
-                        .WithOne()
-                        .HasForeignKey("FactoryMonitoringSystem.Domain.UsersManagement.Entities.User", "RoleId")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -342,7 +403,12 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("FactoryMonitoringSystem.Domain.Machines.Entities.Machine", b =>
                 {
-                    b.Navigation("Sensors");
+                    b.Navigation("SensorMachines");
+                });
+
+            modelBuilder.Entity("FactoryMonitoringSystem.Domain.Sensors.Entities.Sensor", b =>
+                {
+                    b.Navigation("SensorMachines");
                 });
 #pragma warning restore 612, 618
         }

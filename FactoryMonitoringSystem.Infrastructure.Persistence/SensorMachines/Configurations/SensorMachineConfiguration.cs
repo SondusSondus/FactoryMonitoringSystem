@@ -1,8 +1,9 @@
-﻿using FactoryMonitoringSystem.Domain.SensorMachine.Entities;
+﻿using FactoryMonitoringSystem.Domain.SensorMachines.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
-namespace FactoryMonitoringSystem.Infrastructure.Persistence.SensorMachine.Configurations
+namespace FactoryMonitoringSystem.Infrastructure.Persistence.SensorMachines.Configurations
 {
     public class SensorMachineConfiguration : IEntityTypeConfiguration<SensorMachine>
     {
@@ -13,18 +14,17 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.SensorMachine.Confi
 
             // Primary key
             builder.HasKey(s => s.Id);
+            builder.HasOne(sm => sm.Sensor)
+               .WithMany(s => s.SensorMachines) // Assuming Sensor has a collection of SensorMachines
+               .HasForeignKey(sm => sm.SensorId)
+               .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Property(s => s.SensorId)
-                .IsRequired();
-            builder.Property(s => s.machineId)
-                    .IsRequired();
+            builder
+                .HasOne(sm => sm.Machine)
+                .WithMany(m => m.SensorMachines) // Assuming Machine has a collection of SensorMachines
+                .HasForeignKey(sm => sm.MachineId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(s => s.Sensor)
-                    .WithMany().HasForeignKey(s => s.SensorId)
-                    .OnDelete(DeleteBehavior.Cascade); // Define delete behavior
-            builder.HasOne(s => s.Sensor)
-                     .WithMany().HasForeignKey(s => s.SensorId)
-                     .OnDelete(DeleteBehavior.Cascade); // Define delete behavior
         }
     }
 }

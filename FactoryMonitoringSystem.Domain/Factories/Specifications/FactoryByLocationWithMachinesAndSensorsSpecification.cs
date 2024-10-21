@@ -10,8 +10,7 @@ namespace FactoryMonitoringSystem.Domain.Factories.Specifications
         public FactoryByLocationWithMachinesAndSensorsSpecification(string location)
         {
             Query.Where(factory => factory.Location == location)
-            .Include(factory => factory.Machines)
-            .ThenInclude(machine => machine.SensorMachine);  // Include machines and their sensors
+            .Include(factory => factory.Machines);
         }
     }
 }

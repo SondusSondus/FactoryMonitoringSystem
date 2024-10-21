@@ -1,9 +1,7 @@
 ﻿using FactoryMonitoringSystem.Domain.Common.Repositories;
-using FactoryMonitoringSystem.Domain.Machines.Entities;
-using FactoryMonitoringSystem.Domain.SensorMachine.Entities;
+using FactoryMonitoringSystem.Domain.SensorMachines.Entities;
 using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using FactoryMonitoringSystem.Domain.Shared.Machine.Dtos;
-using FactoryMonitoringSystem.Shared;
 using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -33,7 +31,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
         public async Task CheckMachineStatusAsync()
         {
             CancellationToken cancellation = CancellationToken.None;
-            var sensorMachines = await _sensorMachineRepository.GetAllIncludeAsync(cancellation, sensorMachine => sensorMachine.machine , sensorMachine => sensorMachine.Sensor);
+            var sensorMachines = await _sensorMachineRepository.GetAllIncludeAsync(cancellation, sensorMachine => sensorMachine.Machine, sensorMachine => sensorMachine.Sensor);
 
             foreach (var sensorMachine in sensorMachines)
             {
@@ -41,8 +39,8 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
                 {
                     var failureDto = new MachineFailureDto
                     {
-                        MachineId = sensorMachine.machineId.ToString(),
-                        MachineName = sensorMachine.machine.Name,
+                        MachineId = sensorMachine.MachineId.ToString(),
+                        MachineName = sensorMachine.Machine.Name,
                         ErrorMessage = "Machine stopped unexpectedly",
                         Severity = "Critical",
                         Timestamp = DateTime.UtcNow
@@ -54,7 +52,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
                 }
             }
         }
-       
+
     }
 
 }

@@ -14,8 +14,6 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.UsersManagement.Con
             builder.ToTable("Users");
             // Primary key
             builder.HasKey(user => user.Id);
-            builder.Property(user => user.RoleId);
-            // Property configurations
 
             builder.Property(user => user.Email)
                 .IsRequired()

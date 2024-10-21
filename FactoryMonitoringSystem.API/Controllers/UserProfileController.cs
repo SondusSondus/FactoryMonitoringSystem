@@ -9,7 +9,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles= Roles.User)]
+    [Authorize(policy: Policy.User)]
 
     public class UserProfileController : ApiController
     {

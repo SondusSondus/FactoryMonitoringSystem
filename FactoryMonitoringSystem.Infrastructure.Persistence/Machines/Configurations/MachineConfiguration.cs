@@ -23,7 +23,6 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Machines.Configurat
                 .IsRequired()
                 .HasMaxLength(50);
 
-          
         }
     }
 }

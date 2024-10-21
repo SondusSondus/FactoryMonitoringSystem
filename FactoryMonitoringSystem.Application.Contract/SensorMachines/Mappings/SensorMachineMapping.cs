@@ -1,8 +1,7 @@
 ﻿using FactoryMonitoringSystem.Application.Contracts.Common.Mappings;
-using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.SensorMachines.Models.Requests;
 using FactoryMonitoringSystem.Application.Contracts.SensorMachines.Models.Responses;
-using FactoryMonitoringSystem.Domain.SensorMachine.Entities;
+using FactoryMonitoringSystem.Domain.SensorMachines.Entities;
 using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using Mapster;
 
@@ -12,8 +11,8 @@ namespace FactoryMonitoringSystem.Application.Contracts.SensorMachines.Mappings
     {
         public void Register(TypeAdapterConfig config)
         {
-            config.NewConfig<Sensor, SensorMachineResponse>();
-            config.NewConfig<SensorMachineResquest, SensorMachine>();
+            //config.NewConfig<SensorMachine, SensorMachineResponse>();
+            //config.NewConfig<SensorMachineResquest, SensorMachine>();
             
         }
     }

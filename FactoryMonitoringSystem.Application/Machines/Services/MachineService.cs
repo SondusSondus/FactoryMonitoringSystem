@@ -2,8 +2,7 @@
 using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Requests;
 using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.Machines.Services;
-using FactoryMonitoringSystem.Domain.Factories.Entities;
-using FactoryMonitoringSystem.Domain.SensorMachine.Entities;
+using FactoryMonitoringSystem.Domain.SensorMachines.Entities;
 using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using FactoryMonitoringSystem.Shared;
 using Mapster;
@@ -63,7 +62,7 @@ namespace FactoryMonitoringSystem.Application.Machines.Services
                 Logger.LogInformation("Retrieve machines");
                 var includes = new (Expression<Func<Machine, IEnumerable<SensorMachine>>>, Expression<Func<SensorMachine, Sensor>>?)[]
                  {
-                         (o => o.SensorMachine, oi => oi.Sensor) // Include OrderItems and then include their Products
+                         (o => o.SensorMachines, oi => oi.Sensor) // Include OrderItems and then include their Products
                  };
                 // Call the modified method
                 var machines = await ReadRepository.GetAsyncIncludeMultiple<SensorMachine, Sensor>(
@@ -88,12 +87,12 @@ namespace FactoryMonitoringSystem.Application.Machines.Services
         {
             var includes = new (Expression<Func<Machine, IEnumerable<SensorMachine>>>, Expression<Func<SensorMachine, Sensor>>?)[]
                 {
-                     (o => o.SensorMachine, oi => oi.Sensor) // Include OrderItems and then include their Products
+                     (o => o.SensorMachines, oi => oi.Sensor) // Include OrderItems and then include their Products
                 };
             // Call the modified method
-            var machine = await ReadRepository.FindAsyncIncludeMultiple<SensorMachine,Sensor >(
+            var machine = await ReadRepository.FindAsyncIncludeMultiple<SensorMachine, Sensor>(
                 cancellationToken,
-                machine=>machine.Id == id,
+                machine => machine.Id == id,
                 includes
             );
 

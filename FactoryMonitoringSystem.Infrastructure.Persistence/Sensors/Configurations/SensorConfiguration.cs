@@ -1,4 +1,5 @@
-﻿using FactoryMonitoringSystem.Domain.Sensors.Entities;
+﻿using FactoryMonitoringSystem.Domain.SensorMachines.Entities;
+using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -28,6 +29,8 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Sensors.Configurati
             builder.Property(s => s.Unit)
                 .IsRequired()
                 .HasMaxLength(20);
+
+         
         }
     }
 }

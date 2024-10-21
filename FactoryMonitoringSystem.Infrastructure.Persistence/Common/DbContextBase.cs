@@ -4,6 +4,7 @@ using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using FactoryMonitoringSystem.Domain.UsersManagement.Entities;
 using FactoryMonitoringSystem.Infrastructure.Persistence.Factories.Configurations;
 using FactoryMonitoringSystem.Infrastructure.Persistence.Machines.Configurations;
+using FactoryMonitoringSystem.Infrastructure.Persistence.SensorMachines.Configurations;
 using FactoryMonitoringSystem.Infrastructure.Persistence.Sensors.Configurations;
 using FactoryMonitoringSystem.Infrastructure.Persistence.UsersManagement.Configurations;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,8 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             modelBuilder.ApplyConfiguration(new SensorConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
-            modelBuilder.ApplyConfiguration(new SensorThresholdConfiguration());
+            modelBuilder.ApplyConfiguration(new SensorMachineConfiguration());
+            modelBuilder.ApplyConfiguration(new TarckingSensorMachineValueConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

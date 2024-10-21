@@ -3,6 +3,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 using FactoryMonitoringSystem.Domain.Common.Repositories;
 using FactoryMonitoringSystem.Domain.Common.Specifications;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
@@ -160,5 +161,68 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 
             return predicate == null ? await query.ToListAsync(cancellationToken) : await query.Where(predicate).ToListAsync(cancellationToken);
         }
+        public async Task<IEnumerable<T>> GetAsyncIncludeMultiple<TProperty1, TProperty2, TProperty3>(
+            CancellationToken cancellationToken,
+            Expression<Func<T, bool>>? predicate = null,
+            params (Expression<Func<T, IEnumerable<TProperty1>>> include,
+                    Expression<Func<TProperty1, IEnumerable<TProperty2>>>? thenInclude,
+                    Expression<Func<TProperty2, TProperty3>>? thirdInclude)[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+
+            // Apply Include and ThenInclude for each pair, supporting up to three levels
+            foreach (var (include, thenInclude, thirdInclude) in includes)
+            {
+                // Apply Include and ThenInclude based on their presence
+                if (thenInclude != null && thirdInclude != null)
+                {
+                    query = query.Include(include).ThenInclude(thenInclude).ThenInclude(thirdInclude);
+                }
+                else if (thenInclude != null)
+                {
+                    query = query.Include(include).ThenInclude(thenInclude);
+                }
+                else
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            // Apply predicate if provided
+            return predicate == null ? await query.ToListAsync(cancellationToken) : await query.Where(predicate).ToListAsync(cancellationToken);
+        }
+        public async Task<T> FindAsyncIncludeMultiple<TProperty1, TProperty2, TProperty3>
+            (CancellationToken cancellationToken, 
+            Expression<Func<T, bool>> predicate,
+                 params (Expression<Func<T, IEnumerable<TProperty1>>> include,
+            Expression<Func<TProperty1, IEnumerable<TProperty2>>>? thenInclude, 
+            Expression<Func<TProperty2, TProperty3>>? thirdInclude)[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+
+            // Apply Include and ThenInclude for each pair, supporting up to three levels
+            foreach (var (include, thenInclude, thirdInclude) in includes)
+            {
+                // Apply Include and ThenInclude based on their presence
+                if (thenInclude != null && thirdInclude != null)
+                {
+                    query = query.Include(include).ThenInclude(thenInclude).ThenInclude(thirdInclude);
+                }
+                else if (thenInclude != null)
+                {
+                    query = query.Include(include).ThenInclude(thenInclude);
+                }
+                else
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            // Apply predicate if provided
+            return predicate == null ? await query.FirstOrDefaultAsync(cancellationToken) : await query.FirstOrDefaultAsync(predicate);
+        }
+      
+
+
     }
 }

@@ -8,8 +8,7 @@ namespace FactoryMonitoringSystem.Domain.Machines.Specifications
     {
         public MachineByStatusWithSensorsSpecification(string type)
         {
-            Query.Where(machine => machine.Type.Equals(type))
-                .Include(machine => machine.SensorMachine);
+            Query.Where(machine => machine.Type.Equals(type));
 
         }
     }

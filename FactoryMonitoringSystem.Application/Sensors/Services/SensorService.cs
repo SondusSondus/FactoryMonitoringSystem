@@ -44,8 +44,8 @@ namespace FactoryMonitoringSystem.Application.Sensors.Services
             var sensor = await ReadRepository.GetByIdAsync(sensorId, cancellationToken);
             if (sensor == null)
             {
-                Logger.LogError(MachineError.NotFound.Description);
-                return MachineError.NotFound;
+                Logger.LogError(SensorError.NotFound.Description);
+                return SensorError.NotFound;
             }
             Logger.LogInformation("Delete sensor {Name} ", sensor.Name);
             WriteRepository.Delete(sensor);
@@ -77,7 +77,7 @@ namespace FactoryMonitoringSystem.Application.Sensors.Services
             if (sensor == null)
             {
                 Logger.LogError(SensorError.NotFound.Description);
-                return MachineError.NotFound; // Return error if factory is not found
+                return SensorError.NotFound; // Return error if factory is not found
             }
             Logger.LogInformation("Fetch sensor {name}", sensor.Name);
             Logger.LogInformation("Fetch sensor successfully");
@@ -94,8 +94,8 @@ namespace FactoryMonitoringSystem.Application.Sensors.Services
             var sensor = await ReadRepository.GetByIdAsync(sensorRequest.Id, cancellationToken);
             if (sensor == null)
             {
-                Logger.LogError(MachineError.NotFound.Description);
-                return MachineError.NotFound;
+                Logger.LogError(SensorError.NotFound.Description);
+                return SensorError.NotFound;
             }
             Logger.LogInformation("Sensor factory {Sensor} ", sensorRequest.Name);
             sensor.Name = sensorRequest.Name;

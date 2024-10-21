@@ -7,7 +7,8 @@ using FactoryMonitoringSystem.Domain.Factories.Entities;
 using FactoryMonitoringSystem.Domain.Factories.Services;
 using FactoryMonitoringSystem.Domain.Factories.Specifications;
 using FactoryMonitoringSystem.Domain.Machines.Entities;
-using FactoryMonitoringSystem.Domain.SensorMachine.Entities;
+using FactoryMonitoringSystem.Domain.SensorMachines.Entities;
+using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using FactoryMonitoringSystem.Domain.Shared.Factory.Models;
 using FactoryMonitoringSystem.Shared;
 using Mapster;
@@ -89,8 +90,14 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
 
         public async Task<ErrorOr<FactoryResponse>> GetFactoryByIdAsync(Guid id, CancellationToken cancellationToken)
         {
+            var includes = new (Expression<Func<Factory, IEnumerable<Machine>>>, Expression<Func<Machine, IEnumerable<SensorMachine>>>?, Expression<Func<SensorMachine, Sensor>>?)[]
+                {
+                     (f => f.Machines, sensor => sensor.SensorMachines, machine => machine.Sensor)
+                };
 
-            var factory = await ReadRepository.FindIncludeAsync(cancellationToken, factory => factory.Id == id, factory => factory.Machines);
+            var factory = await ReadRepository.FindAsyncIncludeMultiple<Machine, SensorMachine, Sensor>(cancellationToken,
+                factory => factory.Id == id, 
+                includes);
             if (factory == null)
             {
                 Logger.LogError(FactoryError.NotFound.Description);
@@ -109,12 +116,13 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
                 Logger.LogInformation("Retrieve Factories");
                 //var factories = await ReadRepository.GetAllIncludeAsync(cancellationToken, factory => factory.Machines);
                 // Define the navigation properties to include and then include
-                var includes = new (Expression<Func<Factory, IEnumerable<Machine>>>, Expression<Func<Machine, IEnumerable<SensorMachine>>>?)[]
+                var includes = new (Expression<Func<Factory, IEnumerable<Machine>>>, Expression<Func<Machine, IEnumerable<SensorMachine>>>?, Expression<Func<SensorMachine, Sensor>>?)[]
                 {
-                     (o => o.Machines, oi => oi.SensorMachine) // Include OrderItems and then include their Products
+                     (f => f.Machines, sensor => sensor.SensorMachines, machine => machine.Sensor)
                 };
+
                 // Call the modified method
-                var factories = await ReadRepository.GetAsyncIncludeMultiple<Machine, SensorMachine>(
+                var factories = await ReadRepository.GetAsyncIncludeMultiple<Machine, SensorMachine, Sensor>(
                     cancellationToken,
                     null,
                     includes

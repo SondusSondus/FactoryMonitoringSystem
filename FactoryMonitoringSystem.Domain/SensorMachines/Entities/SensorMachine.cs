@@ -8,8 +8,8 @@ namespace FactoryMonitoringSystem.Domain.SensorMachines.Entities
     {
         public Guid SensorId { get; set; }
         public Guid MachineId { get; set; }
-
-        virtual public Machine machine { get; set; }
+        virtual public Machine Machine { get; set; }
         virtual public Sensor Sensor { get; set; }
+
     }
 }

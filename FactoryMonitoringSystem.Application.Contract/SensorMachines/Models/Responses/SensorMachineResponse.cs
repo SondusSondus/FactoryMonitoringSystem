@@ -5,23 +5,17 @@ namespace FactoryMonitoringSystem.Application.Contracts.SensorMachines.Models.Re
 {
     public record SensorMachineResponse
     {
+        public Guid Id { get; set; }
         public Guid SensorId { get; set; }
         public Guid MachineId { get; set; }
 
-        virtual public MachineResponse machine { get; set; }
+        virtual public MachineResponseForSensorMachine Machine { get; set; }
         virtual public SensorResponse Sensor { get; set; }
     } 
     public record SensorMachineWithSensorResponse
     {
-        public Guid SensorId { get; set; }
-
-        virtual public SensorResponse Sensor { get; set; }
+        virtual public SensorResponseForSensorMachine Sensor { get; set; }
     } 
     
-    public record SensorMachineWithMachineResponse
-    {
-        public Guid SensorId { get; set; }
-
-        virtual public SensorResponse Sensor { get; set; }
-    }
+   
 }
