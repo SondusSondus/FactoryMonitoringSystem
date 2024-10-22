@@ -1,6 +1,4 @@
 ﻿using ErrorOr;
-using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Requests;
-using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Request;
 using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.Sensors.Services;
@@ -25,7 +23,7 @@ namespace FactoryMonitoringSystem.Application.Sensors.Services
 
             try
             {
-                var result = new Sensor(GuidGenerator, sensorRequest.Name, sensorRequest.Type,sensorRequest.MinValue,sensorRequest.MaxValue, sensorRequest.Unit);
+                var result = new Sensor(GuidGenerator, sensorRequest.Name, sensorRequest.Type, sensorRequest.MinValue, sensorRequest.MaxValue, sensorRequest.Unit);
                 WriteRepository.Add(result);
                 await WriteRepository.SaveChangesAsync(cancellationToken);
                 Logger.LogInformation("Sensor created successfully: {Name}", result.Name);

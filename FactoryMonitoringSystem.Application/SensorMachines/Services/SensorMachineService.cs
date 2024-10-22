@@ -75,7 +75,7 @@ namespace FactoryMonitoringSystem.Application.SensorMachines.Services
                 Logger.LogError(SensorMachineError.NotFound.Description);
                 return SensorMachineError.NotFound; // Return error if factory is not found
             }
-            Logger.LogInformation("Sensor Machine successfully");
+            Logger.LogInformation("Sensor machine successfully");
             return sensorMachine.Adapt<SensorMachineResponse>();
 
 

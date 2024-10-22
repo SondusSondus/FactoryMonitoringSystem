@@ -1,6 +1,8 @@
 ﻿using FactoryMonitoringSystem.Application.SensorMachines.Commands.AddSensorToMachine;
+using FactoryMonitoringSystem.Application.SensorMachines.Commands.AddValueSensorForMachine;
 using FactoryMonitoringSystem.Application.SensorMachines.Queries.GetAllSensorMachine;
 using FactoryMonitoringSystem.Application.SensorMachines.Queries.GetSensorMachineById;
+using FactoryMonitoringSystem.Application.SensorMachines.Queries.ReadValueForSensorMachine;
 using FactoryMonitoringSystem.Application.Sensors.Queries.GetAllSensors;
 using FactoryMonitoringSystem.Application.Sensors.Queries.GetSensorById;
 using FactoryMonitoringSystem.Shared.Utilities.Constant;
@@ -19,7 +21,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
         {
             var result = await Mediator.Send(command, cancellationToken);
             return result.Match(
-            machineId => Ok(), // Success
+            value => Ok(), // Success
             Problem); // Error handling
         }
 
@@ -40,6 +42,25 @@ namespace FactoryMonitoringSystem.Api.Controllers
             var sensorMachines = await Mediator.Send(query, cancellationToken);
             return sensorMachines.Match(
             sensorMachines => Ok(sensorMachines), // Success
+            Problem); // Error handling
+        }
+
+        [HttpPost("AddTrackingSensorMachineValue")]
+        public async Task<IActionResult> AddTrackingSensorMachineValue([FromBody] AddValueSensorForMachineCommand command, CancellationToken cancellationToken)
+        {
+            var result = await Mediator.Send(command, cancellationToken);
+            return result.Match(
+            valus => Ok(), // Success
+            Problem); // Error handling
+        }
+
+        [HttpGet("GetTrackingSensorMachineValue")]
+        public async Task<IActionResult> GetTrackingSensorMachineValue([FromQuery] ReadValueSensorForMachineByIdQuery query, CancellationToken cancellationToken)
+        {
+
+            var result = await Mediator.Send(query, cancellationToken);
+            return result.Match(
+            result => Ok(result), // Success
             Problem); // Error handling
         }
 

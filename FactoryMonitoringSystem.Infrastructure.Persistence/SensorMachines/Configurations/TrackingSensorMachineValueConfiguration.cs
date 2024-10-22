@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.SensorMachines.Configurations
 {
-    class TarckingSensorMachineValueConfiguration : IEntityTypeConfiguration<TarckingSensorMachineValue>
+    class TrackingSensorMachineValueConfiguration : IEntityTypeConfiguration<TrackingSensorMachineValue>
     {
-        public void Configure(EntityTypeBuilder<TarckingSensorMachineValue> builder)
+        public void Configure(EntityTypeBuilder<TrackingSensorMachineValue> builder)
         {
             // Table mapping
-            builder.ToTable("TarckingSensorMachineValues");
+            builder.ToTable("TrackingSensorMachineValues");
 
             builder.HasIndex(prop => prop.Id);
             builder.Property(prop => prop.Value)

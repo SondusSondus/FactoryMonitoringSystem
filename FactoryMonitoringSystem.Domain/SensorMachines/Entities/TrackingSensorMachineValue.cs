@@ -1,6 +1,6 @@
 ﻿namespace FactoryMonitoringSystem.Domain.SensorMachines.Entities
 {
-    public class TarckingSensorMachineValue
+    public class TrackingSensorMachineValue
     {
         public Guid Id { get; set; }
         public Guid SensorMachineId { get; set; }

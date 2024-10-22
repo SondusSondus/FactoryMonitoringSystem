@@ -29,7 +29,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new SensorMachineConfiguration());
-            modelBuilder.ApplyConfiguration(new TarckingSensorMachineValueConfiguration());
+            modelBuilder.ApplyConfiguration(new TrackingSensorMachineValueConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }
