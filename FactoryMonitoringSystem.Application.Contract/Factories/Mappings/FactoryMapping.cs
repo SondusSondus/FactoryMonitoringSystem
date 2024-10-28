@@ -15,10 +15,6 @@ namespace FactoryMonitoringSystem.Application.Contracts.Factories.Mappings
             config.NewConfig<FactoryRequest, Factory>();
 
 
-            // Configure Mapster to use the constructor
-            TypeAdapterConfig<UpdateFactoryRequest, Factory>
-                .NewConfig()
-                .MapToConstructor(true);
 
             config.NewConfig<Factory, FactoryResponse>()
                              .Map(dest => dest.Machines, src => src.Machines.Adapt<List<MachineResponse>>());

@@ -87,9 +87,9 @@ namespace FactoryMonitoringSystem.Application.Sensors.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ErrorOr<Success>> UpdateSensorAsync(UpdateSensorRequest sensorRequest, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Success>> UpdateSensorAsync(Guid id, SensorRequest sensorRequest, CancellationToken cancellationToken)
         {
-            var sensor = await ReadRepository.GetByIdAsync(sensorRequest.Id, cancellationToken);
+            var sensor = await ReadRepository.GetByIdAsync(id, cancellationToken);
             if (sensor == null)
             {
                 Logger.LogError(SensorError.NotFound.Description);

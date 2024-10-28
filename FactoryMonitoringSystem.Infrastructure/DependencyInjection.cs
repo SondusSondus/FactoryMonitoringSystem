@@ -1,5 +1,6 @@
 ﻿
 using FactoryMonitoringSystem.Infrastructure.BackgroundJobs;
+using FactoryMonitoringSystem.Infrastructure.Cache;
 using FactoryMonitoringSystem.Infrastructure.Cors;
 using FactoryMonitoringSystem.Infrastructure.Email;
 using FactoryMonitoringSystem.Infrastructure.HealthCheck;
@@ -24,6 +25,7 @@ namespace FactoryMonitoringSystem.Infrastructure
                     .AddEmail(configuration)
                     .AddNotifications(configuration)
                     .AddILogger(hostBuilder)
+                    .AddCaching()
                     .AddIHealthCheck(configuration);
             return services;
         }

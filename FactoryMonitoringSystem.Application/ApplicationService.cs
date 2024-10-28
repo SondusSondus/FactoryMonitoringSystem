@@ -1,4 +1,5 @@
-﻿using FactoryMonitoringSystem.Domain.Common.Repositories;
+﻿using FactoryMonitoringSystem.Application.Contracts.Common.Services;
+using FactoryMonitoringSystem.Domain.Common.Repositories;
 using FactoryMonitoringSystem.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -24,6 +25,7 @@ namespace FactoryMonitoringSystem.Application
         }
 
         protected IMediator Mediator => GetService<IMediator>();
+        protected ICacheService CacheService => GetService<ICacheService>();
         protected ILogger<T> Logger => GetService<ILogger<T>>();
         protected IWriteRepository<TEntity> WriteRepository => GetService<IWriteRepository<TEntity>>();
         protected IReadRepository<TEntity> ReadRepository => GetService<IReadRepository<TEntity>>();

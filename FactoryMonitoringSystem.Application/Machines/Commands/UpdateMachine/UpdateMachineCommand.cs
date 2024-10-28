@@ -5,6 +5,6 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Machines.Commands.UpdateMachine
 {
-    public record UpdateMachineCommand(UpdateMachineRequest UpdateMachine) : IRequest<ErrorOr<Success>>;
+    public record UpdateMachineCommand(Guid id,MachineRequest updateMachine) : IRequest<ErrorOr<Success>>;
 
 }

@@ -1,5 +1,6 @@
 ﻿
 using ErrorOr;
+using FactoryMonitoringSystem.Application.Contracts.Common.Services;
 using FactoryMonitoringSystem.Application.Contracts.Factories.Models.Requests;
 using FactoryMonitoringSystem.Application.Contracts.Factories.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.Factories.Services;
@@ -14,8 +15,8 @@ using FactoryMonitoringSystem.Shared;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Asn1.X509;
 using System.Linq.Expressions;
+using System.Threading;
 using static FactoryMonitoringSystem.Shared.Utilities.Constant.Errors;
 
 namespace FactoryMonitoringSystem.Application.Factories.Services
@@ -54,10 +55,10 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
 
         }
 
-        public async Task<ErrorOr<Success>> UpdateFactoryAsync(UpdateFactoryRequest factoryRequest, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Success>> UpdateFactoryAsync(Guid id, FactoryRequest factoryRequest, CancellationToken cancellationToken)
         {
 
-            var factory = await ReadRepository.GetByIdAsync(factoryRequest.Id, cancellationToken);
+            var factory = await ReadRepository.GetByIdAsync(id, cancellationToken);
             if (factory == null)
             {
                 Logger.LogError(FactoryError.NotFound.Description);
@@ -96,8 +97,10 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
                 };
 
             var factory = await ReadRepository.FindAsyncIncludeMultiple<Machine, SensorMachine, Sensor>(cancellationToken,
-                factory => factory.Id == id, 
+                factory => factory.Id == id,
                 includes);
+
+
             if (factory == null)
             {
                 Logger.LogError(FactoryError.NotFound.Description);
@@ -114,19 +117,17 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
             try
             {
                 Logger.LogInformation("Retrieve Factories");
-                //var factories = await ReadRepository.GetAllIncludeAsync(cancellationToken, factory => factory.Machines);
-                // Define the navigation properties to include and then include
                 var includes = new (Expression<Func<Factory, IEnumerable<Machine>>>, Expression<Func<Machine, IEnumerable<SensorMachine>>>?, Expression<Func<SensorMachine, Sensor>>?)[]
                 {
                      (f => f.Machines, sensor => sensor.SensorMachines, machine => machine.Sensor)
                 };
 
-                // Call the modified method
                 var factories = await ReadRepository.GetAsyncIncludeMultiple<Machine, SensorMachine, Sensor>(
                     cancellationToken,
                     null,
                     includes
                 );
+
                 Logger.LogInformation("Retrieve Factories successfully");
                 return factories.Adapt<List<FactoryResponse>>();
             }
@@ -140,7 +141,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Services
 
         }
 
-
+      
         public async Task<List<FactoryResponse>> GetFactoriesByLocationAsync(string location, CancellationToken cancellationToken)
         {
             var spec = new FactoryByLocationSpecification(location);

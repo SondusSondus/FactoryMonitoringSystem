@@ -6,7 +6,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Commands.DeleteFactory
     {
         public DeleteFactoryCommandVaildator()
         {
-            RuleFor(command => command.factoryId)
+            RuleFor(command => command.id)
                .NotEmpty().WithMessage("Factory id is required.");
         }
     }

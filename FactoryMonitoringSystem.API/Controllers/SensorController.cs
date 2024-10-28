@@ -1,4 +1,5 @@
-﻿using FactoryMonitoringSystem.Application.Sensors.Commands.AddSensorToMachine;
+﻿using FactoryMonitoringSystem.Application.Contracts.Sensors.Models.Request;
+using FactoryMonitoringSystem.Application.Sensors.Commands.AddSensorToMachine;
 using FactoryMonitoringSystem.Application.Sensors.Commands.DeleteSensor;
 using FactoryMonitoringSystem.Application.Sensors.Commands.UpdateSensor;
 using FactoryMonitoringSystem.Application.Sensors.Queries.GetAllSensors;
@@ -23,10 +24,10 @@ namespace FactoryMonitoringSystem.Api.Controllers
             Problem); // Error handling
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateSensor([FromBody] UpdateSensorCommand command, CancellationToken cancellationToken)
+        [HttpPut("id")]
+        public async Task<IActionResult> UpdateSensor([FromQuery] Guid id,[FromBody] SensorRequest command, CancellationToken cancellationToken)
         {
-            var result = await Mediator.Send(command, cancellationToken);
+            var result = await Mediator.Send(new UpdateSensorCommand(id,command), cancellationToken);
             return result.Match(
             sensor => Ok(),  // Success
             Problem); // Error handling

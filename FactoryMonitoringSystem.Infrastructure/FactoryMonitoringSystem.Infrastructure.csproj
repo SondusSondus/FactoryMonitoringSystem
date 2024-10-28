@@ -25,8 +25,5 @@
 		<ProjectReference Include="..\FactoryMonitoringSystem.Infrastructure.Persistence\FactoryMonitoringSystem.Infrastructure.Persistence.csproj" />
 		<ProjectReference Include="..\FactoryMonitoringSystem.Infrastructure.ThirdParty\FactoryMonitoringSystem.Infrastructure.ThirdParty.csproj" />
 	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Cache\" />
-	</ItemGroup>
 	
 </Project>

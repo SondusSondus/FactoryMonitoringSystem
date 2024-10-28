@@ -9,7 +9,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Queries.GetFactoryById
     {
         private readonly IFactoryService _factoryService = factoryService;
         public async Task<ErrorOr<FactoryResponse>> Handle(GetFactoryByIdQuery request, CancellationToken cancellationToken)
-        => await _factoryService.GetFactoryByIdAsync(request.FactoryId, cancellationToken);
+        => await _factoryService.GetFactoryByIdAsync(request.id, cancellationToken);
 
     }
 }

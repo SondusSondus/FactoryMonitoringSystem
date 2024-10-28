@@ -14,7 +14,6 @@ namespace FactoryMonitoringSystem.Application.Contracts.Sensors.Mappings
         {
             config.NewConfig<Sensor, SensorResponse>();
             config.NewConfig<SensorRequest, Sensor>();
-            config.NewConfig<UpdateSensorRequest, Sensor>();
         }
     }
 }

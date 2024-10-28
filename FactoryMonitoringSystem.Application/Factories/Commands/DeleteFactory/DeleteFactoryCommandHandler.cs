@@ -8,6 +8,6 @@ namespace FactoryMonitoringSystem.Application.Factories.Commands.DeleteFactory
     {
         private readonly IFactoryService _factoryService = factoryService;
         async Task<ErrorOr<Success>> IRequestHandler<DeleteFactoryCommand, ErrorOr<Success>>.Handle(DeleteFactoryCommand request, CancellationToken cancellationToken)
-          => await _factoryService.DeleteFactoryAsync(request.factoryId, cancellationToken);
+          => await _factoryService.DeleteFactoryAsync(request.id, cancellationToken);
     }
 }

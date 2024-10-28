@@ -2,24 +2,16 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace FactoryMonitoringSystem.Shared.Middlewares
+namespace FactoryMonitoringSystem.Infrastructure.HealthCheck
 {
-    public class HealthCheckLoggingMiddleware
+    public class HealthCheckLoggingMiddleware(RequestDelegate next, ILogger<HealthCheckLoggingMiddleware> logger)
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<HealthCheckLoggingMiddleware> _logger;
-        public HealthCheckLoggingMiddleware(RequestDelegate next,ILogger<HealthCheckLoggingMiddleware> logger)
-        {
-            _logger = logger;
-            _next = next;
-        }
+        private readonly RequestDelegate _next = next
+            ;
+        private readonly ILogger<HealthCheckLoggingMiddleware> _logger = logger;
+
 
         public async Task InvokeAsync(HttpContext context)
         {

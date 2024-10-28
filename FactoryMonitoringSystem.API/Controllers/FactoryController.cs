@@ -1,4 +1,5 @@
 ﻿using FactoryMonitoringSystem.Api.Controllers;
+using FactoryMonitoringSystem.Application.Contracts.Factories.Models.Requests;
 using FactoryMonitoringSystem.Application.Factories.Commands.CreateFactory;
 using FactoryMonitoringSystem.Application.Factories.Commands.DeleteFactory;
 using FactoryMonitoringSystem.Application.Factories.Commands.UpdateFactor;
@@ -25,10 +26,10 @@ namespace FactoriesMonitoringSystem.API.Controllers
             Problem); // Error handling
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateFactory([FromBody] UpdateFactoryCommand command, CancellationToken cancellationToken)
+        [HttpPut("id")]
+        public async Task<IActionResult> UpdateFactory([FromQuery] Guid id,[FromBody] FactoryRequest command, CancellationToken cancellationToken)
         {
-            var result = await Mediator.Send(command, cancellationToken);
+            var result = await Mediator.Send(new UpdateFactoryCommand(id,command), cancellationToken);
             return result.Match(
             factory => Ok(),  // Success
             Problem); // Error handling

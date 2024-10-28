@@ -27,7 +27,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
                 );
         }
 
-        [HttpGet("Id")]
+        [HttpGet("id")]
         public async Task<IActionResult> GetUser([FromQuery] GetUserByIdQuery query, CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(query, cancellationToken);
@@ -68,7 +68,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
                 );
         }
 
-        [HttpPost("DeleteUser")]
+        [HttpPost("id")]
         public async Task<IActionResult> DeleteUser([FromQuery] DeleteUserCommand command, CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(command, cancellationToken);

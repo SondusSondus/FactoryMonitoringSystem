@@ -6,7 +6,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Queries.GetFactoryById
     {
         public GetFactoryByIdQueryValidator()
         {
-            RuleFor(factory => factory.FactoryId)
+            RuleFor(factory => factory.id)
                   .NotEmpty().WithMessage("Factory id is required.");
         }
     }

@@ -1,5 +1,4 @@
-﻿using FactoryMonitoringSystem.Shared.Middlewares;
-using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
+﻿using FactoryMonitoringSystem.Shared.Utilities.GeneralModels;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -39,7 +38,7 @@ namespace FactoryMonitoringSystem.Infrastructure.HealthCheck
                     Predicate = _ => true // Include all health checks
                 });
             });
-                
+
             return app;
         }
     }

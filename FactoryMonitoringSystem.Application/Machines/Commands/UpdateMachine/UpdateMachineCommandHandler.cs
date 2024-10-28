@@ -13,6 +13,6 @@ namespace FactoryMonitoringSystem.Application.Machines.Commands.UpdateMachine
     {
         private readonly IMachineService _machineService = machineService;
         public async Task<ErrorOr<Success>> Handle(UpdateMachineCommand request, CancellationToken cancellationToken)
-           => await _machineService.UpdateMachineAsync(request.UpdateMachine, cancellationToken);
+           => await _machineService.UpdateMachineAsync(request.id, request.updateMachine, cancellationToken);
     }
 }

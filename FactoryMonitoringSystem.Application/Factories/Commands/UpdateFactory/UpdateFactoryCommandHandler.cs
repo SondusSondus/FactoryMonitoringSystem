@@ -10,7 +10,7 @@ namespace FactoryMonitoringSystem.Application.Factories.Commands.UpdateFactory
     {
         private readonly IFactoryService _factoryService = factoryService;
         public async Task<ErrorOr<Success>> Handle(UpdateFactoryCommand request, CancellationToken cancellationToken)
-            => await _factoryService.UpdateFactoryAsync(request.FactoryRequet,cancellationToken);
+            => await _factoryService.UpdateFactoryAsync(request.id, request.factoryRequet,cancellationToken);
       
     }
 }

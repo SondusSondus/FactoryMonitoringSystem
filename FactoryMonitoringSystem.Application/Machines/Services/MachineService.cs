@@ -106,9 +106,9 @@ namespace FactoryMonitoringSystem.Application.Machines.Services
             return machine.Adapt<MachineResponse>();
         }
 
-        public async Task<ErrorOr<Success>> UpdateMachineAsync(UpdateMachineRequest machineRequet, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Success>> UpdateMachineAsync(Guid id, MachineRequest machineRequet, CancellationToken cancellationToken)
         {
-            var machine = await ReadRepository.GetByIdAsync(machineRequet.Id, cancellationToken);
+            var machine = await ReadRepository.GetByIdAsync(id, cancellationToken);
             if (machine == null)
             {
                 Logger.LogError(MachineError.NotFound.Description);
