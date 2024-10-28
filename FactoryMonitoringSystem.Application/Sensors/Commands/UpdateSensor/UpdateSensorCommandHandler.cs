@@ -8,6 +8,6 @@ namespace FactoryMonitoringSystem.Application.Sensors.Commands.UpdateSensor
     {
         private readonly ISensorService _sensorService = sensorService;
         async Task<ErrorOr<Success>> IRequestHandler<UpdateSensorCommand, ErrorOr<Success>>.Handle(UpdateSensorCommand request, CancellationToken cancellationToken)
-          => await _sensorService.UpdateSensorAsync(request.id, request.UpdateSensor, cancellationToken);
+          => await _sensorService.UpdateSensorAsync(request.id, request.updateSensor, cancellationToken);
     }
 }

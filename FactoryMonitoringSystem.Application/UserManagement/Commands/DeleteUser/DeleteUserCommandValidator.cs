@@ -7,8 +7,9 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Commands.DeleteUser
         public DeleteUserCommandValidator()
         {
 
-            RuleFor(user => user.UserId)
-                       .NotEmpty().WithMessage("User id is required.");
+            RuleFor(user => user.id)
+                       .NotEmpty()
+                       .WithMessage("User id is required.");
         }
     }
 }

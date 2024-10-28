@@ -8,6 +8,6 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Commands.DeleteUser
     {
         private readonly IUserService _userService = userService;
         public async Task<ErrorOr<Success>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
-                  => await _userService.DeleteUser(request.UserId, cancellationToken);
+                  => await _userService.DeleteUser(request.id, cancellationToken);
     }
 }
