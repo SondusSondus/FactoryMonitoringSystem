@@ -4,6 +4,7 @@ using FactoryMonitoringSystem.Infrastructure.Persistence.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    partial class WriteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241030145959_AddNewColToTrackingSensorMachineValue")]
+    partial class AddNewColToTrackingSensorMachineValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,29 +196,6 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                     b.ToTable("TrackingSensorMachineValues", (string)null);
                 });
 
-            modelBuilder.Entity("FactoryMonitoringSystem.Domain.SensorMachines.Views.SensorValueOutOfRangeView", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MachineName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SensorName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("View_SensorValuesOutOfRange", (string)null);
-                });
-
             modelBuilder.Entity("FactoryMonitoringSystem.Domain.Sensors.Entities.Sensor", b =>
                 {
                     b.Property<Guid>("Id")
@@ -371,9 +351,9 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("da977deb-2ba2-494f-9893-9a8e80594c66"),
+                            Id = new Guid("9a4eb747-23de-4349-b393-cae8f0d507f9"),
                             CreatedBy = new Guid("00000000-0000-0000-0000-000000000000"),
-                            CreatedDate = new DateTime(2024, 10, 30, 15, 26, 36, 75, DateTimeKind.Utc).AddTicks(4425),
+                            CreatedDate = new DateTime(2024, 10, 30, 14, 59, 59, 336, DateTimeKind.Utc).AddTicks(4656),
                             Email = "s.ondus.samara94@gmail.com",
                             FailedLoginAttempts = 0,
                             IsEmailVerified = true,

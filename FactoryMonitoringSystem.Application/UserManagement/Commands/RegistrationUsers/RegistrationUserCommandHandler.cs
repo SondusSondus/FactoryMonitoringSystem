@@ -5,7 +5,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.UserManagement.Commands.RegistrationUsers
 {
-    public class RegistrationUserCommandHandler(IUserService userService) : IRequestHandler<RegistrationUserCommand, ErrorOr<Success>>
+    internal class RegistrationUserCommandHandler(IUserService userService) : IRequestHandler<RegistrationUserCommand, ErrorOr<Success>>
     {
         private readonly IUserService _userService = userService;
         public async Task<ErrorOr<Success>> Handle(RegistrationUserCommand request, CancellationToken cancellationToken)

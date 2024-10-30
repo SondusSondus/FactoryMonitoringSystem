@@ -23,7 +23,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
         public void ScheduleMonitoringTasks()
         {
 
-            _recurringJobManager.AddOrUpdate("CheckMachineStatusAsync", () => _machineService.CheckMachineStatusAsync(), Cron.Hourly);
+            _recurringJobManager.AddOrUpdate("CheckMachineStatusAsync", () => _machineService.CheckSensaorMachineValueAsync(), Cron.Hourly);
         }
     }
 

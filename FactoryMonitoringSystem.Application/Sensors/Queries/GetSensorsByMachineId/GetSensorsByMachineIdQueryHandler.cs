@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FactoryMonitoringSystem.Application.Sensors.Queries.GetSensorsByMachineId
 {
-    public class GetSensorsByMachineIdQueryHandler : IRequestHandler<GetSensorsByMachineIdQuery, List<SensorResponse>>
+    internal class GetSensorsByMachineIdQueryHandler : IRequestHandler<GetSensorsByMachineIdQuery, List<SensorResponse>>
     {
         public Task<List<SensorResponse>> Handle(GetSensorsByMachineIdQuery request, CancellationToken cancellationToken)
         {

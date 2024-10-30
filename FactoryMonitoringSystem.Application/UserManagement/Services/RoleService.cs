@@ -7,7 +7,7 @@ using FactoryMonitoringSystem.Shared;
 namespace FactoryMonitoringSystem.Application.UserManagement.Services
 {
 
-    public class RoleService : IRoleService, IScopedDependency
+    internal class RoleService : IRoleService, IScopedDependency
     {
         private readonly IWriteRepository<Role> _writeRepository;
         private readonly IReadRepository<Role> _readRepository;

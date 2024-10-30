@@ -5,7 +5,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.UserManagement.Commands.VerifyEmail
 {
-    public class VerifyEmailCommandHandler(IUserService userService) : IRequestHandler<VerifyEmailCommand, ErrorOr<Success>>
+    internal class VerifyEmailCommandHandler(IUserService userService) : IRequestHandler<VerifyEmailCommand, ErrorOr<Success>>
     {
         private readonly IUserService _userService = userService;
         public async Task<ErrorOr<Success>> Handle(VerifyEmailCommand request, CancellationToken cancellationToken)

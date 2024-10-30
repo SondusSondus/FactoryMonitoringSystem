@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 using static FactoryMonitoringSystem.Shared.Utilities.Constant.Errors;
 namespace FactoryMonitoringSystem.Application.UserManagement.Services
 {
-    public class UserService : ApplicationService<UserService, User>, IUserService, IScopedDependency
+    internal class UserService : ApplicationService<UserService, User>, IUserService, IScopedDependency
     {
         private readonly AppOptions _appOptions;
         public UserService(IHttpContextAccessor httpContextAccessor, IOptions<AppOptions> options) : base(httpContextAccessor)

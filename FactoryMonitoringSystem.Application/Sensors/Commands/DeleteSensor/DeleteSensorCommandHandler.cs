@@ -4,7 +4,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Sensors.Commands.DeleteSensor
 {
-    public class DeleteSensorCommandHandler(ISensorService sensorService) : IRequestHandler<DeleteSensorCommand, ErrorOr<Success>>
+    internal class DeleteSensorCommandHandler(ISensorService sensorService) : IRequestHandler<DeleteSensorCommand, ErrorOr<Success>>
     {
         private readonly ISensorService _sensorService = sensorService;
         async Task<ErrorOr<Success>> IRequestHandler<DeleteSensorCommand, ErrorOr<Success>>.Handle(DeleteSensorCommand request, CancellationToken cancellationToken)

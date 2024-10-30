@@ -4,7 +4,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.UserManagement.Commands.ConfirmPassword
 {
-    public class ConfirmPasswordCommandHandler(IUserService userService) : IRequestHandler<ConfirmPasswordCommand, ErrorOr<Success>>
+    internal class ConfirmPasswordCommandHandler(IUserService userService) : IRequestHandler<ConfirmPasswordCommand, ErrorOr<Success>>
     {
         private readonly IUserService _userService = userService;
         public async Task<ErrorOr<Success>> Handle(ConfirmPasswordCommand request, CancellationToken cancellationToken)

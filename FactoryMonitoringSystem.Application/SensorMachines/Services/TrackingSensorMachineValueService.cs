@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using FactoryMonitoringSystem.Application.Contracts.Common.Services;
 using FactoryMonitoringSystem.Application.Contracts.SensorMachines.Models.Requests;
 using FactoryMonitoringSystem.Application.Contracts.SensorMachines.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.SensorMachines.Services;

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.UserManagement.Commands.ChangePassword
 {
-    public class ChangePasswordCommandHandler(IUserService userService) : IRequestHandler<ChangePasswordCommand, ErrorOr<Success>>
+    internal class ChangePasswordCommandHandler(IUserService userService) : IRequestHandler<ChangePasswordCommand, ErrorOr<Success>>
     {
         private readonly IUserService _userService = userService;
         public async Task<ErrorOr<Success>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)

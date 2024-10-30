@@ -5,7 +5,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.UserManagement.Commands.UpdateUser
 {
-    public class UpdateUserCommandHandler(IUserService userService) : IRequestHandler<UpdateUserCommand, ErrorOr<Success>>
+    internal class UpdateUserCommandHandler(IUserService userService) : IRequestHandler<UpdateUserCommand, ErrorOr<Success>>
     {
         private readonly IUserService _userService =userService;
         async Task<ErrorOr<Success>> IRequestHandler<UpdateUserCommand, ErrorOr<Success>>.Handle(UpdateUserCommand request, CancellationToken cancellationToken)

@@ -11,7 +11,7 @@ using static FactoryMonitoringSystem.Shared.Utilities.Constant.Errors;
 
 namespace FactoryMonitoringSystem.Application.Sensors.Services
 {
-    public class SensorService : ApplicationService<SensorService, Sensor>, ISensorService, IScopedDependency
+    internal class SensorService : ApplicationService<SensorService, Sensor>, ISensorService, IScopedDependency
     {
         public SensorService(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {

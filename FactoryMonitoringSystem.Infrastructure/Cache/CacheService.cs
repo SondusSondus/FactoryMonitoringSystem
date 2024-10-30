@@ -19,9 +19,20 @@ namespace FactoryMonitoringSystem.Infrastructure.Cache
         {
             // Retrieve cache entry if it exists
             return _memoryCache.TryGetValue(cacheKey, out byte[] cacheEntry) ? cacheEntry : null;
+        } 
+        
+        public string CheckAndGetCacheAsyncForSting(string cacheKey)
+        {
+            // Retrieve cache entry if it exists
+            return _memoryCache.TryGetValue(cacheKey, out string cacheEntry) ? cacheEntry : string.Empty;
         }
 
         public void SetCacheAsync(string cacheKey, byte[] cacheEntry)
+        {
+           
+            _memoryCache.Set(cacheKey, cacheEntry);
+        }
+        public void SetCacheAsync(string cacheKey, string cacheEntry)
         {
            
             _memoryCache.Set(cacheKey, cacheEntry);
