@@ -1,4 +1,5 @@
-﻿using Hangfire.Dashboard;
+﻿using FactoryMonitoringSystem.Shared.Utilities.Constant;
+using Hangfire.Dashboard;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,30 +13,13 @@ namespace FactoryMonitoringSystem.Infrastructure.BackgroundJobs
     {
         public bool Authorize(DashboardContext context)
         {
-            // Get the current HTTP context
-            //var httpContext = context.GetHttpContext();
 
-            //// Ensure the user is authenticated
-            //if (!httpContext.User.Identity.IsAuthenticated)
-            //{
-            //    return false; // Deny access if not authenticated
-            //}
+            var httpContext = context.GetHttpContext();
 
-            //// Check if the user has a specific role (e.g., "Admin")
-            //if (httpContext.User.IsInRole("Admin"))
-            //{
-            //    return true; // Allow access if the user is an admin
-            //}
+            // Restrict to authenticated users or specific roles (e.g., Admin)
+            return httpContext.User.Identity.IsAuthenticated &&
+                   httpContext.User.IsInRole(Roles.Admin);
 
-            //// Optionally, allow access based on other criteria
-            //var userEmail = httpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-            //if (userEmail == "admin@yourdomain.com")
-            //{
-            //    return true; // Allow specific user access based on email
-            //}
-
-            // Deny access by default
-            return false;
         }
     }
 }

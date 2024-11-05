@@ -1,10 +1,9 @@
 ﻿using FactoryMonitoringSystem.Application.Sensors.Commands.AddSensorToMachine;
-using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using FluentValidation;
 
 namespace FactoryMonitoringSystem.Application.Sensors.Commands.CreateSensor
 {
-    public class CreateSensorCommandValidator :AbstractValidator<CreateSensorCommand>
+    public class CreateSensorCommandValidator : AbstractValidator<CreateSensorCommand>
     {
         public CreateSensorCommandValidator()
         {
@@ -13,8 +12,8 @@ namespace FactoryMonitoringSystem.Application.Sensors.Commands.CreateSensor
               .MaximumLength(100).WithMessage("Sensor name must not exceed 100 characters.");
 
             RuleFor(sensor => sensor.Sensor.MinValue)
-                 .NotEmpty().WithMessage("MinValue Id is required.");  
-            
+                 .NotEmpty().WithMessage("MinValue Id is required.");
+
             RuleFor(sensor => sensor.Sensor.MaxValue)
                  .NotEmpty().WithMessage("MinValue Id is required.");
 

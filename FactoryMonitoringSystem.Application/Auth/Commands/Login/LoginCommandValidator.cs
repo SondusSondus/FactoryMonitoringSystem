@@ -1,10 +1,5 @@
 ﻿using FactoryMonitoringSystem.Shared.Utilities.GeneralServices;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FactoryMonitoringSystem.Application.Auth.Commands.Login
 {
@@ -17,7 +12,7 @@ namespace FactoryMonitoringSystem.Application.Auth.Commands.Login
              .NotNull()
              .Matches(SystemRegularExpression.Email)
              .WithMessage("{PropertyName} is not valid");
-            
+
             RuleFor(login => login.loginRequest.Password)
              .NotEmpty()
              .NotNull()

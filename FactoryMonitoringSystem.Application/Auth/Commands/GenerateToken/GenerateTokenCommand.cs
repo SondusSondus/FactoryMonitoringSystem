@@ -1,6 +1,4 @@
-﻿
-
-using ErrorOr;
+﻿using ErrorOr;
 using FactoryMonitoringSystem.Application.Contracts.Auth.Models.Responses;
 using MediatR;
 

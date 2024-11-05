@@ -1,6 +1,4 @@
-﻿
-
-using FactoryMonitoringSystem.Shared.Utilities.GeneralServices;
+﻿using FactoryMonitoringSystem.Shared.Utilities.GeneralServices;
 using FluentValidation;
 
 namespace FactoryMonitoringSystem.Application.UserManagement.Commands.ForgotPassword

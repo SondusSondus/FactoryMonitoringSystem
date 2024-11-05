@@ -4,7 +4,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Auth.Events.GenerateToken
 {
-    public class RefreshTokenEventHandler(IUserService userService) : INotificationHandler<RefreshTokenEvent>
+    internal class RefreshTokenEventHandler(IUserService userService) : INotificationHandler<RefreshTokenEvent>
     {
         private readonly IUserService _userService = userService;
         public async Task Handle(RefreshTokenEvent notification, CancellationToken cancellationToken)

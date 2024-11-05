@@ -5,7 +5,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Factories.Queries.GetFactoriesWithMachineCount
 {
-    public class GetFactoriesWithMachineCountQueryHandler : IRequestHandler<GetFactoriesWithMachineCountQuery, List<FactoryWithMachineCountResponse>>
+    internal class GetFactoriesWithMachineCountQueryHandler : IRequestHandler<GetFactoriesWithMachineCountQuery, List<FactoryWithMachineCountResponse>>
     {
         private readonly IFactoryService _factoryService;
 

@@ -7,7 +7,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Auth.Commands.GenerateToken
 {
-    public class GenerateTokenQueryHandler(ITokenGenerator tokenGenerator, IMediator mediator) : IRequestHandler<GenerateTokenCommand, ErrorOr<AuthenticationResult>>
+    internal class GenerateTokenQueryHandler(ITokenGenerator tokenGenerator, IMediator mediator) : IRequestHandler<GenerateTokenCommand, ErrorOr<AuthenticationResult>>
     {
         private readonly ITokenGenerator _tokenGenerator = tokenGenerator;
         private readonly IMediator _mediator = mediator;

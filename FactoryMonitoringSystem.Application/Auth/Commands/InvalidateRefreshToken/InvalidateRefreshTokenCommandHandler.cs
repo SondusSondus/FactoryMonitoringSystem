@@ -5,7 +5,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Auth.Commands.InvalidateRefreshToken
 {
-    public class InvalidateRefreshTokenCommandHandler(IUserService userService) : IRequestHandler<InvalidateRefreshTokenCommand,ErrorOr<Success>>
+    internal class InvalidateRefreshTokenCommandHandler(IUserService userService) : IRequestHandler<InvalidateRefreshTokenCommand,ErrorOr<Success>>
     {
         private readonly IUserService _userService=  userService;
         public async Task<ErrorOr<Success>> Handle(InvalidateRefreshTokenCommand request, CancellationToken cancellationToken)

@@ -3,7 +3,6 @@ using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Requests;
 using FactoryMonitoringSystem.Application.Contracts.Machines.Models.Responses;
 using FactoryMonitoringSystem.Application.Contracts.Machines.Services;
 using FactoryMonitoringSystem.Domain.SensorMachines.Entities;
-using FactoryMonitoringSystem.Domain.SensorMachines.Views;
 using FactoryMonitoringSystem.Domain.Sensors.Entities;
 using FactoryMonitoringSystem.Shared;
 using Mapster;

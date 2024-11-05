@@ -9,5 +9,4 @@ namespace FactoryMonitoringSystem.Application.Auth.Commands.Login
     public record LoginCommand(LoginRequest loginRequest) : IRequest<ErrorOr<LoginResult>>;
 
 
-
 }

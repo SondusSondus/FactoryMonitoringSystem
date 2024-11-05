@@ -14,7 +14,7 @@ using static FactoryMonitoringSystem.Shared.Utilities.GeneralServices.FluentExte
 namespace FactoryMonitoringSystem.Application.Auth.Services
 {
 
-    public class AuthService : ApplicationService<AuthService, User>, IAuthService, IScopedDependency
+    internal class AuthService : ApplicationService<AuthService, User>, IAuthService, IScopedDependency
     {
         private readonly ITokenGenerator _tokenGenerator;
         private readonly AppOptions _appOptions;

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Auth.Commands.Login
 {
-    public class LoginCommandHandler(IAuthService authService) : IRequestHandler<LoginCommand, ErrorOr<LoginResult>>
+    internal class LoginCommandHandler(IAuthService authService) : IRequestHandler<LoginCommand, ErrorOr<LoginResult>>
     {
         private readonly IAuthService _authService = authService;
 
