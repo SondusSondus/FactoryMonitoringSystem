@@ -11,6 +11,26 @@
 - **CQRS Pattern**: Separates read and write operations for scalability and maintainability.
 - **Chain of Responsibility Pattern**: Used for flexible request handling.
 - **ErrorOr Pattern**: Ensures consistent error handling across the application.
+---
+### 2. Dependency Injection with Autofac**
+- Leverages **Autofac** for efficient dependency injection across assemblies.
+- Registers services dynamically based on the following lifetime scopes:
+  - **Scoped**, **Transient**, and **Singleton**.
+- Assemblies scanned include:
+  - `ApplicationAssembly`, `DomainAssembly`, `PersistenceAssembly`, `SharedAssembly`, and `InfrastructureAssembly`.
+- Example setup:
+  ```csharp
+  containerBuilder.RegisterAssemblyTypes(applicationAssembly, domainAssembly, persistenceAssembly, sharedAssembly, infrastructureAssembly)
+      .AssignableTo<IScopedDependency>()
+      .AsImplementedInterfaces()
+      .InstancePerLifetimeScope();
+  ```
+- **Mapster Mapper** is used for lightweight object mapping:
+  ```csharp
+  containerBuilder.RegisterType<MapsterMapper.Mapper>()
+      .As<MapsterMapper.IMapper>()
+      .InstancePerLifetimeScope();
+  ```
 
 ---
 
@@ -38,7 +58,56 @@
     - Ensures separation of concerns by isolating query and command logic.
 
 ---
+### **3. Authentication and Authorization**
+- **JWT-based authentication** with secure token handling using **HttpOnly Cookies**.
+- **AuthController**:
+  - Provides endpoints for **Login**, **Logout**, and **RefreshToken**.
+  - Secures user credentials and handles token refresh for persistent sessions.
+- **AccountController** manages:
+  - **Registration**, **Email Verification**, **Forgot Password**, and **Confirm Password** workflows.
+- **Fluent and Asynchronous Login Flow**:
+  - Uses **AuthenticateAsync** with custom **FluentExtensions** to perform step-by-step validation:
+    - Validates user existence, email verification, and lockout status.
+    - Checks password validity and tracks failed login attempts.
+    - Handles successful login by generating access and refresh tokens.
+- **FluentExtensions** provides reusable methods for:
+  - Asynchronous validation with custom error handling.
+  - Transformation of `Task` and `ErrorOr` objects.
+  - Example:
+    ```csharp
+    public static async Task<ErrorOr<T>> Validate<T>(
+        this Task<ErrorOr<T>> task,
+        Func<T, bool> predicate,
+        Func<ErrorOr<T>> errorFactory)
+    {
+        var result = await task;
+        return predicate(result.Value) ? result : errorFactory();
+    }
+    ```
 
+---
+
+### **4. User and Role Management**
+- **UserController**: Full CRUD operations for user accounts, including:
+  - **GetUsers**, **GetUser by ID**, **CreateUser**, **UpdateUser**, **DeleteUser**, **UnlockedUser**, and **ResetPassword**.
+- **UserProfileController** manages profile operations:
+  - **GetProfile**, **UpdateUserAsync**, and **ChangePassword** for logged-in users.
+- **Role-Based Access Control** (RBAC) with **Admin** and **User** roles to limit access to resources based on roles.
+
+---
+
+### **5. Factory, Machine, and Sensor Management**
+- **FactoryController**:
+  - Manages factories with endpoints to create, retrieve, update, delete, and list factories.
+- **MachineController**:
+  - Handles CRUD operations for machines within the factory.
+- **SensorController**:
+  - Provides endpoints for creating, retrieving, updating, and deleting sensors.
+- **SensorMachineController**:
+  - Manages relationships between sensors and machines.
+  - Tracks sensor values over time for real-time monitoring.
+
+---
 ### 4. **Custom ApiController**
 - Provides a base `ApiController` for consistent API operations:
   - Centralized dependency resolution for services like:
@@ -72,71 +141,6 @@
     - **SameSite=Strict** to prevent CSRF attacks.
 
 ---
-
-### 7. **Account Management System**
-- **AccountController**:
-  - **Registration**: Registers new users.
-  - **VerifyEmail**: Verifies email addresses for new accounts.
-  - **ForgotPassword**: Initiates the password reset process.
-  - **ConfirmPassword**: Confirms and sets new passwords during the reset process.
-
----
-
-### 8. **User Management System**
-- **UserController**:
-  - **GetUsers**: Retrieves all users.
-  - **GetUser**: Fetches details of a user by ID.
-  - **ResetPassword**: Resets a user's password.
-  - **CreateUser**: Adds a new user to the system.
-  - **UnlockedUser**: Unlocks a user's account.
-  - **DeleteUser**: Deletes a user by ID.
-- **UserProfileController**:
-  - **GetProfile**: Fetches the profile of the currently logged-in user.
-  - **UpdateUserAsync**: Updates profile details for the logged-in user.
-  - **ChangePassword**: Enables users to securely change their password.
-
----
-
-### 9. **Factory Management System**
-- **FactoryController**:
-  - **CreateFactory**: Adds new factories.
-  - **UpdateFactory**: Updates factory details by ID.
-  - **GetFactory**: Fetches factory details by ID.
-  - **GetFactories**: Retrieves all factories.
-  - **DeleteFactory**: Deletes a factory by ID.
-
----
-
-### 10. **Machine Management System**
-- **MachineController**:
-  - **CreateMachine**: Adds new machines.
-  - **UpdateMachine**: Updates machine details by ID.
-  - **GetMachine**: Fetches machine details by ID.
-  - **GetMachines**: Retrieves all machines.
-  - **DeleteMachine**: Deletes a machine by ID.
-
----
-
-### 11. **Sensor Management System**
-- **SensorController**:
-  - **CreateSensor**: Adds new sensors.
-  - **UpdateSensor**: Updates sensor details by ID.
-  - **GetSensor**: Fetches sensor details by ID.
-  - **GetSensors**: Retrieves all sensors.
-  - **DeleteSensor**: Deletes a sensor by ID.
-
----
-
-### 12. **Sensor-Machine Management System**
-- **SensorMachineController**:
-  - **AddSensorToMachine**: Associates sensors with machines.
-  - **GetSensorMachine**: Retrieves details of sensor-machine relationships by ID.
-  - **GetAllSensorMachine**: Fetches all sensor-machine relationships.
-  - **AddTrackingSensorMachineValue**: Records tracking values for sensors.
-  - **GetTrackingSensorMachineValue**: Retrieves tracked values for sensor-machine combinations.
-
----
-
 ### 13. **Monitoring and Notifications**
 - **MonitoringTaskScheduler**:
   - Schedules periodic checks using **Hangfire**.
@@ -145,17 +149,39 @@
   - Detects out-of-range sensor values.
   - Broadcasts failure notifications to **Operators** and **Admins** via **SignalR**.
   - Logs sensor and machine details for investigation.
-- **Generic Notification System**:
-  - **NotificationEvent**: Base record for notifications.
-  - **Notification Strategies**:
-    - **EmailNotificationStrategy**: Sends email notifications.
-    - **InAppNotificationStrategy**: Handles in-app notifications.
-  - **NotificationStrategyResolver**: Dynamically resolves the correct strategy based on the notification type.
-  - **NotificationEventHandler**: Processes notifications using the resolved strategy.
+ 
+---
+
+### 14. **Generic Notification System**:  
+   - Provides a flexible and extensible notification system using strategies and events:
+     - **NotificationEvent**: Represents a base record for notification events, containing the notification object and supported systems.
+     - **Notification Strategies**:
+       - **EmailNotificationStrategy**: Handles email-based notifications.
+       - **InAppNotificationStrategy**: Handles in-app notifications.
+     - **NotificationStrategyResolver**: Resolves the appropriate strategy based on the **NotificationSystemModelEnum**.
+     - **NotificationEventHandler**: Processes notifications using resolved strategies and logs the status.
+   - Supports the following notification systems:
+     - **EmailNotification**: For sending notifications via email.
+     - **InAppNotification**: For in-application notifications.
+   - Registration of strategies is done using dependency injection for scalability:
+     ```csharp
+     containerBuilder.RegisterType<EmailNotificationStrategy>()
+                     .Named<INotificationStrategy>(nameof(EmailNotificationStrategy));
+     containerBuilder.RegisterType<InAppNotificationStrategy>()
+                     .Named<INotificationStrategy>(nameof(InAppNotificationStrategy));
+     ```
+   - Example Enum for Notification Types:
+     ```csharp
+     public enum NotificationSystemModelEnum
+     {
+         EmailNotification,
+         InAppNotification
+     }
+     ```
 
 ---
 
-### 14. **Database Features**
+### 15. **Database Features**
 - **Database Contexts**:
   - **ReadDbContext**: Optimized for read operations using **No-Tracking** queries.
   - **WriteDbContext**:
