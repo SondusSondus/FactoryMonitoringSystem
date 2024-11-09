@@ -6,7 +6,7 @@ namespace FactoryMonitoringSystem.Application.Sensors.Commands.DeleteSensor
     {
         public DeleteSensorCommandValidator()
         {
-            RuleFor(sensor => sensor.SensorId)
+            RuleFor(sensor => sensor.Id)
               .NotEmpty().WithMessage("Sensor Id is required.");
         }
     }

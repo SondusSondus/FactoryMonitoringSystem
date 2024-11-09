@@ -23,10 +23,11 @@ namespace FactoryMonitoringSystem.Infrastructure.Cache
         public async Task InvokeAsync(HttpContext context)
         {
             var method = context.Request.Method;
-            var cacheKey = GenerateCacheKey(context);
+            var path = context.Request.Path.Value;
+            var cacheKey = GenerateCacheKey(context).ToLower();
 
             // Attempt to serve the response from cache
-            if (method == "GET" && await TryServeFromCache(context, cacheKey))
+            if (!path.Contains("SensorMachine") && method == "GET" && await TryServeFromCache(context, cacheKey))
             {
                 return; // Cache hit, response already written to the client
             }
@@ -38,7 +39,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Cache
 
             await _next(context); // Process the request
 
-            if (_cacheService != null)
+            if (!path.Contains("SensorMachine") && _cacheService != null)
             {
                 await HandleCacheOperationAsync(context, method, cacheKey);
             }

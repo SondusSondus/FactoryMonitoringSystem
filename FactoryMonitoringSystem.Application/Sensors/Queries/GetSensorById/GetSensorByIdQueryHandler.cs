@@ -9,6 +9,6 @@ namespace FactoryMonitoringSystem.Application.Sensors.Queries.GetSensorById
     {
         private readonly ISensorService _sensorService = sensorService;
         public async Task<ErrorOr<SensorResponse>> Handle(GetSensorByIdQuery request, CancellationToken cancellationToken)
-           => await _sensorService.GetSensorByIdAsync(request.SensorId, cancellationToken);
+           => await _sensorService.GetSensorByIdAsync(request.Id, cancellationToken);
     }
 }

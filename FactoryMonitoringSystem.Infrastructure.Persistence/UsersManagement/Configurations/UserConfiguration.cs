@@ -26,13 +26,13 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.UsersManagement.Con
                            {
                                Id = Guid.NewGuid(),
                                Username = "Admin",
-                               Email = "s.ondus.samara94@gmail.com",
+                               Email = "youremail",
                                RoleId = (int)RolesEnum.Admin,
                                IsEmailVerified = true,
-                               PasswordHash = "$2a$11$7Phvr48TV1QchCJiuCjnmuDLqRVDQ6TmJmJaMmnexJfc/xIp6u.yO"
+                               PasswordHash = "$2a$11$tY9GFaoDWF8iw.NyaHu3x.e9iBaeUWjGb9pW7N5DFtmKDO6HmTB3C" 
 
                            });
-
+           
 
         }
     }

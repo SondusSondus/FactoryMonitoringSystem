@@ -4,6 +4,6 @@ using MediatR;
 
 namespace FactoryMonitoringSystem.Application.Sensors.Queries.GetSensorById
 {
-    public record GetSensorByIdQuery(Guid SensorId) : IRequest<ErrorOr<SensorResponse>>;
+    public record GetSensorByIdQuery(Guid Id) : IRequest<ErrorOr<SensorResponse>>;
 
 }

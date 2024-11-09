@@ -17,7 +17,7 @@ namespace FactoryMonitoringSystem.Api.Controllers
     public class SensorMachineController : ApiController
     {
         [HttpPost("AddSensorToMachine")]
-        public async Task<IActionResult> CreateMachine([FromBody] AddSensorToMachineCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> AddSensorToMachine([FromBody] AddSensorToMachineCommand command, CancellationToken cancellationToken)
         {
             var result = await Mediator.Send(command, cancellationToken);
             return result.Match(

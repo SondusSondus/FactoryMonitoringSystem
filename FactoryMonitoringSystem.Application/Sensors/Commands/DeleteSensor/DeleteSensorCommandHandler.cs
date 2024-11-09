@@ -8,6 +8,6 @@ namespace FactoryMonitoringSystem.Application.Sensors.Commands.DeleteSensor
     {
         private readonly ISensorService _sensorService = sensorService;
         async Task<ErrorOr<Success>> IRequestHandler<DeleteSensorCommand, ErrorOr<Success>>.Handle(DeleteSensorCommand request, CancellationToken cancellationToken)
-                   => await _sensorService.DeleteSensorAsync(request.SensorId, cancellationToken);
+                   => await _sensorService.DeleteSensorAsync(request.Id, cancellationToken);
     }
 }

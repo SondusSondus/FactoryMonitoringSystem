@@ -1,6 +1,5 @@
 ﻿using FactoryMonitoringSystem.Domain.Common.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 {
@@ -29,7 +28,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
         {
             _dbSet.Remove(entity);
         }
-      
+
         public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
             try
@@ -37,7 +36,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
                 await _context.SaveChangesAsync(cancellationToken);
 
             }
-            catch (Exception )
+            catch (Exception)
             {
 
                 throw;
