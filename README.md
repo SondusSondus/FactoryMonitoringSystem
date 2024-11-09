@@ -53,7 +53,7 @@
 
 ---
 
-### 3. **Application Service**
+### **3. Application Service**
 - A reusable and generic base service for application-level logic:
   - Provides convenient access to key components such as:
     - `IMediator`
@@ -67,7 +67,7 @@
 
 ---
 
-### 4. **Generic Read and Write Repositories**
+### **4. Generic Read and Write Repositories**
 - Implements **IReadRepository** and **IWriteRepository** to abstract database interactions:
   - **Read Repository**:
     - Optimized for querying data efficiently.
@@ -127,7 +127,7 @@
   - Tracks sensor values over time for real-time monitoring.
 
 ---
-### **8. **Custom ApiController**
+### **8. Custom ApiController**
 - Provides a base `ApiController` for consistent API operations:
   - Centralized dependency resolution for services like:
     - `IMediator`
@@ -142,7 +142,7 @@
 
 ---
 
-### **9. **Custom Caching Middleware**
+### **9. Custom Caching Middleware**
 - Implements tailored **Caching Middleware** to manage caching efficiently:
   - Uses **In-Memory Caching** for frequently accessed data.
   - Automatically handles cache invalidation and updates.
@@ -179,7 +179,7 @@
 ---
 
 
-### **11. **Database Features**
+### **11. Database Features**
 - **Database Contexts**:
   - **ReadDbContext**: Optimized for read operations using **No-Tracking** queries.
   - **WriteDbContext**:
@@ -208,31 +208,31 @@
 
 ---
 
-### **12. **Validation and Error Handling**
+### **12. Validation and Error Handling**
 - **FluentValidation**: Ensures precise input validation.
 - **Behavior Validation**: Centralizes validation logic.
 - **ErrorOr Pattern**: Provides consistent error management across the application.
 
 ---
 
-### **13. **Security Features**
+### **13. Security Features**
 - **CORS Policy**: Secures cross-origin requests.
 - **JWT Authentication**: Manages token-based authentication.
 - **HttpOnly Cookies**: Protects sensitive tokens from client-side access.
 
 ---
 
-### **14. **Logging and Monitoring**
+### **14. Logging and Monitoring**
 - Uses **Serilog** for structured logging of events and activities.
 
 ---
 
-### **15. **Real-Time Communication**
+### **15. Real-Time Communication**
 - Uses **SignalR** for real-time notifications and updates to user groups.
 
 ---
 
-### **16. **Swagger Integration**
+### **16. Swagger Integration**
 - Provides interactive API documentation for easy testing and integration.
 
 ---
@@ -289,7 +289,7 @@
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-repo/FactoryMonitoringSystem.git
+   git clone  https://github.com/SondusSondus/FactoryMonitoringSystem.git
    ```
 2. **Navigate to the Project Directory**:
    ```bash
