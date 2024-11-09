@@ -1,40 +1,59 @@
 # FactoryMonitoringSystem
 
-**FactoryMonitoringSystem** is a scalable backend application built with .NET Core 8, designed for monitoring and managing factory environments. It integrates advanced architectural patterns, robust authentication, real-time communication, and comprehensive management systems for users, factories, machines, sensors, and more.
+**FactoryMonitoringSystem** is a comprehensive, feature-rich backend application built using .NET Core 8. It is designed for managing and monitoring industrial environments efficiently, supporting factories, machines, sensors, and real-time notifications. The system adopts modern architectural patterns like Domain-Driven Design (DDD), CQRS, and Chain of Responsibility while incorporating advanced features such as robust authentication, custom caching, and dynamic notifications to ensure scalability, security, and maintainability.
 
 ---
 
-## Key Features
+## Key Features and Architecture
 
-### 1. **Architecture and Patterns**
-- **Domain-Driven Design (DDD)**: Implements a modular and well-organized structure, separating concerns across layers.
-- **CQRS Pattern**: Separates read and write operations for scalability and maintainability.
-- **Chain of Responsibility Pattern**: Used for flexible request handling.
-- **ErrorOr Pattern**: Ensures consistent error handling across the application.
----
-### 2. Dependency Injection with Autofac**
-- Leverages **Autofac** for efficient dependency injection across assemblies.
-- Registers services dynamically based on the following lifetime scopes:
-  - **Scoped**, **Transient**, and **Singleton**.
-- Assemblies scanned include:
-  - `ApplicationAssembly`, `DomainAssembly`, `PersistenceAssembly`, `SharedAssembly`, and `InfrastructureAssembly`.
-- Example setup:
-  ```csharp
-  containerBuilder.RegisterAssemblyTypes(applicationAssembly, domainAssembly, persistenceAssembly, sharedAssembly, infrastructureAssembly)
-      .AssignableTo<IScopedDependency>()
-      .AsImplementedInterfaces()
-      .InstancePerLifetimeScope();
-  ```
-- **Mapster Mapper** is used for lightweight object mapping:
-  ```csharp
-  containerBuilder.RegisterType<MapsterMapper.Mapper>()
-      .As<MapsterMapper.IMapper>()
-      .InstancePerLifetimeScope();
-  ```
+### **1. Modern Architectural Design**
+- **Domain-Driven Design (DDD)**:
+  - Modular structure with clear separation of concerns across layers:
+    - **Application**: Handles command and query logic.
+    - **Domain**: Encapsulates core business rules.
+    - **Persistence**: Manages database interactions.
+    - **Shared**: Provides reusable components and utilities.
+    - **Infrastructure**: Handles external services, such as notifications.
+  - Uses assembly markers (`IApplicationAssemblyMarker`, `IDomainAssemblyMarker`, etc.) for organizing dependencies.
+- **CQRS Pattern**:
+  - Segregates read and write operations for scalability and performance.
+  - Implements **ReadDbContext** and **WriteDbContext** to handle queries and commands independently.
+- **ErrorOr Pattern**:
+  - Centralized error handling ensures consistent error responses across the system.
+- **Chain of Responsibility Pattern**:
+  - Enables flexible and modular request handling using middleware layers.
 
 ---
 
-### 2. **Application Service**
+### **2. Dependency Injection**
+- Uses **Autofac** for dynamic dependency injection and assembly scanning:
+  - Registers services from all layers dynamically based on lifetimes:
+    - **Scoped**, **Transient**, and **Singleton** dependencies.
+  - Code example:
+    ```csharp
+    var applicationAssembly = typeof(IApplicationAssemblyMarker).Assembly;
+    var domainAssembly = typeof(IDomainAssemblyMarker).Assembly;
+
+    containerBuilder.RegisterAssemblyTypes(applicationAssembly, domainAssembly)
+        .AssignableTo<IScopedDependency>()
+        .AsImplementedInterfaces()
+        .InstancePerLifetimeScope();
+
+    containerBuilder.RegisterAssemblyTypes(applicationAssembly, domainAssembly)
+        .AssignableTo<ITransientDependency>()
+        .AsImplementedInterfaces()
+        .InstancePerDependency();
+    ```
+- **Mapster IMapper** for lightweight object mapping:
+    ```csharp
+    containerBuilder.RegisterType<MapsterMapper.Mapper>()
+        .As<MapsterMapper.IMapper>()
+        .InstancePerLifetimeScope();
+    ```
+
+---
+
+### 3. **Application Service**
 - A reusable and generic base service for application-level logic:
   - Provides convenient access to key components such as:
     - `IMediator`
@@ -48,7 +67,7 @@
 
 ---
 
-### 3. **Generic Read and Write Repositories**
+### 4. **Generic Read and Write Repositories**
 - Implements **IReadRepository** and **IWriteRepository** to abstract database interactions:
   - **Read Repository**:
     - Optimized for querying data efficiently.
@@ -58,7 +77,7 @@
     - Ensures separation of concerns by isolating query and command logic.
 
 ---
-### **3. Authentication and Authorization**
+### **5. Authentication and Authorization**
 - **JWT-based authentication** with secure token handling using **HttpOnly Cookies**.
 - **AuthController**:
   - Provides endpoints for **Login**, **Logout**, and **RefreshToken**.
@@ -87,7 +106,7 @@
 
 ---
 
-### **4. User and Role Management**
+### **6. User and Role Management**
 - **UserController**: Full CRUD operations for user accounts, including:
   - **GetUsers**, **GetUser by ID**, **CreateUser**, **UpdateUser**, **DeleteUser**, **UnlockedUser**, and **ResetPassword**.
 - **UserProfileController** manages profile operations:
@@ -96,7 +115,7 @@
 
 ---
 
-### **5. Factory, Machine, and Sensor Management**
+### **7. Factory, Machine, and Sensor Management**
 - **FactoryController**:
   - Manages factories with endpoints to create, retrieve, update, delete, and list factories.
 - **MachineController**:
@@ -108,7 +127,7 @@
   - Tracks sensor values over time for real-time monitoring.
 
 ---
-### 4. **Custom ApiController**
+### **8. **Custom ApiController**
 - Provides a base `ApiController` for consistent API operations:
   - Centralized dependency resolution for services like:
     - `IMediator`
@@ -123,65 +142,44 @@
 
 ---
 
-### 5. **Custom Caching Middleware**
+### **9. **Custom Caching Middleware**
 - Implements tailored **Caching Middleware** to manage caching efficiently:
   - Uses **In-Memory Caching** for frequently accessed data.
   - Automatically handles cache invalidation and updates.
   - Reduces database calls, improving application performance.
-
 ---
-
-### 6. **Authentication System**
-- **AuthController**:
-  - **Login**: Authenticates users and issues JWT access and refresh tokens stored as HTTP-Only cookies.
-  - **Logout**: Invalidates refresh tokens and clears authentication cookies.
-  - **RefreshToken**: Generates new tokens if a valid refresh token is provided.
-  - Tokens are secured with:
-    - **Secure** flag for HTTPS-only communication.
-    - **SameSite=Strict** to prevent CSRF attacks.
-
----
-### 13. **Monitoring and Notifications**
+### **10. Monitoring and Notifications**
 - **MonitoringTaskScheduler**:
-  - Schedules periodic checks using **Hangfire**.
-  - Executes hourly checks on sensor-machine values.
+  - Automates periodic monitoring using **Hangfire**.
+  - Tasks include checking sensor-machine values and triggering notifications.
 - **MachineMonitoringService**:
-  - Detects out-of-range sensor values.
-  - Broadcasts failure notifications to **Operators** and **Admins** via **SignalR**.
-  - Logs sensor and machine details for investigation.
- 
----
+  - Monitors real-time sensor values and detects out-of-range data.
+  - Sends critical alerts to operators/admins using **SignalR**.
+- **Generic Notification System**:
+  - Dynamically resolves notification strategies:
+    - **EmailNotificationStrategy** for email alerts.
+    - **InAppNotificationStrategy** for in-app notifications.
+  - Example of the `NotificationStrategyResolver`:
+    ```csharp
+    public class NotificationStrategyResolver : INotificationStrategyResolver
+    {
+        private readonly IComponentContext _context;
 
-### 14. **Generic Notification System**:  
-   - Provides a flexible and extensible notification system using strategies and events:
-     - **NotificationEvent**: Represents a base record for notification events, containing the notification object and supported systems.
-     - **Notification Strategies**:
-       - **EmailNotificationStrategy**: Handles email-based notifications.
-       - **InAppNotificationStrategy**: Handles in-app notifications.
-     - **NotificationStrategyResolver**: Resolves the appropriate strategy based on the **NotificationSystemModelEnum**.
-     - **NotificationEventHandler**: Processes notifications using resolved strategies and logs the status.
-   - Supports the following notification systems:
-     - **EmailNotification**: For sending notifications via email.
-     - **InAppNotification**: For in-application notifications.
-   - Registration of strategies is done using dependency injection for scalability:
-     ```csharp
-     containerBuilder.RegisterType<EmailNotificationStrategy>()
-                     .Named<INotificationStrategy>(nameof(EmailNotificationStrategy));
-     containerBuilder.RegisterType<InAppNotificationStrategy>()
-                     .Named<INotificationStrategy>(nameof(InAppNotificationStrategy));
-     ```
-   - Example Enum for Notification Types:
-     ```csharp
-     public enum NotificationSystemModelEnum
-     {
-         EmailNotification,
-         InAppNotification
-     }
-     ```
+        public INotificationStrategy Resolve(NotificationSystemModelEnum notificationType)
+        {
+            if (!_strategyMap.TryGetValue(notificationType, out var strategyName))
+            {
+                throw new NotSupportedException($"Notification strategy {notificationType} not supported");
+            }
+            return _context.ResolveNamed<INotificationStrategy>(strategyName);
+        }
+    }
+    ```
 
 ---
 
-### 15. **Database Features**
+
+### **11. **Database Features**
 - **Database Contexts**:
   - **ReadDbContext**: Optimized for read operations using **No-Tracking** queries.
   - **WriteDbContext**:
@@ -210,44 +208,105 @@
 
 ---
 
-### 15. **Validation and Error Handling**
+### **12. **Validation and Error Handling**
 - **FluentValidation**: Ensures precise input validation.
 - **Behavior Validation**: Centralizes validation logic.
 - **ErrorOr Pattern**: Provides consistent error management across the application.
 
 ---
 
-### 16. **Security Features**
+### **13. **Security Features**
 - **CORS Policy**: Secures cross-origin requests.
 - **JWT Authentication**: Manages token-based authentication.
 - **HttpOnly Cookies**: Protects sensitive tokens from client-side access.
 
 ---
 
-### 17. **Logging and Monitoring**
+### **14. **Logging and Monitoring**
 - Uses **Serilog** for structured logging of events and activities.
 
 ---
 
-### 18. **Real-Time Communication**
+### **15. **Real-Time Communication**
 - Uses **SignalR** for real-time notifications and updates to user groups.
 
 ---
 
-### 19. **Swagger Integration**
+### **16. **Swagger Integration**
 - Provides interactive API documentation for easy testing and integration.
 
 ---
 
 ## Technologies Used
 
-- **Backend Framework**: .NET Core 8
-- **Database**: SQL Server with Entity Framework Core
-- **Real-Time Communication**: SignalR
-- **Task Scheduling**: Hangfire
-- **Caching**: Custom In-Memory Caching Middleware
-- **Validation**: FluentValidation, Behavior Validation
-- **Authentication**: JWT Tokens, HttpOnly Cookies
-- **Logging**: Serilog
-- **API Documentation**: Swagger/OpenAPI
+| Technology             | Purpose                                                   |
+|-------------------------|-----------------------------------------------------------|
+| **.NET Core 8**        | Backend framework for scalable applications.              |
+| **SQL Server**         | Relational database for structured data.                  |
+| **Entity Framework**   | ORM for data handling.                                    |
+| **Autofac**            | Dependency injection with assembly scanning.              |
+| **SignalR**            | Real-time communication.                                  |
+| **Hangfire**           | Background job scheduling and processing.                 |
+| **FluentValidation**   | Input validation and business rule enforcement.           |
+| **Mapster**            | Lightweight object mapping for DTOs and entities.         |
+| **Serilog**            | Structured and detailed logging.                          |
+| **Swagger/OpenAPI**    | Interactive API documentation for easy testing.           |
 
+---
+
+## How It Works
+
+### Authentication and Authorization
+- Manages user sessions with **JWT Tokens** stored securely in **HttpOnly Cookies**.
+- Validates login credentials, tracks login attempts, and handles lockout functionality.
+- Allows for user registration, email verification, password reset, and secure logout.
+
+### User, Role, and Profile Management
+- Supports CRUD operations for user accounts and roles.
+- Provides APIs for viewing and updating user profiles and managing passwords.
+- Implements RBAC to control access to specific functionalities.
+
+### Factory, Machine, and Sensor Management
+- Full CRUD capabilities for factories, machines, and sensors.
+- Allows associations between sensors and machines and enables real-time tracking of sensor values.
+
+### Monitoring and Notifications
+- Periodic monitoring of sensor data using **Hangfire** for scheduled tasks.
+- Detects out-of-range values and sends critical alerts via **SignalR**.
+- Employs a generic notification system with strategies for email and in-app alerts.
+
+### Performance Optimization
+- **Custom Caching Middleware** caches frequently accessed data to reduce load on the database.
+- Utilizes **ReadDbContext** and **WriteDbContext** with appropriate configurations for optimal data handling.
+
+### Validation and Logging
+- Uses **FluentValidation** for declarative validation of requests.
+- **Serilog** provides structured logging for tracing operations, errors, and important events.
+
+---
+
+## Setup Instructions
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/your-repo/FactoryMonitoringSystem.git
+   ```
+2. **Navigate to the Project Directory**:
+   ```bash
+   cd FactoryMonitoringSystem
+   ```
+3. **Restore Dependencies**:
+   ```bash
+   dotnet restore
+   ```
+4. **Configure Settings**:
+   - Update the `appsettings.json` file with your database connection string, JWT settings, and other required configurations.
+
+5. **Run the Application**:
+   ```bash
+   dotnet run
+   ```
+6. **Access the API Documentation**:
+   - Visit `http://localhost:<port>/swagger` to view and test the API endpoints using Swagger.
+
+---
