@@ -300,8 +300,21 @@
    dotnet restore
    ```
 4. **Configure Settings**:
-   - Update the `appsettings.json` file with your database connection string, JWT settings, and other required configurations.
+   - Update the `appsettings.json` file with your database connection string, JWT settings,EmailSettings and other required configurations.
+   - Check `UserConfiguration` file and change email to your email and use password ***Admin@123***
+  ```csharp
+      builder.HasData(
+                 new User
+                 {
+                     Id = Guid.NewGuid(),
+                     Username = "Admin",
+                     Email = "youremail",
+                     RoleId = (int)RolesEnum.Admin,
+                     IsEmailVerified = true,
+                     PasswordHash = "$2a$11$tY9GFaoDWF8iw.NyaHu3x.e9iBaeUWjGb9pW7N5DFtmKDO6HmTB3C" 
 
+                 });
+    ```
 5. **Run the Application**:
    ```bash
    dotnet run
