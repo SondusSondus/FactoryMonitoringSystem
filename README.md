@@ -228,7 +228,9 @@
 ---
 
 ### **15. Real-Time Communication**
-- Uses **SignalR** for real-time notifications and updates to user groups.
+Utilizes SignalR for real-time notifications and updates to user groups. Specifically, SignalR is employed to:
+-Send Notifications to Users: Deliver instant notifications to users, ensuring they receive timely updates and alerts directly within the application.
+-Monitor Sensor Values: Automatically notify users when sensor values exceed or fall below predefined thresholds, enabling immediate awareness and response to out-of-range conditions.
 
 ---
 
