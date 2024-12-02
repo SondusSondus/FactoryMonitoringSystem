@@ -6,18 +6,19 @@ using FactoryMonitoringSystem.Domain.Shared.Machine.Dtos;
 using FactoryMonitoringSystem.Shared.Utilities.Enums;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace FactoryMonitoringSystem.Infrastructure.Notifications
 {
 
     public class MachineMonitoringService
     {
-        private readonly IHubContext<MonitoringHub> _hubContext;
+        private readonly IHubContext<NotificationHub,INotificationClient> _hubContext;
         private readonly IReadRepository<SensorValueOutOfRangeView> _sensorValueOutOfRangeView;
         private readonly ILogger<MachineMonitoringService> _logger;
 
         public MachineMonitoringService(
-        IHubContext<MonitoringHub> hubContext,
+        IHubContext<NotificationHub, INotificationClient> hubContext,
             IReadRepository<SensorValueOutOfRangeView> sensorValueOutOfRangeView,
             ILogger<MachineMonitoringService> logger)
         {
@@ -46,8 +47,8 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
                 };
                 _logger.LogInformation($"failed: {failureDto.ErrorMessage}");
                 // Broadcast the machine failure alert
-                await _hubContext.Clients.Group(RolesEnum.Operator.ToString()).SendAsync("ReceiveSensorMachineValueFailure", failureDto);
-                await _hubContext.Clients.Group(RolesEnum.Admin.ToString()).SendAsync("ReceiveSensorMachineValueFailure", failureDto);
+                await _hubContext.Clients.Group(RolesEnum.Operator.ToString()).ReceiveMessage(JsonConvert.SerializeObject(failureDto));
+                await _hubContext.Clients.Group(RolesEnum.Admin.ToString()).ReceiveMessage(JsonConvert.SerializeObject(failureDto));
 
             }
         }

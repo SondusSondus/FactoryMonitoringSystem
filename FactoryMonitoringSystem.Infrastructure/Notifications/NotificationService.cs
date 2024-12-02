@@ -13,15 +13,17 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
     public class NotificationService : INotificationService, ITransientDependency
     {
         private readonly IWriteRepository<Notification> _notificationRepository;
-        private readonly IHubContext<MonitoringHub> _hubContext;
+        private readonly CurrentUser _currentUser;
+        private readonly IHubContext<NotificationHub, INotificationClient> _hubContext;
         private readonly MonitoringSettings _notificationSettings;
 
-        public NotificationService(IWriteRepository<Notification> notificationRepository,
-            IHubContext<MonitoringHub> hubContext, IOptions<MonitoringSettings> notificationSettings)
+        public NotificationService(IWriteRepository<Notification> notificationRepository,CurrentUser currentUser,
+            IHubContext<NotificationHub, INotificationClient> hubContext, IOptions<MonitoringSettings> notificationSettings)
         {
             _notificationRepository = notificationRepository;
             _hubContext = hubContext;
             _notificationSettings = notificationSettings.Value;
+            _currentUser = currentUser;
         }
 
         // Enqueue notification sending as a background job
@@ -39,7 +41,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
         public async Task ProcessNotification(InAppNotificationModel inAppNotification,CancellationToken cancellationToken)
         {
             // Send real-time notification using SignalR
-            await _hubContext.Clients.User(inAppNotification.UserEmail).SendAsync("ReceiveNotification", inAppNotification.Message);
+            await _hubContext.Clients.User(_currentUser.Id.ToString()).ReceiveMessage(inAppNotification.Message);
 
             // Save the notification to the database
             var notification = new Notification

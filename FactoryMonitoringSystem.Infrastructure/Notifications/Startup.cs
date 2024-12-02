@@ -17,27 +17,14 @@ namespace FactoryMonitoringSystem.Infrastructure.Notifications
             services.Configure<MonitoringSettings>(configuration.GetSection(MonitoringSettings.Section));
             // Add SignalR to the services collection
             services.AddSignalR();
-
-            services.AddScoped(provider => provider.GetRequiredService<ManageUserService>().AssignUserToRoleGroup());
-
-            // Enable response compression
-            services.AddResponseCompression(options => options.EnableForHttps = true);
-           
-        
             return services;
         }
         public static IApplicationBuilder UseNotifications(this IApplicationBuilder app)
-        {
-          
-          
+        {  
             // Set up SignalR hub endpoints
             app.UseEndpoints(endpoints =>
             {
-
-                endpoints.MapHub<MonitoringHub>("/monitoringHub", options =>
-                {
-                    options.CloseOnAuthenticationExpiration = true;
-                }).RequireAuthorization(); ;
+                endpoints.MapHub<NotificationHub>("/monitoringHub");
             });
            
             return app;

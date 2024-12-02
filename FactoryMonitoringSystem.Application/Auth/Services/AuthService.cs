@@ -56,9 +56,9 @@ namespace FactoryMonitoringSystem.Application.Auth.Services
         // Get user by username or email
         private async Task<ErrorOr<User>> GetUserAsync(string email, CancellationToken cancellationToken)
         {
-            var user = await ReadRepository.FindIncludeAsync(
-                cancellationToken,
+            var user = await ReadRepository.FindAsync(
                 user => user.Username == email || user.Email == email,
+                cancellationToken,
                 user => user.Role  // Include UserRoles and ThenInclude Role
             );
 

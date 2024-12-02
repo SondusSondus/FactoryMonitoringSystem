@@ -140,9 +140,10 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             Logger.LogInformation($"Retrieve user {CurrentUser.Email}");
             try
             {
-                var result = await ReadRepository.FindIncludeAsync(cancellationToken,
-                                                   user => user.Id == LoggedInUserId,
-                                                   user => user.Role);
+                var result = await ReadRepository.FindAsync(
+                                   user => user.Id == LoggedInUserId,
+                                   cancellationToken,
+                                   user => user.Role);
                 Logger.LogInformation("Return User User successfully.");
                 return result.Adapt<UserResponse>();
             }
@@ -270,7 +271,7 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
             try
             {
                 Logger.LogInformation("Retrieve All Users");
-                var users = await ReadRepository.GetAllIncludeAsync(cancellationToken, user => user.Role);
+                var users = await ReadRepository.GetAllAsync(cancellationToken, null ,user => user.Role);
                 Logger.LogInformation("Retrieve Users successfully.");
                 return users.Adapt<List<UserResponse>>();
             }
@@ -283,7 +284,7 @@ namespace FactoryMonitoringSystem.Application.UserManagement.Services
 
         public async Task<ErrorOr<UserResponse>> GetUserById(Guid Id, CancellationToken cancellationToken)
         {
-            var user = await ReadRepository.FindIncludeAsync(cancellationToken, user => user.Id == Id, user => user.Role);
+            var user = await ReadRepository.FindAsync(user => user.Id == Id, cancellationToken, user => user.Role);
             if (user is null)
             {
                 Logger.LogInformation(UserError.UserNotFound.Description);

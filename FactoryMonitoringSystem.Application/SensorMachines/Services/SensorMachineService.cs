@@ -47,8 +47,9 @@ namespace FactoryMonitoringSystem.Application.SensorMachines.Services
             {
                 Logger.LogInformation("Retrieve Factories");
 
-                var factories = await ReadRepository.GetAllIncludeAsync(
+                var factories = await ReadRepository.GetAllAsync(
                     cancellationToken,
+                    null,
                     (sensorMachine => sensorMachine.Machine), (sensorMachine => sensorMachine.Sensor)
                 );
                 Logger.LogInformation("Retrieve Factories successfully");
@@ -65,8 +66,9 @@ namespace FactoryMonitoringSystem.Application.SensorMachines.Services
         public async Task<ErrorOr<SensorMachineResponse>> GetSensorMachineById(Guid id, CancellationToken cancellationToken)
         {
 
-            var sensorMachine = await ReadRepository.FindIncludeAsync(cancellationToken,
+            var sensorMachine = await ReadRepository.FindAsync(
                 sensorMachine => sensorMachine.Id == id,
+                cancellationToken,
                 (sensorMachine => sensorMachine.Machine), (sensorMachine => sensorMachine.Sensor)
                 );
 

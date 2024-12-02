@@ -38,6 +38,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Security.TokenGenerator
             {
                 new(ClaimTypes.Name, userName),
                 new(ClaimTypes.Email, email ),
+                new(JwtRegisteredClaimNames.Sub, id ), // to use it in SignalR
                 new("id",  id),
                 new("expiryTime", DateTime.UtcNow.AddMinutes(_jwtSettings.AccessTokenExpirationMinutes).ToString()),
                 new("expiryRefreshTokenTime", DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays).ToString()),

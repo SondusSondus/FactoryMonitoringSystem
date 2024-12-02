@@ -23,32 +23,28 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
 
         public async Task<T> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-
             return await _dbSet.FindAsync(id, cancellationToken);
-
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> predicate = null)
-        {
-
-            return predicate == null ? await _dbSet.ToListAsync(cancellationToken) : await _dbSet.Where(predicate).ToListAsync(cancellationToken);
-
-        }
-        public async Task<IEnumerable<T>> GetAllIncludeAsync(CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes)
+        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken, Expression<Func<T, bool>>? predicate = null, params Expression<Func<T, object>>[] includes)
         {
 
             IQueryable<T> query = _dbSet;
 
-            // Apply each include expression
-            foreach (var include in includes)
+            if (includes.Any())
             {
-                query = query.Include(include);
+                // Apply each include expression
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
             }
-            return await query.ToListAsync(cancellationToken);
+
+            return predicate == null ? await query.ToListAsync(cancellationToken) : 
+                                       await query.Where(predicate).ToListAsync(cancellationToken);
 
         }
-
-
+      
         // Use Custame Specification
         public async Task<IEnumerable<T>> FindAsync(BaseSpecification<T> specification, CancellationToken cancellationToken)
         {
@@ -56,6 +52,7 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
             var specResult = _baseSpecification.Criteria(_dbSet.AsQueryable(), specification);
             return await specResult.ToListAsync(cancellationToken);
         }
+
         // Use Ardalis.Specification for projected results (e.g., DTOs)
         public async Task<IEnumerable<TResult>> FindAsync<TResult>(BaseSpecification<T, TResult> specification, CancellationToken cancellationToken)
         {
@@ -71,23 +68,22 @@ namespace FactoryMonitoringSystem.Infrastructure.Persistence.Common
         }
 
 
-        public async Task<T> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
-        {
-            return await _dbSet.Where(predicate).FirstAsync(cancellationToken);
-        }
-
-        public async Task<T> FindIncludeAsync(CancellationToken cancellationToken, Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        public async Task<T> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken, 
+            params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _dbSet;
+            if (includes.Any())
+            {  
+                // Apply each include expression
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
 
-            // Apply each include expression
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
             }
-
             return await query.FirstOrDefaultAsync(predicate, cancellationToken);
         }
+
         public async Task<T> FindAsyncIncludeMultiple<TProperty1, TProperty2>(
            CancellationToken cancellationToken,
            Expression<Func<T, bool>> predicate,
